@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Custom_CRT_Screen
+  m_Shader: {fileID: 4800000, guid: 4c668bdcb51027742b49a148d2065408, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 8400000, guid: 3ff7d65eed283574992429640a7b5a7d, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Brightness: 0.75
+    - _EmissionStrength: 0.2
+    - _MaskIntensity: 0
+    - _MaskScaleX: 200
+    - _MaskScaleY: 200
+    - _MaskTexScale: 10
+    - _NoiseAmount: 0.05
+    - _Saturation: 1
+    - _ScanlineIntensity: 0.02
+    - _ScanlineScale: 30.5
+    - _ScanlineScrollSpeed: 0.209
+    - _UseMaskTex: 0
+    - _VignetteSmoothness: 0.4
+    - _VignetteStrength: 1.05
+    m_Colors: []
+  m_BuildTextureStacks: []
