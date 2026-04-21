@@ -19,14 +19,22 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public GameData GameData;
     public StageAssetReader StageAssetReader;
     public DecalcomanieSceneManager SceneManager;
     public AudioManager AudioManager;
 
     public int CurrentStageIndex { get; private set; } = 0;
+    [SerializeField] int totalStages = 40;
 
     public void LoadStage(int stageIndex)
     {
+        if (stageIndex >= totalStages)
+        {
+            CreditScene();
+            return;
+        }
+
         CurrentStageIndex = stageIndex;
         TextAsset stageData = StageAssetReader.LoadStageAsset(stageIndex);
         if (stageData != null)
@@ -43,5 +51,14 @@ public class GameManager : MonoBehaviour
     public TextAsset GetCurrentStageAsset()
     {
         return StageAssetReader.LoadStageAsset(CurrentStageIndex);
+    }
+
+    public void CreditScene()
+    {
+        // TODO: 크레딧 씬으로 이동.
+
+        // 스테이지 선택 씬. 임시.
+        Debug.Log("All stages cleared! Returning to stage selection.");
+        SceneManager.MoveSceneTo("Stage Selection Scene");
     }
 }

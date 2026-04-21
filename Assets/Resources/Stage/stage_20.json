@@ -1,0 +1,12 @@
+{
+  "Size": 8,
+  "StartPoint": { "x": 1, "y": 8 },
+  "EndPoint":   { "x": 8, "y": 8 },
+  "StarPoint":  { "x": 8, "y": 5 },
+  "KeyPoint":   { "x": 1, "y": 5 },
+  "FixedPoints": [
+  ],
+  "HolePoints": [
+  ],
+  "MinMoves": 5
+}

@@ -28,7 +28,16 @@ public class StageManager : MonoBehaviour
 
     void Start()
     {
-        boardManager.CreateBoard(GameManager.Instance.GetCurrentStageAsset());
+        if(GameManager.Instance == null)
+        {
+            boardManager.CreateBoard(testBoardDataTextAsset);
+        }
+        else
+        {
+            boardManager.CreateBoard(GameManager.Instance.GetCurrentStageAsset());
+            stageUI.SetStageBackground(GameManager.Instance.CurrentStageIndex);
+        }
+        stageUI.objectiveNumText.text = $"{boardManager.CurBoard.BoardData.minMoves}";
         paintManager.CreateTileControllers();
     }
 
@@ -95,13 +104,14 @@ public class StageManager : MonoBehaviour
         achievements = new Achievements(true, platformerManager.obtainedStar, paintManager.paintCount <= boardManager.CurBoard.BoardData.minMoves);
 
         // 화면 어두워지고 클리어 UI.
-        stageUI.ShowStageCleared(achievements.Is_Cleared, achievements.ObtainedStar, achievements.Min_Moves);
+        stageUI.ShowStageCleared(achievements.Is_Cleared, achievements.ObtainedStar, achievements.Min_Moves, boardManager.CurBoard.BoardData.minMoves);
     }
 
     public void MoveToNextStage()
     {
         // 다음 스테이지로 이동.
         Debug.Log($"Move To Next Stage!");
+        GameManager.Instance.LoadStage(GameManager.Instance.CurrentStageIndex + 1);
     }
     
     public enum GameState

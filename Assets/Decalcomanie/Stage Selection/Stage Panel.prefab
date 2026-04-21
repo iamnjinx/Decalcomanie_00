@@ -456,4 +456,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5293125ba15991f49b3d0942effb50cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  panelImage: {fileID: 3389239740030763570}
+  stageNameText: {fileID: 2897782679323900412}
   button: {fileID: 4080263081019360111}

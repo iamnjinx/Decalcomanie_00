@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Njinx.UI;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using TMPro;
+using UnityEngine.UI;
 
 public class StageUI : MonoBehaviour
 {
@@ -12,19 +14,34 @@ public class StageUI : MonoBehaviour
     public ButtonUI flipHorizontalButton;
     public ButtonUI flipVerticalButton;
 
+    [Header("Stage Main UI")]
+    public List<Sprite> stageBackgroundSprites;
+    public Image stageMainBackgroundImage;
+
+    [Header("Objectives")]
+    public TextMeshProUGUI objectiveNumText;
 
     [Header("Stage Cleared UI")]
     public BaseUI stageClearedUI;
     public List<BaseUI> stars;
     public ButtonUI nextStageButton;
+    public TextMeshProUGUI minMovesText;
 
-    public async void ShowStageCleared(bool isCleared, bool obtainedStar, bool minMoves)
+    public void SetStageBackground(int stageID)
     {
+        stageMainBackgroundImage.sprite = stageBackgroundSprites[stageID / 10];
+    }
+
+    public async void ShowStageCleared(bool isCleared, bool obtainedStar, bool minMoves, int minMoveNum)
+    {
+        minMovesText.text = $"{minMoveNum}"; 
+
         await UniTask.Delay(1000);
 
         await stageClearedUI.ShowUI(1f);
 
         await ShowAchivementStars(isCleared, obtainedStar, minMoves);
+
 
         // 화면 터치 시, 다음 스테이지로 넘어가게.
         nextStageButton.ShowUI();
