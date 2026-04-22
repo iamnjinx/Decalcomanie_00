@@ -14,4 +14,9 @@ public class DecalcomanieSceneManager : MonoBehaviour
     {
         SceneManager.LoadScene(sceneIndex);
     }
+
+    public int GetCurrentSceneIndex()
+    {
+        return SceneManager.GetActiveScene().buildIndex;
+    }
 }

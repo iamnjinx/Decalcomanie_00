@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -22,16 +20,90 @@ public class GameManager : MonoBehaviour
     public GameData GameData;
     public StageAssetReader StageAssetReader;
     public DecalcomanieSceneManager SceneManager;
-    public AudioManager AudioManager;
 
-    public int CurrentStageIndex { get; private set; } = 0;
+    private SceneType currentScene;
+    public int CurrentStageIndex { get; private set; } = 40;
     [SerializeField] int totalStages = 40;
+    public GameLanguage CurrentLanguage { get; private set; } = GameLanguage.English;
+
+    void Start()
+    {
+        currentScene = (SceneType)SceneManager.GetCurrentSceneIndex();
+        LoadSettings();
+    }
+
+    public void SaveSettings()
+    {
+        SaveManager.Instance.Save(SettingsData.SaveKey, new SettingsData
+        {
+            language = CurrentLanguage,
+            masterVolume = AudioManager.Instance.MasterVolume,
+            bgmVolume = AudioManager.Instance.BgmVolume,
+            sfxVolume = AudioManager.Instance.SfxVolume,
+            isMuted = AudioManager.Instance.IsMuted
+        });
+    }
+
+    public GameLanguage ToggleLanguage()
+    {
+        CurrentLanguage = CurrentLanguage == GameLanguage.English ? GameLanguage.Korean : GameLanguage.English;
+        SaveSettings();
+        return CurrentLanguage;
+    }
+
+    public void SetLanguage(GameLanguage language)
+    {
+        CurrentLanguage = language;
+        SaveSettings();
+    }
+
+    private void LoadSettings()
+    {
+        var settings = SaveManager.Instance.Load<SettingsData>(SettingsData.SaveKey, new SettingsData());
+        CurrentLanguage = settings.language;
+        AudioManager.Instance.SetMasterVolume(settings.masterVolume);
+        AudioManager.Instance.SetBGMVolume(settings.bgmVolume);
+        AudioManager.Instance.SetSFXVolume(settings.sfxVolume);
+        AudioManager.Instance.SetMute(settings.isMuted);
+    }
+
+    public void LoadIntroScene()
+    {
+        SceneManager.MoveSceneTo("Intro Scene");
+    }
+
+    public void LoadOutroScene()
+    {
+        SceneManager.MoveSceneTo("Outro Scene");
+    }
+
+    public void LoadTitleScene()
+    {
+        if (currentScene == SceneType.Title) return;
+        currentScene = SceneType.Title;
+        SceneManager.MoveSceneTo(SceneNames.Title);
+    }
+
+    public void LoadSelectScene()
+    {
+        if (currentScene == SceneType.StageSelection) return;
+        currentScene = SceneType.StageSelection;
+        SceneManager.MoveSceneTo(SceneNames.StageSelection);
+    }
+
+    public void LoadTutorialScene()
+    {
+        // if (currentScene == SceneType.Tutorial) return;
+        // currentScene = SceneType.Tutorial;
+        // SceneManager.MoveSceneTo(SceneNames.Tutorial);
+        LoadStage(0);
+    }
 
     public void LoadStage(int stageIndex)
     {
         if (stageIndex >= totalStages)
         {
-            CreditScene();
+            LoadOutroScene();
             return;
         }
 
@@ -39,8 +111,8 @@ public class GameManager : MonoBehaviour
         TextAsset stageData = StageAssetReader.LoadStageAsset(stageIndex);
         if (stageData != null)
         {
-            // Pass stageData to the game scene for initialization
-            SceneManager.MoveSceneTo("Game Scene");
+            currentScene = SceneType.Game;
+            SceneManager.MoveSceneTo(SceneNames.Game);
         }
         else
         {
@@ -52,13 +124,22 @@ public class GameManager : MonoBehaviour
     {
         return StageAssetReader.LoadStageAsset(CurrentStageIndex);
     }
+}
 
-    public void CreditScene()
-    {
-        // TODO: 크레딧 씬으로 이동.
+public static class SceneNames
+{
+    public const string Title = "Title Scene";
+    public const string StageSelection = "Stage Selection";
+    public const string Game = "Game Scene";
+    public const string Tutorial = "Tutorial Scene";
+}
 
-        // 스테이지 선택 씬. 임시.
-        Debug.Log("All stages cleared! Returning to stage selection.");
-        SceneManager.MoveSceneTo("Stage Selection Scene");
-    }
+public enum SceneType
+{
+    Title, StageSelection, Game, Tutorial
+}
+
+public enum GameLanguage
+{
+    English, Korean
 }

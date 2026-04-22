@@ -5,7 +5,6 @@
   "StarPoint":  { "x": 8, "y": 1 },
   "KeyPoint":   { "x": 1, "y": 8 },
   "FixedPoints": [
-    { "x": 3, "y": 6 },
     { "x": 3, "y": 7 },
     { "x": 3, "y": 8 }
   ],

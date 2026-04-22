@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3523429966012899350
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7223844713585066710}
+  - component: {fileID: 5498304304704849389}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7223844713585066710
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3523429966012899350}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1125.6272, y: 591.063, z: -7.4676194}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5498304304704849389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3523429966012899350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d056e1f576a075c45b424904ea2c28dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioMixer: {fileID: 24100000, guid: 3ae4d94089a29a0479844f221a269824, type: 2}
+  masterVolumeParam: MasterVolume
+  bgmVolumeParam: BGMVolume
+  sfxVolumeParam: SFXVolume
+  bgmClips:
+  - {fileID: 11400000, guid: d048623a83af2024b85442348fba99fc, type: 2}
+  - {fileID: 11400000, guid: 3a4bc39b036dddd448f52e16743af66a, type: 2}
+  - {fileID: 11400000, guid: ac65164b89858374bbd8d89c619448ba, type: 2}
+  sfxClips:
+  - {fileID: 11400000, guid: cfa249e87cef9fc4da3142a8aa4bc5b3, type: 2}
+  - {fileID: 11400000, guid: 6e067964b5cbbb343838597fab753712, type: 2}
+  - {fileID: 11400000, guid: 13c12f20835d4364cb6bc2b28c0f7cec, type: 2}
+  - {fileID: 11400000, guid: c846d30631b10a94a953983c2ea869ba, type: 2}
+  - {fileID: 11400000, guid: d3e447241878d6d40bdff4f6a6b5dbd7, type: 2}
+  - {fileID: 11400000, guid: 1ade12404f29b6749802ae3b158ebb53, type: 2}
+  - {fileID: 11400000, guid: 17912202457f38d4cbd94571cf832cc6, type: 2}
+  - {fileID: 11400000, guid: 4ea420b5e9fb2434f8e69f8cce25159f, type: 2}
+  - {fileID: 11400000, guid: e19eb06c09e879242a3423ec2121f3aa, type: 2}
+  - {fileID: 11400000, guid: c74d29dd99e8e644faa8f23b970484cf, type: 2}
+  - {fileID: 11400000, guid: 883bc5a5cdc84934e806e27e9db7e1df, type: 2}
+  - {fileID: 11400000, guid: d9674b05c2b7c354fb23639059cf6263, type: 2}
+  - {fileID: 11400000, guid: ac65164b89858374bbd8d89c619448ba, type: 2}
+  crossfadeDuration: 1.5
+  initialPoolSize: 16
+  maxPoolSize: 32
+  maxConcurrentSameSFX: 3
+  default3DMinDistance: 1
+  default3DMaxDistance: 50
+  defaultRolloff: 0

@@ -1,22 +1,20 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class BoardManager : MonoBehaviour
 {
-    public Board CurBoard;
+    public Board CurrentBoard;
 
     public void CreateBoard(BoardData boardData)
     {
-        CurBoard = new Board(boardData);
+        CurrentBoard = new Board(boardData);
     }
 
     public void CreateBoard(TextAsset boardDataTextAsset)
     {
-        BoardData boardData = BoardData.FromJson(boardDataTextAsset);
-        CreateBoard(boardData);
+        CreateBoard(BoardData.FromJson(boardDataTextAsset));
     }
 }
 
@@ -35,15 +33,14 @@ public class Board
 
     public Board(BoardData boardData)
     {
+        BoardData = boardData;
+        size = boardData.Size;
+
         if(size % 2 != 0)
         {
             Debug.LogError("Size must be even");
             return;
         }
-
-        BoardData = boardData;
-
-        size = boardData.Size;
 
         SetArrays(boardData.Size);
 
@@ -132,20 +129,29 @@ public class Board
         return paintedTiles;
     }
 
+    public Vector3 GetWorldPosition(int index, float tileSpacing = 2.5f)
+    {
+        return new Vector3(index % size, index / size, 0) * tileSpacing;
+    }
+
+    public (bool flipX, bool flipY) GetFlips(int index)
+    {
+        return (
+            Quadrant2.Contains(index) || Quadrant3.Contains(index),
+            Quadrant3.Contains(index) || Quadrant4.Contains(index)
+        );
+    }
+
     private void MirrorPaint(List<int> source, List<int> target, List<int> paintedTiles)
     {
         for(int i = 0; i < source.Count; i++)
         {
             int tileIndex = source[i];
-            if(allTiles[tileIndex].type != TileType.Paint && allTiles[tileIndex].type != TileType.Paint_Dec)
-                continue;
-            if(allTiles[target[i]].type != TileType.Empty)
-                continue;
-            if(paintedTiles.Contains(tileIndex))
-                continue;
+            if(!allTiles[tileIndex].IsPainted) continue;
+            if(!allTiles[target[i]].IsEmpty) continue;
+            if(paintedTiles.Contains(tileIndex)) continue;
 
             allTiles[target[i]].ChangeTileType(TileType.Paint_Dec, allTiles[tileIndex].paint_color_id);
-
             paintedTiles.Add(target[i]);
         }
     }
@@ -223,6 +229,9 @@ public class Tile
     public int paint_color_id = -1;
     public bool flipX = false;
     public bool flipY = false;
+
+    public bool IsPainted => type == TileType.Paint || type == TileType.Paint_Dec;
+    public bool IsEmpty => type == TileType.Empty;
 
     public Action OnTileTypeChanged;
 

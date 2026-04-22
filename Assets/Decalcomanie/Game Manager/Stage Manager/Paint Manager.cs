@@ -23,6 +23,7 @@ public class PaintManager : MonoBehaviour
     [SerializeField] GameObject PaintPaperObj;
 
     [SerializeField] Ease flipEase = Ease.InCirc;
+    [SerializeField] float foldTime = 0.5f;
 
     [SerializeField] private PaintUI paintUI;
 
@@ -38,25 +39,28 @@ public class PaintManager : MonoBehaviour
 
     public void CreateTileControllers()
     {
-        for (int i = 0; i < boardManager.CurBoard.allTiles.Length; i++)
+        Board board = boardManager.CurrentBoard;
+        for (int i = 0; i < board.allTiles.Length; i++)
         {
             TileController tc = Instantiate(tileControllerPrefab, TileParent);
-            Tile tile = boardManager.CurBoard.allTiles[i];
-            tc.SetTile(tile, i);
+            tc.SetTile(board.allTiles[i], i);
             tc.OnTilePainted += AddPaintAction;
-            tc.transform.position = new Vector3(i % boardManager.CurBoard.size, i / boardManager.CurBoard.size, 0) * 2.5f;
-
-            Board board = boardManager.CurBoard;
-            tc.SetPaintFlip(
-                board.Quadrant2.Contains(i) || board.Quadrant3.Contains(i),
-                board.Quadrant3.Contains(i) || board.Quadrant4.Contains(i));
+            tc.transform.position = board.GetWorldPosition(i);
+            var (flipX, flipY) = board.GetFlips(i);
+            tc.SetPaintFlip(flipX, flipY);
             allTileControllers.Add(tc);
         }
 
-        paintUI.SetPaintButtons(boardManager.CurBoard.allTiles.Length, Paint);
+        paintUI.SetPaintButtons(board.allTiles.Length, Paint);
     }
 
-    public void Paint(int id) { allTileControllers[id].PaintTile(); paintCount++; }
+    public void Paint(int id)
+    {
+        if (allTileControllers[id].Tile.type != TileType.Empty) return;
+        allTileControllers[id].PaintTile();
+        paintCount++;
+        AudioManager.Instance.PlayRandomSFX(new[] { "paint_1", "paint_2" });
+    }
 
     public void AddPaintAction(List<int> paintedTiles, bool is_paint = true) => paintActions.Push(new TilePaintAction(paintedTiles, is_paint));
 
@@ -75,7 +79,7 @@ public class PaintManager : MonoBehaviour
         foreach (int tile in lastAction.PaintedTiles)
         {
             TileController tc = allTileControllers[tile];
-            if (tc.Tile.type == TileType.Paint || tc.Tile.type == TileType.Paint_Dec)
+            if (tc.Tile.IsPainted)
                 tc.ChangeTileType(0);
             else
                 tc.UpdateTile();
@@ -91,7 +95,7 @@ public class PaintManager : MonoBehaviour
         await ExecuteFold(
             (LowerLeft, LowerRight),
             start => new Vector3(179f, start.y, start.z),
-            () => boardManager.CurBoard.FoldVertical());
+            () => boardManager.CurrentBoard.FoldVertical());
     }
 
     public async void FoldHorizontal()
@@ -100,7 +104,7 @@ public class PaintManager : MonoBehaviour
         await ExecuteFold(
             (LowerLeft, UpperLeft),
             start => new Vector3(start.x, -179f, start.z),
-            () => boardManager.CurBoard.FoldHorizontal());
+            () => boardManager.CurrentBoard.FoldHorizontal());
     }
 
     private async UniTask ExecuteFold(
@@ -109,19 +113,20 @@ public class PaintManager : MonoBehaviour
         System.Func<List<int>> performFold)
     {
         _isFolding = true;
+        AudioManager.Instance.PlaySFX("fold_paper");
         await paintUI.SetBasePaintUI(false);
 
         Vector3 start1 = panels.panel1.eulerAngles;
         Vector3 start2 = panels.panel2.eulerAngles;
 
         RotatePanelPair(panels, getFoldRotation(start1), getFoldRotation(start2));
-        await UniTask.Delay(500);
+        await UniTask.Delay((int)(foldTime * 1000));
 
         AddPaintAction(performFold(), false);
         await UniTask.Delay(100);
 
         RotatePanelPair(panels, start1, start2);
-        await UniTask.Delay(500);
+        await UniTask.Delay((int)(foldTime * 1000));
 
         await paintUI.SetBasePaintUI(true);
         _isFolding = false;
@@ -131,18 +136,15 @@ public class PaintManager : MonoBehaviour
         (Transform panel1, Transform panel2) panels,
         Vector3 rotation1, Vector3 rotation2)
     {
-        panels.panel1.DORotate(rotation1, 0.5f).SetEase(flipEase);
-        panels.panel2.DORotate(rotation2, 0.5f).SetEase(flipEase);
+        panels.panel1.DORotate(rotation1, foldTime).SetEase(flipEase);
+        panels.panel2.DORotate(rotation2, foldTime).SetEase(flipEase);
     }
 
     public void ResetPaint()
     {
         paintCount = 0;
         foreach (TileController tc in allTileControllers)
-        {
-            bool isPainted = tc.Tile.type == TileType.Paint || tc.Tile.type == TileType.Paint_Dec;
-            tc.ChangeTileType(isPainted ? 0 : (int)tc.Tile.type);
-        }
+            tc.ChangeTileType(tc.Tile.IsPainted ? 0 : (int)tc.Tile.type);
 
         ResumePaint();
         paintActions.Clear();

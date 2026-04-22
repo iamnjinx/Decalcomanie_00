@@ -11,9 +11,24 @@ public class StagePanel: MonoBehaviour
     public TextMeshProUGUI stageNameText; 
     public ButtonUI button;
 
-    public void SetStagePanel(int stageID)
+    public BaseUI[] starIcons = new BaseUI[3];
+
+    public void SetStagePanel(int stageID, bool isCleared, bool obtainedStar, bool achievedMinMoves)
     {
         stageNameText.text = $"stage {stageID}";
         panelImage.color = GameManager.Instance.GameData.chapterColors[(stageID+9) / 10];
+
+        Debug.Log($"Setting Stage Panel: StageID={stageID}, Cleared={isCleared}, ObtainedStar={obtainedStar}, AchievedMinMoves={achievedMinMoves}");
+
+        SetIcon(starIcons[0], isCleared);
+        SetIcon(starIcons[1], isCleared && obtainedStar);
+        SetIcon(starIcons[2], isCleared && achievedMinMoves);
+    }
+
+    private void SetIcon(BaseUI icon, bool show)
+    {
+        icon.is_shown = !show; // bypass ShowUI/HideUI guard
+        if (show) icon.ShowUI();
+        else icon.HideUI();
     }
 }

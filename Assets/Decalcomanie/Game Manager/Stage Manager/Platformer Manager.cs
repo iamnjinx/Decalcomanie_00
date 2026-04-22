@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,34 +33,56 @@ public class PlatformerManager : MonoBehaviour
 
         for(int i = 0; i < board.allTiles.Length; i++)
         {
-            if(board.allTiles[i].type == TileType.Paint || board.allTiles[i].type == TileType.Paint_Dec || board.allTiles[i].type == TileType.Fixed)
-            {
-                PaintedController tile = Instantiate(tilePrefab, PlatformerObjectParent);
+            Tile tile = board.allTiles[i];
+            Vector3 pos = board.GetWorldPosition(i);
 
-                tile.transform.position = GetTilePosition(i);
-                tile.SetPaintSprite(board.allTiles[i], board, i);
-            }
-            else if(board.allTiles[i].type == TileType.Star)
+            if(tile.IsPainted || tile.type == TileType.Fixed)
             {
-                star.transform.position = GetTilePosition(i);
+                PaintedController pc = Instantiate(tilePrefab, PlatformerObjectParent);
+                pc.transform.position = pos;
+                pc.SetPaintSprite(tile, board, i);
             }
-            else if(board.allTiles[i].type == TileType.Key)
+            else if(tile.type == TileType.Star)  star.transform.position = pos;
+            else if(tile.type == TileType.Key)   key.transform.position = pos;
+            else if(tile.type == TileType.End)   door.transform.position = pos;
+            else if(tile.type == TileType.Start) player.transform.position = pos;
+        }
+
+        SpawnHoles(board);
+    }
+
+    private void SpawnHoles(Board board)
+    {
+        int size = board.size;
+        var consumed = new HashSet<int>();
+
+        for (int i = 0; i < board.allTiles.Length; i++)
+        {
+            if (consumed.Contains(i) || board.allTiles[i].type != TileType.Hole) continue;
+
+            int x = i % size, y = i / size;
+            int right = i + 1, up = i + size, diagUR = i + size + 1;
+
+            bool is2x2 = x < size - 1 && y < size - 1
+                && board.allTiles[right].type == TileType.Hole
+                && board.allTiles[up].type == TileType.Hole
+                && board.allTiles[diagUR].type == TileType.Hole
+                && !consumed.Contains(right) && !consumed.Contains(up) && !consumed.Contains(diagUR);
+
+            if (is2x2)
             {
-                key.transform.position = GetTilePosition(i);
-            }
-            else if(board.allTiles[i].type == TileType.End)
-            {
-                door.transform.position = GetTilePosition(i);
-            }
-            else if(board.allTiles[i].type == TileType.Start)
-            {
-                player.transform.position = GetTilePosition(i);
-            }
-            else if(board.allTiles[i].type == TileType.Hole)
-            {
+                consumed.Add(i); consumed.Add(right); consumed.Add(up); consumed.Add(diagUR);
                 HoleController hole = Instantiate(holePrefab, PlatformerObjectParent);
-                hole.transform.position = GetTilePosition(i);
+                hole.transform.position = board.GetWorldPosition(i) + new Vector3(1.25f, 1.25f, 0f);
+                hole.transform.localScale *= 2f;
             }
+        }
+
+        for (int i = 0; i < board.allTiles.Length; i++)
+        {
+            if (consumed.Contains(i) || board.allTiles[i].type != TileType.Hole) continue;
+            HoleController hole = Instantiate(holePrefab, PlatformerObjectParent);
+            hole.transform.position = board.GetWorldPosition(i);
         }
     }
 
@@ -93,11 +114,6 @@ public class PlatformerManager : MonoBehaviour
         OnCleared = null;
 
         OrgamiObj.SetActive(false);
-    }
-
-    private Vector3 GetTilePosition(int index)
-    {
-        return new Vector3(index % boardManager.CurBoard.size, index / boardManager.CurBoard.size, 0) * 2.5f;
     }
 
     private void OnKeyObtained()

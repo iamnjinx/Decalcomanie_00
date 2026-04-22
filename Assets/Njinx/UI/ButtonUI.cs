@@ -19,9 +19,11 @@ namespace Njinx.UI
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (eventData.button != PointerEventData.InputButton.Left) return;
+
             if (!set_doubleclick)
             {
-                OnSingleClick?.Invoke();
+                OnClick();
                 return;
             }
 
@@ -45,6 +47,11 @@ namespace Njinx.UI
             yield return new WaitForSeconds(doubleClickThreshold);
             OnSingleClick?.Invoke();
             clickRoutine = null;
+        }
+    
+        public virtual void OnClick()
+        {
+            OnSingleClick?.Invoke();
         }
     }
 }

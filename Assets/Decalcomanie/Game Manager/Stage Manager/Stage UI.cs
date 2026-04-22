@@ -8,6 +8,8 @@ using UnityEngine.UI;
 
 public class StageUI : MonoBehaviour
 {
+    public ButtonUI menuButton;
+
     public ButtonUI switchButton;
     public ButtonUI resetButton;
 
@@ -19,7 +21,10 @@ public class StageUI : MonoBehaviour
     public Image stageMainBackgroundImage;
 
     [Header("Objectives")]
+    public Image objectivePanelImage;
+    public Sprite[] languageObjectivePanelSprites; // 0: English, 1: Korean
     public TextMeshProUGUI objectiveNumText;
+    public float[] objectiveNumTextXPos;
 
     [Header("Stage Cleared UI")]
     public BaseUI stageClearedUI;
@@ -27,9 +32,24 @@ public class StageUI : MonoBehaviour
     public ButtonUI nextStageButton;
     public TextMeshProUGUI minMovesText;
 
+    void Start()
+    {
+        menuButton.OnSingleClick += () => SettingManager.Instance.OpenSetting();
+    }
+
     public void SetStageBackground(int stageID)
     {
-        stageMainBackgroundImage.sprite = stageBackgroundSprites[stageID / 10];
+        stageMainBackgroundImage.sprite = stageBackgroundSprites[(stageID+9) / 10];
+    }
+
+    public void SetObjectivePanel(GameLanguage language)
+    {
+        objectivePanelImage.sprite = languageObjectivePanelSprites[(int)language];
+        // Adjust the position of the objective number text based on the language
+        objectiveNumText.rectTransform.anchoredPosition = new Vector2(
+            objectiveNumTextXPos[(int)language],
+            objectiveNumText.rectTransform.anchoredPosition.y
+        );
     }
 
     public async void ShowStageCleared(bool isCleared, bool obtainedStar, bool minMoves, int minMoveNum)
@@ -53,15 +73,16 @@ public class StageUI : MonoBehaviour
 
         if (isCleared)
         {
-            stars[0].ShowUI(1f).Forget();
+            AudioManager.Instance.PlaySFX("stage_clear_star");
+            stars[0].ShowUI(.1f).Forget();
         }
         if (obtainedStar)
         {
-            stars[1].ShowUI(1f).Forget();
+            stars[1].ShowUI(.1f).Forget();
         }
         if (minMoves)
         {
-            stars[2].ShowUI(1f).Forget();
+            stars[2].ShowUI(.1f).Forget();
         }
 
         if(isCleared || obtainedStar || minMoves)

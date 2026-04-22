@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class StageManager : MonoBehaviour
@@ -19,7 +17,7 @@ public class StageManager : MonoBehaviour
     {
         stageUI.nextStageButton.OnSingleClick += () => MoveToNextStage();
 
-        stageUI.switchButton.OnSingleClick += () => SWITCH();
+        stageUI.switchButton.OnSingleClick += () => SwitchState();
         stageUI.resetButton.OnSingleClick += () => ResetButton();
 
         stageUI.flipHorizontalButton.OnSingleClick += () => paintManager.FoldHorizontal();
@@ -28,7 +26,7 @@ public class StageManager : MonoBehaviour
 
     void Start()
     {
-        if(GameManager.Instance == null)
+        if(GameManager.Instance == null || GameManager.Instance.GetCurrentStageAsset() == null)
         {
             boardManager.CreateBoard(testBoardDataTextAsset);
         }
@@ -37,7 +35,8 @@ public class StageManager : MonoBehaviour
             boardManager.CreateBoard(GameManager.Instance.GetCurrentStageAsset());
             stageUI.SetStageBackground(GameManager.Instance.CurrentStageIndex);
         }
-        stageUI.objectiveNumText.text = $"{boardManager.CurBoard.BoardData.minMoves}";
+        stageUI.objectiveNumText.text = $"{boardManager.CurrentBoard.BoardData.minMoves}";
+        stageUI.SetObjectivePanel(GameManager.Instance != null ? GameManager.Instance.CurrentLanguage : GameLanguage.English);
         paintManager.CreateTileControllers();
     }
 
@@ -48,11 +47,11 @@ public class StageManager : MonoBehaviour
         switch (currentGameState)
         {
             case GameState.Paint:
-                _RESET();
+                ResetState();
                 break;
             case GameState.Platformer:
                 paintManager.PausePaint();
-                platformerManager.SetPlatformerObjects(boardManager.CurBoard);
+                platformerManager.SetPlatformerObjects(boardManager.CurrentBoard);
 
                 platformerManager.OnCleared += GameCleared;
                 break;
@@ -61,19 +60,15 @@ public class StageManager : MonoBehaviour
         }
     }
 
-    public void SWITCH()
+    public void SwitchState()
     {
         if (currentGameState == GameState.Paint)
-        {
             ChangeGameState(GameState.Platformer);
-        }
         else if (currentGameState == GameState.Platformer)
-        {
             ChangeGameState(GameState.Paint);
-        }
     }
 
-    private void _RESET()
+    private void ResetState()
     {
         platformerManager.OnCleared -= GameCleared;
         paintManager.ResumePaint();
@@ -90,7 +85,7 @@ public class StageManager : MonoBehaviour
         }
         else
         {
-            _RESET();
+            ResetState();
         }
         paintManager.ResetPaint();
     }
@@ -98,13 +93,28 @@ public class StageManager : MonoBehaviour
     public void GameCleared()
     {
         if (currentGameState == GameState.End) return;
+        AudioManager.Instance.PlaySFX("stage_clear");
         ChangeGameState(GameState.End);
         Debug.Log($"Game Cleared!");
 
-        achievements = new Achievements(true, platformerManager.obtainedStar, paintManager.paintCount <= boardManager.CurBoard.BoardData.minMoves);
+        achievements = new Achievements(true, platformerManager.obtainedStar, paintManager.paintCount <= boardManager.CurrentBoard.BoardData.minMoves);
+
+        SaveProgress();
 
         // 화면 어두워지고 클리어 UI.
-        stageUI.ShowStageCleared(achievements.Is_Cleared, achievements.ObtainedStar, achievements.Min_Moves, boardManager.CurBoard.BoardData.minMoves);
+        stageUI.ShowStageCleared(achievements.Is_Cleared, achievements.ObtainedStar, achievements.Min_Moves, boardManager.CurrentBoard.BoardData.minMoves);
+    }
+
+    private void SaveProgress()
+    {
+        if (GameManager.Instance == null || SaveManager.Instance == null) return;
+
+        var progress = SaveManager.Instance.Load<GameProgressData>(GameProgressData.SaveKey, new GameProgressData());
+        progress.RecordStageCleared(
+            GameManager.Instance.CurrentStageIndex,
+            achievements.ObtainedStar,
+            achievements.Min_Moves);
+        SaveManager.Instance.Save(GameProgressData.SaveKey, progress);
     }
 
     public void MoveToNextStage()

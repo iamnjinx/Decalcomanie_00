@@ -11,6 +11,13 @@ public class StageSelectionUI : MonoBehaviour
     public ButtonUI LeftButton;
     public ButtonUI RightButton;
 
+    public ButtonUI BackButton;
+
+    void Start()
+    {
+        BackButton.OnSingleClick += () => GameManager.Instance.LoadTitleScene();
+    }
+
     public void SetStagePanel()
     {
         foreach(Transform child in selectionRT)

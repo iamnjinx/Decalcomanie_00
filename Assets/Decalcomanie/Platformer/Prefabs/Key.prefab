@@ -98,6 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 000c6e03a29ed1748b6fd90e95525afa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _obtainSFX: key_get
 --- !u!58 &1677829485784476649
 CircleCollider2D:
   m_ObjectHideFlags: 0

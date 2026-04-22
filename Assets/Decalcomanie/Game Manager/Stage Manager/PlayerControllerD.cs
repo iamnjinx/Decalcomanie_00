@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TarodevController;
 
@@ -13,12 +12,15 @@ public class PlayerControllerD : MonoBehaviour
 
     public PlayerControllerT tarodevController;
 
+    public SpriteRenderer spriteRenderer;
+    public Sprite[] playerSprites; // 0: normal, 1: hmm, 2: x, 3: happy
+
     [SerializeField] private GameObject findKey;
     [SerializeField] private PlayerAnimator playerAnimator;
     [SerializeField] private float fallDuration = 0.4f;
     [SerializeField] private float fallSpinSpeed = 720f;
 
-    private Vector3 _spawnPosition;
+    private Vector3 _respawnPosition;
     private bool _isFalling;
 
     void Awake()
@@ -29,51 +31,28 @@ public class PlayerControllerD : MonoBehaviour
 
     void Start()
     {
-        _spawnPosition = transform.position;
+        _respawnPosition = transform.position;
     }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        
-        if (collision.gameObject.CompareTag("Obtainables"))
+        if (collision.TryGetComponent<IObtainable>(out var obtainable))
         {
-            IObtainable obtainable = collision.gameObject.GetComponent<IObtainable>();
-            if (obtainable != null)
-            {
-                obtainable.OnObtained();
+            obtainable.OnObtained();
+            if (obtainable is KeyController) OnKeyObtained?.Invoke();
+            else if (obtainable is StarController) OnStarObtained?.Invoke();
+            return;
+        }
 
-                if (obtainable is KeyController)
-                {
-                    OnKeyObtained?.Invoke();
-                }
-                else if (obtainable is StarController)
-                {
-                    OnStarObtained?.Invoke();
-                }
-            }
-        }
-        else if (collision.gameObject.CompareTag("Door"))
+        if (collision.TryGetComponent<DoorController>(out var door))
         {
-            DoorController door = collision.gameObject.GetComponent<DoorController>();
-            if (door != null)
-            {
-                if (door.is_opened)
-                {
-                    // 클리어
-                    OnCleared?.Invoke();
-                }
-                else
-                {
-                    findKey.SetActive(true);
-                }
-            }
+            if (door.is_opened) { OnCleared?.Invoke(); spriteRenderer.sprite = playerSprites[3]; }
+            else { findKey.SetActive(true); spriteRenderer.sprite = playerSprites[1]; }
+            return;
         }
-        else if (collision.gameObject.CompareTag("Hole"))
-        {
-            // 구멍에 빠지면 구멍에 빨려들어간 후, 리셋
-            if (!_isFalling)
-                StartCoroutine(FallIntoHole(collision.transform.position));
-        }
+
+        if (collision.CompareTag("Hole") && !_isFalling)
+            StartCoroutine(FallIntoHole(collision.transform.position));
     }
 
     private IEnumerator FallIntoHole(Vector3 holePosition)
@@ -81,6 +60,9 @@ public class PlayerControllerD : MonoBehaviour
         _isFalling = true;
         tarodevController.ForceStop();
         tarodevController.enabled = false;
+        spriteRenderer.sprite = playerSprites[2];
+
+        AudioManager.Instance.PlaySFX("fall_in_hole");
 
         Vector3 startPos = transform.position;
         Vector3 startScale = transform.localScale;
@@ -98,12 +80,13 @@ public class PlayerControllerD : MonoBehaviour
             yield return null;
         }
 
-        transform.position = _spawnPosition;
+        transform.position = _respawnPosition;
         transform.localScale = startScale;
         transform.localRotation = Quaternion.identity;
         playerAnimator.enabled = true;
         _isFalling = false;
         tarodevController.enabled = true;
+        spriteRenderer.sprite = playerSprites[0];
     }
 
     void OnTriggerExit2D(Collider2D collision)
@@ -111,6 +94,7 @@ public class PlayerControllerD : MonoBehaviour
         if (collision.gameObject.CompareTag("Door"))
         {
             findKey.SetActive(false);
+            spriteRenderer.sprite = playerSprites[0];
         }
     }
 }
