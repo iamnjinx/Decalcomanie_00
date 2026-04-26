@@ -198,6 +198,81 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 27015883}
   m_CullTransparentMesh: 1
+--- !u!1 &87459662
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 87459663}
+  - component: {fileID: 87459665}
+  - component: {fileID: 87459664}
+  m_Layer: 5
+  m_Name: Cloud (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &87459663
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87459662}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 2033075041}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 10492, y: 909}
+  m_SizeDelta: {x: 8265.472, y: 900.00006}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &87459664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87459662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 671a364d13f554bd7937577f536eca7f, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &87459665
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87459662}
+  m_CullTransparentMesh: 1
 --- !u!1 &220812428
 GameObject:
   m_ObjectHideFlags: 0
@@ -307,7 +382,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1279, y: -268}
+  m_AnchoredPosition: {x: -1431, y: -268}
   m_SizeDelta: {x: 953, y: 1480}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &314160628
@@ -1689,7 +1764,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -811, y: 909}
+  m_AnchoredPosition: {x: 2225, y: 909}
   m_SizeDelta: {x: 8265.472, y: 900.00006}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1115368805
@@ -2579,6 +2654,7 @@ GameObject:
   - component: {fileID: 2033075041}
   - component: {fileID: 2033075043}
   - component: {fileID: 2033075042}
+  - component: {fileID: 2033075044}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -2599,6 +2675,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1115368804}
+  - {fileID: 87459663}
   - {fileID: 220812429}
   - {fileID: 314160627}
   - {fileID: 430284389}
@@ -2649,6 +2726,40 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2033075040}
   m_CullTransparentMesh: 1
+--- !u!114 &2033075044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2033075040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3902b1ad7d8e7b34da5ec1fd249eae90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveLeft: 1
+  items:
+  - imageRT: {fileID: 1115368804}
+    leftBound: -10500
+    rightBound: 6000
+    speed: 60
+  - imageRT: {fileID: 87459663}
+    leftBound: -10500
+    rightBound: 6000
+    speed: 60
+  - imageRT: {fileID: 220812429}
+    leftBound: -3000
+    rightBound: 3000
+    speed: 120
+  - imageRT: {fileID: 314160627}
+    leftBound: -2388
+    rightBound: 2388
+    speed: 100
+  - imageRT: {fileID: 430284389}
+    leftBound: -2550
+    rightBound: 2550
+    speed: 95
 --- !u!1001 &2189237196002839233
 PrefabInstance:
   m_ObjectHideFlags: 0

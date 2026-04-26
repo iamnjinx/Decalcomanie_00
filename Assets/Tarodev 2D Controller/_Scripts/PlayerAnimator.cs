@@ -26,6 +26,8 @@ namespace TarodevController
         [Header("Audio Clips")] [SerializeField]
         private AudioClip[] _footsteps;
 
+        [SerializeField] private float _landSoundMinImpact = 3f;
+
         private AudioSource _source;
         private IPlayerController _player;
         private bool _grounded;
@@ -108,7 +110,8 @@ namespace TarodevController
                 SetColor(_landParticles);
 
                 _anim.SetTrigger(GroundedKey);
-                _source.PlayOneShot(_footsteps[Random.Range(0, _footsteps.Length)]);
+                if (impact >= _landSoundMinImpact)
+                    _source.PlayOneShot(_footsteps[Random.Range(0, _footsteps.Length)]);
                 _moveParticles.Play();
 
                 _landParticles.transform.localScale = Vector3.one * Mathf.InverseLerp(0, 40, impact);

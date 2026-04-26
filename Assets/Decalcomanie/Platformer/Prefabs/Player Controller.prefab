@@ -156,6 +156,7 @@ MonoBehaviour:
   _landParticles: {fileID: 5469618297007206547}
   _footsteps:
   - {fileID: 8300000, guid: a07c8416316ddc1429a16641f2632312, type: 3}
+  _landSoundMinImpact: 10
 --- !u!1 &1985132739991956685
 GameObject:
   m_ObjectHideFlags: 0
@@ -171,7 +172,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4521090073270071326
 Transform:
   m_ObjectHideFlags: 0

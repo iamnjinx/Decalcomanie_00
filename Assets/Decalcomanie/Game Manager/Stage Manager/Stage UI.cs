@@ -20,6 +20,12 @@ public class StageUI : MonoBehaviour
     public List<Sprite> stageBackgroundSprites;
     public Image stageMainBackgroundImage;
 
+    public Image paintShortKeyImage;
+    [SerializeField] private Sprite[] paintShortKeySprites; // 0: English, 1: Korean
+    public Image platformerShortKeyImage;
+    [SerializeField] private Sprite[] platformerShortKeySprites; // 0: English, 1: Korean
+
+
     [Header("Objectives")]
     public Image objectivePanelImage;
     public Sprite[] languageObjectivePanelSprites; // 0: English, 1: Korean
@@ -40,6 +46,18 @@ public class StageUI : MonoBehaviour
     public void SetStageBackground(int stageID)
     {
         stageMainBackgroundImage.sprite = stageBackgroundSprites[(stageID+9) / 10];
+    }
+
+    public void SetShortKeySprite(GameState gameState, GameLanguage language)
+    {
+        bool isPaint = gameState == GameState.Paint;
+        paintShortKeyImage.gameObject.SetActive(isPaint);
+        platformerShortKeyImage.gameObject.SetActive(!isPaint);
+
+        if (isPaint)
+            paintShortKeyImage.sprite = paintShortKeySprites[(int)language];
+        else
+            platformerShortKeyImage.sprite = platformerShortKeySprites[(int)language];
     }
 
     public void SetObjectivePanel(GameLanguage language)

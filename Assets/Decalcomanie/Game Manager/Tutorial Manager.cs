@@ -1,4 +1,4 @@
-using System;
+ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
@@ -99,6 +99,8 @@ public class TutorialManager : MonoBehaviour
     public async void StartTutorial()
     {
         TutoCanvas.SetActive(true);
+
+        await UniTask.Yield(); // wait for all Start() to complete before showing buttons
 
         curTutoID++; // 0
 

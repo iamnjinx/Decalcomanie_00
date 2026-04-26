@@ -37,7 +37,9 @@ public class StageManager : MonoBehaviour
             stageUI.SetStageBackground(GameManager.Instance.CurrentStageIndex);
         }
         stageUI.objectiveNumText.text = $"{boardManager.CurrentBoard.BoardData.minMoves}";
-        stageUI.SetObjectivePanel(GameManager.Instance != null ? GameManager.Instance.CurrentLanguage : GameLanguage.English);
+        var language = GameManager.Instance != null ? GameManager.Instance.CurrentLanguage : GameLanguage.English;
+        stageUI.SetObjectivePanel(language);
+        stageUI.SetShortKeySprite(currentGameState, language);
         paintManager.CreateTileControllers();
 
         if (GameManager.Instance != null && GameManager.Instance.CurrentStageIndex == 0)
@@ -47,6 +49,7 @@ public class StageManager : MonoBehaviour
     public void ChangeGameState(GameState newGameState)
     {
         currentGameState = newGameState;
+        stageUI.SetShortKeySprite(currentGameState, GameManager.Instance != null ? GameManager.Instance.CurrentLanguage : GameLanguage.English);
 
         switch (currentGameState)
         {
@@ -64,8 +67,22 @@ public class StageManager : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        if (currentGameState == GameState.End) return;
+
+        if (Input.GetKeyDown(KeyCode.R))         ResetButton();
+        if (Input.GetKeyDown(KeyCode.Tab))       SwitchState();
+        if (currentGameState == GameState.Paint)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1)) paintManager.FoldHorizontal();
+            if (Input.GetKeyDown(KeyCode.Alpha2)) paintManager.FoldVertical();
+        }
+    }
+
     public void SwitchState()
     {
+        if (paintManager.IsFolding) return;
         if (currentGameState == GameState.Paint)
             ChangeGameState(GameState.Platformer);
         else if (currentGameState == GameState.Platformer)
@@ -83,6 +100,7 @@ public class StageManager : MonoBehaviour
 
     public void ResetButton()
     {
+        if (paintManager.IsFolding) return;
         if (currentGameState == GameState.Platformer)
         {
             ChangeGameState(GameState.Paint);
@@ -127,8 +145,9 @@ public class StageManager : MonoBehaviour
         Debug.Log($"Move To Next Stage!");
         GameManager.Instance.LoadStage(GameManager.Instance.CurrentStageIndex + 1);
     }
-    
-    public enum GameState
+}
+
+public enum GameState
     {
         Paint, Platformer, End
     }
@@ -146,6 +165,5 @@ public class StageManager : MonoBehaviour
             Min_Moves = minMoves;
         }
     }
-}
 
 

@@ -28,6 +28,7 @@ public class PaintManager : MonoBehaviour
     [SerializeField] private PaintUI paintUI;
 
     private bool _isFolding;
+    public bool IsFolding => _isFolding;
 
     public int paintCount = 0;
 
