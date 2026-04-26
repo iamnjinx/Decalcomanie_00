@@ -26,7 +26,7 @@ public class ReminisceScene : MonoBehaviour
         }
 
         if (reminisceType == ReminisceType.Intro)
-            GameManager.Instance.LoadTutorialScene();
+            GameManager.Instance.LoadStage(0);
         else if (reminisceType == ReminisceType.Outro)
             GameManager.Instance.LoadTitleScene();
     }

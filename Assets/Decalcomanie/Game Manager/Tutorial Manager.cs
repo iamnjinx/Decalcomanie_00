@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
@@ -18,60 +19,90 @@ public class TutorialManager : MonoBehaviour
 
     public GameObject TutoCanvas;
 
+    [SerializeField] private StageManager stageManager;
+    [SerializeField] private PaintManager paintManager;
+
+    private Action paintAction1;
+    private Action paintAction2;
+    private Action paintAction3;
+
+    private Action foldAction;
+    [SerializeField] private GameObject realFoldButton;
+    private Action resetAction;
+    private Action switchAction;
+
+    void Awake()
+    {
+        paintAction1 = () => paintManager.Paint(19);
+        paintAction2 = () => paintManager.Paint(10);
+        paintAction3 = () => paintManager.Paint(1);
+
+        foldAction = () => paintManager.FoldHorizontal();
+        resetAction = () => stageManager.ResetButton();
+        switchAction = () => stageManager.SwitchState();
+    }
+
     private async UniTask WaitForCondition(int conditionID)
     {
-        // switch (conditionID)
-        // {
-        //     case 0:
-        //         while (!clickButtons[0].IsClicked || !clickButtons[1].IsClicked || !clickButtons[2].IsClicked)
-        //         {
-        //             await UniTask.Yield();
-        //         }
-        //         break;
-        //     case 1:
-        //         while (!clickButtons[3].IsClicked)
-        //         {
-        //             await UniTask.Yield();
-        //         }
-        //         break;
-        //     case 2:
-        //         while (!clickButtons[4].IsClicked)
-        //         {
-        //             await UniTask.Yield();
-        //         }
-        //         break;
-        //     case 3:
-        //         while (!Input.GetMouseButtonDown(0))
-        //         {
-        //             await UniTask.Yield();
-        //         }
-        //         break;
-        //     case 4:
-        //         while (!Input.GetMouseButtonDown(0))
-        //         {
-        //             await UniTask.Yield();
-        //         }
-        //         break;
-        //     case 5:
-        //         while (!clickButtons[5].IsClicked)
-        //         {
-        //             await UniTask.Yield();
-        //         }
-        //         break;
-        //     case 6:
-        //         while (!clickButtons[6].IsClicked)
-        //         {
-        //             await UniTask.Yield();
-        //         }
-        //         break;
-        // }
+        Debug.Log($"Waiting for condition {conditionID}");
+        switch (conditionID)
+        {
+            case 0:
+                await UniTask.WhenAll(
+                    WaitForClick(clickButtons[0], paintAction1),
+                    WaitForClick(clickButtons[1], paintAction2),
+                    WaitForClick(clickButtons[2], paintAction3)
+                );
+                break;
+            case 1:
+                await WaitForClick(clickButtons[3]);
+                break;
+            case 2:
+                await WaitForClick(clickButtons[4], foldAction);
+                break;
+            case 3:
+                while (!Input.GetMouseButtonDown(0))
+                {
+                    await UniTask.Yield();
+                }
+                break;
+            case 4:
+                while (!Input.GetMouseButtonDown(1))
+                {
+                    await UniTask.Yield();
+                }
+                break;
+            case 5:
+                await WaitForClick(clickButtons[5], resetAction);
+                break;
+            case 6:
+                await WaitForClick(clickButtons[6], switchAction);
+                break;
+        }
+    }
+
+    private UniTask WaitForClick(ButtonUI button, System.Action onClicked = null)
+    {
+        var tcs = new UniTaskCompletionSource();
+        button.OnSingleClick += Complete;
+        return tcs.Task;
+
+        void Complete()
+        {
+            button.OnSingleClick -= Complete;
+            button.SetUI(false);
+            onClicked?.Invoke();
+            tcs.TrySetResult();
+        }
     }
 
     public async void StartTutorial()
     {
+        TutoCanvas.SetActive(true);
+
         curTutoID++; // 0
 
-        ChangeDinoTutoSprite();
+        ChangeDinoTutoSprite(curTutoID);
 
         clickButtons[0].SetUI(true);
         clickButtons[1].SetUI(true);
@@ -79,13 +110,15 @@ public class TutorialManager : MonoBehaviour
 
         await WaitForCondition(curTutoID); // 클릭 3개
         curTutoID++; // 1
-        ChangeDinoTutoSprite();
+        ChangeDinoTutoSprite(curTutoID);
 
         clickButtons[3].SetUI(true);
 
         await WaitForCondition(curTutoID); // 회색 부분 클릭
         curTutoID++; // 2
-        ChangeDinoTutoSprite();
+        ChangeDinoTutoSprite(curTutoID);
+
+        realFoldButton.SetActive(false);
 
         clickButtons[4].SetUI(true);
         clickButtons[4].transform.DOScale(transform.localScale * 0.6f, 0.5f)
@@ -93,16 +126,19 @@ public class TutorialManager : MonoBehaviour
                  .SetEase(Ease.InOutSine);
 
         await WaitForCondition(curTutoID); // 접기.
+
+        realFoldButton.SetActive(true);
+
         curTutoID++; // 3
-        ChangeDinoTutoSprite();
+        ChangeDinoTutoSprite(curTutoID);
 
         await WaitForCondition(curTutoID); // 화면 아무데나 클릭
         curTutoID++; // 4
-        ChangeDinoTutoSprite();
+        ChangeDinoTutoSprite(curTutoID);
 
         await WaitForCondition(curTutoID); // 화면 아무데나 클릭
         curTutoID++; // 5
-        ChangeDinoTutoSprite();
+        ChangeDinoTutoSprite(curTutoID);
 
         // 리셋 버튼 깜빡깜빡.
         clickButtons[5].SetUI(true);
@@ -112,7 +148,7 @@ public class TutorialManager : MonoBehaviour
 
         await WaitForCondition(curTutoID); // 리셋 버튼 클릭
         curTutoID++; // 6
-        ChangeDinoTutoSprite();
+        ChangeDinoTutoSprite(curTutoID);
 
         // 스위치 버튼 깜빡깜빡.
         clickButtons[6].SetUI(true);
@@ -124,15 +160,15 @@ public class TutorialManager : MonoBehaviour
         TutoCanvas.SetActive(false);
     }
 
-    private void ChangeDinoTutoSprite()
+    private void ChangeDinoTutoSprite(int id)
     {
         if(GameManager.Instance.CurrentLanguage == GameLanguage.Korean)
         {
-            dinoImage.sprite = dinoTutoSpritesKR[curTutoID];
+            dinoImage.sprite = dinoTutoSpritesKR[id];
         }
         else
         {
-            dinoImage.sprite = dinoTutoSpritesEN[curTutoID];
+            dinoImage.sprite = dinoTutoSpritesEN[id];
         }
         dinoImage.SetNativeSize();
     }

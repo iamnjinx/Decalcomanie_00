@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     public DecalcomanieSceneManager SceneManager;
 
     private SceneType currentScene;
-    public int CurrentStageIndex { get; private set; } = 40;
+    public int CurrentStageIndex { get; private set; } = 0;
     [SerializeField] int totalStages = 40;
     public GameLanguage CurrentLanguage { get; private set; } = GameLanguage.English;
 

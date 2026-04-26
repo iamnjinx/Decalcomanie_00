@@ -10,6 +10,7 @@ public class StageManager : MonoBehaviour
     [SerializeField] private TextAsset testBoardDataTextAsset;
 
     [SerializeField] private StageUI stageUI;
+    [SerializeField] private TutorialManager tutorialManager;
 
     private Achievements achievements = new Achievements(false, false, false);
 
@@ -38,6 +39,9 @@ public class StageManager : MonoBehaviour
         stageUI.objectiveNumText.text = $"{boardManager.CurrentBoard.BoardData.minMoves}";
         stageUI.SetObjectivePanel(GameManager.Instance != null ? GameManager.Instance.CurrentLanguage : GameLanguage.English);
         paintManager.CreateTileControllers();
+
+        if (GameManager.Instance != null && GameManager.Instance.CurrentStageIndex == 0)
+            tutorialManager.StartTutorial();
     }
 
     public void ChangeGameState(GameState newGameState)

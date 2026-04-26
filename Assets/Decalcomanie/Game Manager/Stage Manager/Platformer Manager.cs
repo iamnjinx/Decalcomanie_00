@@ -22,12 +22,16 @@ public class PlatformerManager : MonoBehaviour
     private DoorController door;
     private PlayerControllerD player;
 
+    [SerializeField] GameObject instruction;
+
     public bool obtainedStar = false;
 
     public Action OnCleared;
 
     public void SetPlatformerObjects(Board board)
-    {
+    {   
+        if(GameManager.Instance != null && GameManager.Instance.CurrentStageIndex == 0)
+            instruction.SetActive(true);
         OrgamiObj.SetActive(true);
         InstantiateObjects();
 
@@ -114,6 +118,8 @@ public class PlatformerManager : MonoBehaviour
         OnCleared = null;
 
         OrgamiObj.SetActive(false);
+
+        instruction.SetActive(false);
     }
 
     private void OnKeyObtained()
