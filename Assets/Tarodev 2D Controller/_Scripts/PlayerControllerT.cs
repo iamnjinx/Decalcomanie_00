@@ -3,29 +3,24 @@ using UnityEngine;
 
 namespace TarodevController
 {
-    /// <summary>
-    /// Hey!
-    /// Tarodev here. I built this controller as there was a severe lack of quality & free 2D controllers out there.
-    /// I have a premium version on Patreon, which has every feature you'd expect from a polished controller. Link: https://www.patreon.com/tarodev
-    /// You can play and compete for best times here: https://tarodev.itch.io/extended-ultimate-2d-controller
-    /// If you hve any questions or would like to brag about your score, come to discord: https://discord.gg/tarodev
-    /// </summary>
     [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
     public class PlayerControllerT : MonoBehaviour, IPlayerController
     {
         [SerializeField] private ScriptableStats _stats;
         private Rigidbody2D _rb;
-        private CapsuleCollider2D _col;
+        private Collider2D _col;                  // ← Collider2D로 변경
         private FrameInput _frameInput;
         private Vector2 _frameVelocity;
         private bool _cachedQueryStartInColliders;
 
-        #region Interface
+        // 콜라이더 타입 캐싱
+        private CapsuleCollider2D _capsuleCol;
+        private BoxCollider2D _boxCol;
 
+        #region Interface
         public Vector2 FrameInput => _frameInput.Move;
         public event Action<bool, float> GroundedChanged;
         public event Action Jumped;
-
         #endregion
 
         public void ForceStop()
@@ -42,7 +37,11 @@ namespace TarodevController
         private void Awake()
         {
             _rb = GetComponent<Rigidbody2D>();
-            _col = GetComponent<CapsuleCollider2D>();
+            _col = GetComponent<Collider2D>();    // ← Collider2D로 변경
+
+            // 어떤 콜라이더인지 캐싱
+            _capsuleCol = _col as CapsuleCollider2D;
+            _boxCol = _col as BoxCollider2D;
 
             _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
         }
@@ -78,32 +77,60 @@ namespace TarodevController
         private void FixedUpdate()
         {
             CheckCollisions();
-
             HandleJump();
             HandleDirection();
             HandleGravity();
-            
             ApplyMovement();
         }
 
         #region Collisions
-        
+
         private float _frameLeftGrounded = float.MinValue;
         private bool _grounded;
+
+        /// <summary>
+        /// 콜라이더 타입에 맞는 Cast를 수행합니다.
+        /// CapsuleCollider2D → CapsuleCast
+        /// BoxCollider2D     → BoxCast
+        /// 그 외             → CircleCast (fallback)
+        /// </summary>
+        private bool ColliderCast(Vector2 direction, float distance, int layerMask)
+        {
+            var center = _col.bounds.center;
+
+            if (_capsuleCol != null)
+            {
+                return Physics2D.CapsuleCast(
+                    center, _capsuleCol.size, _capsuleCol.direction,
+                    0, direction, distance, layerMask);
+            }
+            else if (_boxCol != null)
+            {
+                return Physics2D.BoxCast(
+                    center, _boxCol.size, 0,
+                    direction, distance, layerMask);
+            }
+            else
+            {
+                // CircleCollider2D 등 나머지 fallback
+                float radius = _col.bounds.extents.magnitude * 0.5f;
+                return Physics2D.CircleCast(
+                    center, radius,
+                    direction, distance, layerMask);
+            }
+        }
 
         private void CheckCollisions()
         {
             Physics2D.queriesStartInColliders = false;
-            Physics2D.queriesHitTriggers = false;  // 추가
+            Physics2D.queriesHitTriggers = false;
 
-            // Ground and Ceiling
-            bool groundHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.down, _stats.GrounderDistance, ~_stats.PlayerLayer);
-            bool ceilingHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.up, _stats.GrounderDistance, ~_stats.PlayerLayer);
+            int mask = ~_stats.PlayerLayer;
+            bool groundHit  = ColliderCast(Vector2.down, _stats.GrounderDistance, mask);
+            bool ceilingHit = ColliderCast(Vector2.up,   _stats.GrounderDistance, mask);
 
-            // Hit a Ceiling
             if (ceilingHit) _frameVelocity.y = Mathf.Min(0, _frameVelocity.y);
 
-            // Landed on the Ground
             if (!_grounded && groundHit)
             {
                 _grounded = true;
@@ -112,7 +139,6 @@ namespace TarodevController
                 _endedJumpEarly = false;
                 GroundedChanged?.Invoke(true, Mathf.Abs(_frameVelocity.y));
             }
-            // Left the Ground
             else if (_grounded && !groundHit)
             {
                 _grounded = false;
@@ -120,12 +146,11 @@ namespace TarodevController
                 GroundedChanged?.Invoke(false, 0);
             }
 
-            Physics2D.queriesHitTriggers = true;   // 추가 (복원)
+            Physics2D.queriesHitTriggers = true;
             Physics2D.queriesStartInColliders = _cachedQueryStartInColliders;
         }
 
         #endregion
-
 
         #region Jumping
 
@@ -136,16 +161,15 @@ namespace TarodevController
         private float _timeJumpWasPressed = float.MinValue;
 
         private bool HasBufferedJump => _bufferedJumpUsable && _time < _timeJumpWasPressed + _stats.JumpBuffer;
-        private bool CanUseCoyote => _coyoteUsable && !_grounded && _time < _frameLeftGrounded + _stats.CoyoteTime;
+        private bool CanUseCoyote    => _coyoteUsable && !_grounded && _time < _frameLeftGrounded + _stats.CoyoteTime;
 
         private void HandleJump()
         {
-            if (!_endedJumpEarly && !_grounded && !_frameInput.JumpHeld && _rb.velocity.y > 0) _endedJumpEarly = true;
+            if (!_endedJumpEarly && !_grounded && !_frameInput.JumpHeld && _rb.velocity.y > 0)
+                _endedJumpEarly = true;
 
             if (!_jumpToConsume && !HasBufferedJump) return;
-
             if (_grounded || CanUseCoyote) ExecuteJump();
-
             _jumpToConsume = false;
         }
 
@@ -189,7 +213,8 @@ namespace TarodevController
             else
             {
                 var inAirGravity = _stats.FallAcceleration;
-                if (_endedJumpEarly && _frameVelocity.y > 0) inAirGravity *= _stats.JumpEndEarlyGravityModifier;
+                if (_endedJumpEarly && _frameVelocity.y > 0)
+                    inAirGravity *= _stats.JumpEndEarlyGravityModifier;
                 _frameVelocity.y = Mathf.MoveTowards(_frameVelocity.y, -_stats.MaxFallSpeed, inAirGravity * Time.fixedDeltaTime);
             }
         }
@@ -201,7 +226,8 @@ namespace TarodevController
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (_stats == null) Debug.LogWarning("Please assign a ScriptableStats asset to the Player Controller's Stats slot", this);
+            if (_stats == null)
+                Debug.LogWarning("Please assign a ScriptableStats asset to the Player Controller's Stats slot", this);
         }
 #endif
     }
@@ -216,10 +242,7 @@ namespace TarodevController
     public interface IPlayerController
     {
         public event Action<bool, float> GroundedChanged;
-
         public event Action Jumped;
         public Vector2 FrameInput { get; }
     }
-
-    
 }

@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     public DecalcomanieSceneManager SceneManager;
 
     private SceneType currentScene;
-    public int CurrentStageIndex { get; private set; } = 0;
+    public int CurrentStageIndex { get; private set; } = 3;
     [SerializeField] int totalStages = 40;
     public GameLanguage CurrentLanguage { get; private set; } = GameLanguage.English;
 
@@ -101,7 +101,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadStage(int stageIndex)
     {
-        if (stageIndex >= totalStages)
+        if (stageIndex > totalStages)
         {
             LoadOutroScene();
             return;

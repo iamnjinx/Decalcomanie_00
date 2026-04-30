@@ -1,7 +1,7 @@
 {
   "Size": 8,
   "StartPoint": { "x": 1, "y": 5 },
-  "EndPoint":   { "x": 1, "y": 3 },
+  "EndPoint":   { "x": 2, "y": 3 },
   "StarPoint":  { "x": 5, "y": 1 },
   "KeyPoint":   { "x": 3, "y": 8 },
   "FixedPoints": [

@@ -29654,7 +29654,7 @@ GameObject:
   - component: {fileID: 6495086956783931973}
   - component: {fileID: 5735363120750688076}
   - component: {fileID: 4404940346088661811}
-  - component: {fileID: 442200122875221812}
+  - component: {fileID: -5949237378398539500}
   m_Layer: 7
   m_Name: Player Controller
   m_TagString: Untagged
@@ -29741,7 +29741,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!70 &442200122875221812
+--- !u!70 &-5949237378398539500
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
