@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
 
     private SceneType currentScene;
     public int CurrentStageIndex { get; private set; } = 3;
-    [SerializeField] int totalStages = 40;
+    [SerializeField] int totalStages = 30;
     public GameLanguage CurrentLanguage { get; private set; } = GameLanguage.English;
 
     void Start()

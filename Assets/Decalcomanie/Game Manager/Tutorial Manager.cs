@@ -17,7 +17,7 @@ public class TutorialManager : MonoBehaviour
 
     private int curTutoID = -1;
 
-    public GameObject TutoCanvas;
+    public BaseUI TutoCanvas;
 
     [SerializeField] private StageManager stageManager;
     [SerializeField] private PaintManager paintManager;
@@ -98,7 +98,7 @@ public class TutorialManager : MonoBehaviour
 
     public async void StartTutorial()
     {
-        TutoCanvas.SetActive(true);
+        TutoCanvas.SetUI(true);
 
         await UniTask.Yield(); // wait for all Start() to complete before showing buttons
 
@@ -109,6 +109,7 @@ public class TutorialManager : MonoBehaviour
         clickButtons[0].SetUI(true);
         clickButtons[1].SetUI(true);
         clickButtons[2].SetUI(true);
+        Debug.Log($"{clickButtons[2].is_shown}");
 
         await WaitForCondition(curTutoID); // 클릭 3개
         curTutoID++; // 1
@@ -159,7 +160,7 @@ public class TutorialManager : MonoBehaviour
                  .SetEase(Ease.InOutSine);
 
         await WaitForCondition(curTutoID); // 스위치 버튼 클릭
-        TutoCanvas.SetActive(false);
+        TutoCanvas.SetUI(false);
     }
 
     private void ChangeDinoTutoSprite(int id)

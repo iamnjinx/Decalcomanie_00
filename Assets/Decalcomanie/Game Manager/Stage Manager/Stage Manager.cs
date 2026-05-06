@@ -61,6 +61,7 @@ public class StageManager : MonoBehaviour
                 platformerManager.SetPlatformerObjects(boardManager.CurrentBoard);
 
                 platformerManager.OnCleared += GameCleared;
+                platformerManager.OnFellIntoHole += OnPlayerFellIntoHole;
                 break;
             case GameState.End:
                 break;
@@ -78,6 +79,11 @@ public class StageManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Alpha1)) paintManager.FoldHorizontal();
             if (Input.GetKeyDown(KeyCode.Alpha2)) paintManager.FoldVertical();
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SettingManager.Instance.SetSettingUI();
+        }
     }
 
     public void SwitchState()
@@ -89,9 +95,12 @@ public class StageManager : MonoBehaviour
             ChangeGameState(GameState.Paint);
     }
 
+    private void OnPlayerFellIntoHole() => ChangeGameState(GameState.Paint);
+
     private void ResetState()
     {
         platformerManager.OnCleared -= GameCleared;
+        platformerManager.OnFellIntoHole -= OnPlayerFellIntoHole;
         paintManager.ResumePaint();
         platformerManager.ResetObjects();
 

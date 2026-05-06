@@ -27,6 +27,7 @@ public class PlatformerManager : MonoBehaviour
     public bool obtainedStar = false;
 
     public Action OnCleared;
+    public Action OnFellIntoHole;
 
     public void SetPlatformerObjects(Board board)
     {   
@@ -100,6 +101,7 @@ public class PlatformerManager : MonoBehaviour
         player.OnKeyObtained += () => OnKeyObtained();
         player.OnStarObtained += () => OnStarObtained();
         player.OnCleared += () => OnCleared?.Invoke();
+        player.OnFellIntoHole += () => OnFellIntoHole?.Invoke();
     }
 
     public void ResetObjects()
@@ -116,6 +118,7 @@ public class PlatformerManager : MonoBehaviour
 
         obtainedStar = false;
         OnCleared = null;
+        OnFellIntoHole = null;
 
         OrgamiObj.SetActive(false);
 

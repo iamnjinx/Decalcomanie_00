@@ -9,6 +9,7 @@ public class PlayerControllerD : MonoBehaviour
     public Action OnStarObtained;
 
     public Action OnCleared;
+    public Action OnFellIntoHole;
 
     public PlayerControllerT tarodevController;
 
@@ -87,6 +88,7 @@ public class PlayerControllerD : MonoBehaviour
         _isFalling = false;
         tarodevController.enabled = true;
         spriteRenderer.sprite = playerSprites[0];
+        OnFellIntoHole?.Invoke();
     }
 
     void OnTriggerExit2D(Collider2D collision)

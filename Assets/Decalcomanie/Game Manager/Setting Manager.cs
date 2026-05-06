@@ -22,4 +22,9 @@ public class SettingManager : MonoBehaviour
     {
         settingUI.HideUI();
     }
+
+    public void SetSettingUI()
+    {
+        settingUI.SetUI(!settingUI.is_shown);
+    }
 }

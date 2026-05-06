@@ -6,8 +6,10 @@ public class StageSelection : MonoBehaviour
 {
     [SerializeField] StageSelectionUI stageSelectionUI;
 
-    private int maxChapterIndex = 4; // Example maximum chapter index
+    private int maxChapterIndex = 3; // Example maximum chapter index
     private int currentChapterIndex = 0;
+
+    private const string ChapterIndexKey = "LastChapterIndex";
 
     void Awake()
     {
@@ -17,6 +19,7 @@ public class StageSelection : MonoBehaviour
 
     void Start()
     {
+        currentChapterIndex = Mathf.Clamp(SaveManager.Instance.Load(ChapterIndexKey, 0), 0, maxChapterIndex);
         UpdateChapterDisplay(currentChapterIndex);
 
         stageSelectionUI.SetStagePanel();
@@ -27,6 +30,22 @@ public class StageSelection : MonoBehaviour
         }
 
         StartCoroutine(InitializePanels());
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
+        {
+            MoveToPreviousChapter();
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+        {
+            MoveToNextChapter();
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            GameManager.Instance.LoadTitleScene();
+        }
     }
 
     private IEnumerator InitializePanels()
@@ -46,6 +65,7 @@ public class StageSelection : MonoBehaviour
         if (currentChapterIndex > 0)
         {
             currentChapterIndex--;
+            SaveManager.Instance.Save(ChapterIndexKey, currentChapterIndex);
             UpdateChapterDisplay(currentChapterIndex);
         }
     }
@@ -55,6 +75,7 @@ public class StageSelection : MonoBehaviour
         if (currentChapterIndex < maxChapterIndex)
         {
             currentChapterIndex++;
+            SaveManager.Instance.Save(ChapterIndexKey, currentChapterIndex);
             UpdateChapterDisplay(currentChapterIndex);
         }
     }
