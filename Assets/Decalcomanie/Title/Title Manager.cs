@@ -14,7 +14,6 @@ public class TitleManager : MonoBehaviour
         titleUI.languageButton.OnSingleClick += ChangeLanguage;
         titleUI.quitButton.OnSingleClick += QuitGame;
         titleUI.creditButton.OnSingleClick += ShowCredit;
-        titleUI.creditCloseButton.OnSingleClick += HideCredit;
 
         titleUI.SetLanguage(GameManager.Instance.CurrentLanguage);
     }
@@ -45,12 +44,7 @@ public class TitleManager : MonoBehaviour
 
     public void ShowCredit()
     {
-        titleUI.creditUI.ShowUI();
-    }
-
-    public void HideCredit()
-    {
-        titleUI.creditUI.HideUI();
+        GameManager.Instance.LoadCreditScene();
     }
 
     public void ResetProgress()

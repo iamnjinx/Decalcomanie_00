@@ -21,9 +21,9 @@ public class GameManager : MonoBehaviour
     public StageAssetReader StageAssetReader;
     public DecalcomanieSceneManager SceneManager;
 
-    private SceneType currentScene;
-    public int CurrentStageIndex { get; private set; } = 3;
-    [SerializeField] int totalStages = 30;
+    public SceneType currentScene;
+    public int CurrentStageIndex { get; private set; } = 30;
+    int totalStages = 30;
     public GameLanguage CurrentLanguage { get; private set; } = GameLanguage.English;
 
     void Start()
@@ -75,6 +75,12 @@ public class GameManager : MonoBehaviour
     public void LoadOutroScene()
     {
         SceneManager.MoveSceneTo("Outro Scene");
+    }
+
+    public void LoadCreditScene()
+    {
+        currentScene = SceneType.Credit;
+        SceneManager.MoveSceneTo(SceneNames.Credit);
     }
 
     public void LoadTitleScene()
@@ -132,11 +138,12 @@ public static class SceneNames
     public const string StageSelection = "Stage Selection";
     public const string Game = "Game Scene";
     public const string Tutorial = "Tutorial Scene";
+    public const string Credit = "Credit Scene";
 }
 
 public enum SceneType
 {
-    Title, StageSelection, Game, Tutorial
+    Title, StageSelection, Game, Tutorial, Credit
 }
 
 public enum GameLanguage

@@ -26,6 +26,7 @@ public class PaintManager : MonoBehaviour
     [SerializeField] float foldTime = 0.5f;
 
     [SerializeField] private PaintUI paintUI;
+    [SerializeField] private TutorialManager tutorialManager;
 
     private bool _isFolding;
     public bool IsFolding => _isFolding;
@@ -94,8 +95,8 @@ public class PaintManager : MonoBehaviour
     {
         if (_isFolding) return;
         await ExecuteFold(
-            (LowerLeft, LowerRight),
-            start => new Vector3(179f, start.y, start.z),
+            (UpperLeft, UpperRight),
+            start => new Vector3(-179f, start.y, start.z),
             () => boardManager.CurrentBoard.FoldVertical());
     }
 

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class ReminisceScene : MonoBehaviour
 {
     [SerializeField] BaseUI[] reminisceImages;
+    [SerializeField] BaseUI fadeUI;
 
     [SerializeField] private float displayDuration = 3f;
 
@@ -25,10 +26,17 @@ public class ReminisceScene : MonoBehaviour
             yield return new WaitForSeconds(displayDuration);
         }
 
+        LoadFadeScene();
+    }
+
+    public async void LoadFadeScene()
+    {
+        await fadeUI.ShowUI(.5f);
+
         if (reminisceType == ReminisceType.Intro)
             GameManager.Instance.LoadStage(0);
         else if (reminisceType == ReminisceType.Outro)
-            GameManager.Instance.LoadTitleScene();
+            GameManager.Instance.LoadCreditScene();
     }
 }
 

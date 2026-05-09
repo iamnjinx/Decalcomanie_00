@@ -9,6 +9,7 @@ public class SettingUI : BaseUI
     [SerializeField] private SliderUI MusicVolumeSlider;
 
     [SerializeField] private ButtonUI titleButton;
+    [SerializeField] private ButtonUI stageButton;
 
     protected override void Start()
     {
@@ -29,5 +30,17 @@ public class SettingUI : BaseUI
             SettingManager.Instance.CloseSetting();
             GameManager.Instance.LoadTitleScene();
         };
+
+        stageButton.OnSingleClick += () =>
+        {
+            SettingManager.Instance.CloseSetting();
+            GameManager.Instance.LoadSelectScene();
+        };
+    }
+
+    public void SetGameButtons(bool is_true)
+    {
+        titleButton.gameObject.SetActive(is_true);
+        stageButton.gameObject.SetActive(is_true);
     }
 }

@@ -37,6 +37,7 @@ namespace Njinx.UI
         {
             if (show) await ShowUI(delay);
             else await HideUI(delay);
+            Debug.Log($"gameobject {gameObject.name} set to {(show ? "shown" : "hidden")} with delay {delay}");
         }
 
         public virtual void ShowUI()
@@ -57,21 +58,21 @@ namespace Njinx.UI
             is_shown = false;
         }
 
-        public async virtual UniTask ShowUI(float delay = 0)
+        public async virtual UniTask ShowUI(float delay)
         {
             if(is_shown) return;
 
-            await canvasGroup.DOFade(1f, delay).AsyncWaitForCompletion();
+            await canvasGroup.DOFade(1f, delay).SetEase(Ease.Linear).AsyncWaitForCompletion();
 
             SetInteractable(true);
             is_shown = true;
         }
 
-        public async virtual UniTask HideUI(float delay = 0)
+        public async virtual UniTask HideUI(float delay)
         {
             if(!is_shown) return;
 
-            await canvasGroup.DOFade(0f, delay).AsyncWaitForCompletion();
+            await canvasGroup.DOFade(0f, delay).SetEase(Ease.Linear).AsyncWaitForCompletion();
 
             SetInteractable(false);
             is_shown = false;

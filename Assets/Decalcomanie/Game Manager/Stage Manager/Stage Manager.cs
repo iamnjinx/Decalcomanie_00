@@ -40,6 +40,7 @@ public class StageManager : MonoBehaviour
         var language = GameManager.Instance != null ? GameManager.Instance.CurrentLanguage : GameLanguage.English;
         stageUI.SetObjectivePanel(language);
         stageUI.SetShortKeySprite(currentGameState, language);
+        stageUI.SetCurStageText(GameManager.Instance != null ? GameManager.Instance.CurrentStageIndex : 0);
         paintManager.CreateTileControllers();
 
         if (GameManager.Instance != null && GameManager.Instance.CurrentStageIndex == 0)
@@ -74,7 +75,7 @@ public class StageManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))         ResetButton();
         if (Input.GetKeyDown(KeyCode.Tab))       SwitchState();
-        if (currentGameState == GameState.Paint)
+        if (currentGameState == GameState.Paint && tutorialManager != null && tutorialManager.CurTutoID == -1)
         {
             if (Input.GetKeyDown(KeyCode.Alpha1)) paintManager.FoldHorizontal();
             if (Input.GetKeyDown(KeyCode.Alpha2)) paintManager.FoldVertical();

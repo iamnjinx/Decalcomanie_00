@@ -19,6 +19,7 @@ public class StageUI : MonoBehaviour
     [Header("Stage Main UI")]
     public List<Sprite> stageBackgroundSprites;
     public Image stageMainBackgroundImage;
+    public TextMeshProUGUI stageTitleText;
 
     public Image paintShortKeyImage;
     [SerializeField] private Sprite[] paintShortKeySprites; // 0: English, 1: Korean
@@ -41,6 +42,13 @@ public class StageUI : MonoBehaviour
     void Start()
     {
         menuButton.OnSingleClick += () => SettingManager.Instance.OpenSetting();
+    }
+
+    public void SetCurStageText(int stageID)
+    {
+        Material material = stageTitleText.fontMaterial;
+        material.SetFloat(ShaderUtilities.ID_UnderlayDilate, 1.2f); // 1보다 큰 값
+        stageTitleText.text = $"STAGE {stageID}";
     }
 
     public void SetStageBackground(int stageID)

@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class TitleUI : MonoBehaviour
 {
+    public Sprite[] logoSprites;
+
     public Image[] selectionImages;
 
     public Sprite[] selectionSpritesEnglish;

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Njinx.UI;
 using UnityEngine;
@@ -12,6 +13,8 @@ public class StageSelectionUI : MonoBehaviour
     public ButtonUI RightButton;
 
     public ButtonUI BackButton;
+
+    public bool is_changingChapter = false;
 
     void Start()
     {
@@ -33,9 +36,22 @@ public class StageSelectionUI : MonoBehaviour
         }
     }
 
-    public void ChangeChapterDisplay(int chapterIndex, int maxChapterIndex)
+    public async void ChangeChapterDisplay(int chapterIndex, int maxChapterIndex, bool is_instant = false)
     {
-        selectionRT.DOAnchorPosX(-chapterIndex * 1920f, 0.2f).SetEase(Ease.InOutQuad);
+        is_changingChapter = true;
+        LeftButton.HideUI();
+        RightButton.HideUI();
+        if (is_instant)
+        {
+            selectionRT.anchoredPosition = new Vector2(-chapterIndex * 1920f, selectionRT.anchoredPosition.y);
+        }
+        else
+        {
+            selectionRT.DOAnchorPosX(-chapterIndex * 1920f, 0.2f).SetEase(Ease.InOutQuad);
+            await UniTask.Delay(200);
+        }
+
+        Debug.Log($"Chapter changed to {chapterIndex}");
 
         if (chapterIndex == 0)
         {
@@ -54,5 +70,7 @@ public class StageSelectionUI : MonoBehaviour
         {
             RightButton.SetUI(true);
         }
+
+        is_changingChapter = false;
     }
 }

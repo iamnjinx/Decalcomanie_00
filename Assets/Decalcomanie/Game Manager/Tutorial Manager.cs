@@ -16,6 +16,7 @@ public class TutorialManager : MonoBehaviour
     public ButtonUI[] clickButtons = new ButtonUI[7];
 
     private int curTutoID = -1;
+    public int CurTutoID => curTutoID;
 
     public BaseUI TutoCanvas;
 
@@ -161,6 +162,8 @@ public class TutorialManager : MonoBehaviour
 
         await WaitForCondition(curTutoID); // 스위치 버튼 클릭
         TutoCanvas.SetUI(false);
+
+        curTutoID = -1;
     }
 
     private void ChangeDinoTutoSprite(int id)

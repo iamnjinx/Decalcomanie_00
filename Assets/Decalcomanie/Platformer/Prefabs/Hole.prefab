@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 8376170421605306398}
   - component: {fileID: 3902412596283371399}
   - component: {fileID: 4103243170792457045}
-  - component: {fileID: 7953209306698459020}
+  - component: {fileID: 5601738529726405295}
   m_Layer: 7
   m_Name: Hole
   m_TagString: Hole
@@ -182,8 +182,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c3b485de8391034f9cefa9f81fa4e70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!58 &7953209306698459020
-CircleCollider2D:
+--- !u!61 &5601738529726405295
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -215,5 +215,15 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 4.79, y: 4.33}
+    newSize: {x: 4.79, y: 4.33}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
   serializedVersion: 2
-  m_Radius: 1.5
+  m_Size: {x: 4, y: 4}
+  m_EdgeRadius: 0

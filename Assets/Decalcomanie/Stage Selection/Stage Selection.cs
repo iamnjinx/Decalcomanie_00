@@ -20,7 +20,7 @@ public class StageSelection : MonoBehaviour
     void Start()
     {
         currentChapterIndex = Mathf.Clamp(SaveManager.Instance.Load(ChapterIndexKey, 0), 0, maxChapterIndex);
-        UpdateChapterDisplay(currentChapterIndex);
+        UpdateChapterDisplay(currentChapterIndex, true);
 
         stageSelectionUI.SetStagePanel();
         for(int i = 0; i < stageSelectionUI.stagePanels.Count; i++)
@@ -60,29 +60,28 @@ public class StageSelection : MonoBehaviour
         }
     }
 
-    public void MoveToPreviousChapter()
+    public void MoveToPreviousChapter(bool is_instant = false)
     {
         if (currentChapterIndex > 0)
         {
-            currentChapterIndex--;
-            SaveManager.Instance.Save(ChapterIndexKey, currentChapterIndex);
-            UpdateChapterDisplay(currentChapterIndex);
+            UpdateChapterDisplay(currentChapterIndex-1, is_instant);
         }
     }
 
-    public void MoveToNextChapter()
+    public void MoveToNextChapter(bool is_instant = false)
     {
         if (currentChapterIndex < maxChapterIndex)
         {
-            currentChapterIndex++;
-            SaveManager.Instance.Save(ChapterIndexKey, currentChapterIndex);
-            UpdateChapterDisplay(currentChapterIndex);
+            UpdateChapterDisplay(currentChapterIndex+1, is_instant);
         }
     }
 
-    private void UpdateChapterDisplay(int chapterIndex)
+    private void UpdateChapterDisplay(int chapterIndex, bool is_instant = false)
     {
-        stageSelectionUI.ChangeChapterDisplay(chapterIndex, maxChapterIndex);
+        if(stageSelectionUI.is_changingChapter) return;
+        currentChapterIndex = chapterIndex;
+        SaveManager.Instance.Save(ChapterIndexKey, currentChapterIndex);
+        stageSelectionUI.ChangeChapterDisplay(chapterIndex, maxChapterIndex, is_instant);
     }
 
     public void OnStageSelected(int stageIndex)

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657815, g: 0.49641192, b: 0.5748165, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 27015884}
   - component: {fileID: 27015886}
   - component: {fileID: 27015885}
+  - component: {fileID: 27015887}
   m_Layer: 5
   m_Name: Logo
   m_TagString: Untagged
@@ -198,6 +199,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 27015883}
   m_CullTransparentMesh: 1
+--- !u!95 &27015887
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 27015883}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: a8ce88ec09eab45b8937ab50178ffebe, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &87459662
 GameObject:
   m_ObjectHideFlags: 0
@@ -828,6 +850,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db9a51be1784e904cbe9df4edaafa3b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  logoSprites: []
   selectionImages:
   - {fileID: 376309101}
   - {fileID: 1274113533}
@@ -2527,7 +2550,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1956901210
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2674,12 +2697,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1815304364}
   - {fileID: 1115368804}
   - {fileID: 87459663}
   - {fileID: 220812429}
   - {fileID: 314160627}
   - {fileID: 430284389}
-  - {fileID: 1815304364}
   - {fileID: 782622471}
   m_Father: {fileID: 462998353}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2751,7 +2774,7 @@ MonoBehaviour:
   - imageRT: {fileID: 220812429}
     leftBound: -3000
     rightBound: 3000
-    speed: 120
+    speed: 100
   - imageRT: {fileID: 314160627}
     leftBound: -2388
     rightBound: 2388
@@ -2759,7 +2782,7 @@ MonoBehaviour:
   - imageRT: {fileID: 430284389}
     leftBound: -2550
     rightBound: 2550
-    speed: 95
+    speed: 100
 --- !u!1001 &2189237196002839233
 PrefabInstance:
   m_ObjectHideFlags: 0

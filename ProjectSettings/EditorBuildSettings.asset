@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Decalcomanie/Scenes/Outro Scene.unity
     guid: c30416d4f17e8b746a5e8467bd3aceb7
+  - enabled: 1
+    path: Assets/Decalcomanie/Scenes/Credit Scene.unity
+    guid: 24c6cb9f38c9e4bf3b08e1dbbbc7f14a
   m_configObjects: {}
