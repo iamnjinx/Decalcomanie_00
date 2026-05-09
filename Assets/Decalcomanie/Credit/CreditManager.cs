@@ -33,7 +33,7 @@ public class CreditManager : MonoBehaviour
 
     private async UniTask MoveCreditUI()
     {
-        creditUI.GetComponent<RectTransform>().DOAnchorPosY(targetYPos, 10f).SetEase(Ease.Linear);
+        creditUI.GetComponent<RectTransform>().DOAnchorPosY(targetYPos, 20f).SetEase(Ease.Linear);
         await UniTask.Delay(120000);
     }
 }

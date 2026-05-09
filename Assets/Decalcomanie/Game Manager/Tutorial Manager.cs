@@ -140,7 +140,8 @@ public class TutorialManager : MonoBehaviour
         curTutoID++; // 4
         ChangeDinoTutoSprite(curTutoID);
 
-        await WaitForCondition(curTutoID); // 화면 아무데나 클릭
+        await WaitForCondition(curTutoID);
+        paintManager.UndoPaintAction();
         curTutoID++; // 5
         ChangeDinoTutoSprite(curTutoID);
 

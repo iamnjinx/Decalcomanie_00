@@ -23,6 +23,8 @@ namespace TarodevController
         public event Action Jumped;
         #endregion
 
+        public bool InputEnabled { get; set; } = true;
+
         public void ForceStop()
         {
             _frameVelocity = Vector2.zero;
@@ -54,6 +56,12 @@ namespace TarodevController
 
         private void GatherInput()
         {
+            if (!InputEnabled)
+            {
+                _frameInput = new FrameInput();
+                return;
+            }
+
             _frameInput = new FrameInput
             {
                 JumpDown = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.W),

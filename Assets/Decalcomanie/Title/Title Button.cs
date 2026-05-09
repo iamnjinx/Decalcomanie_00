@@ -28,9 +28,10 @@ public class TitleButton : ButtonUI
         transform.DOScale(_originalScale, scaleDuration);
     }
 
-    public override void OnClick()
+    public override void OnPointerDown(PointerEventData eventData)
     {
-        base.OnClick();
+        base.OnPointerDown(eventData);
         AudioManager.Instance.PlaySFX("button_click");
     }
+
 }

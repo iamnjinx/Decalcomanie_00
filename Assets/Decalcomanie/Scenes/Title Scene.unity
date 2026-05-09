@@ -579,7 +579,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a218644f2f2d59d4795fc4b382135628, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4639976c437853f4c93cc9e1af3a3593, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -857,15 +857,15 @@ MonoBehaviour:
   - {fileID: 761979386}
   - {fileID: 820310071}
   selectionSpritesEnglish:
-  - {fileID: 21300000, guid: a218644f2f2d59d4795fc4b382135628, type: 3}
-  - {fileID: 21300000, guid: 08fa79b8fbfb77448b1fdee6a98ae500, type: 3}
-  - {fileID: 21300000, guid: fabcbb16112b29c47a01d95a589d36f5, type: 3}
-  - {fileID: 21300000, guid: 8cbd9dfc5b961de4b92b394d03497c32, type: 3}
+  - {fileID: 21300000, guid: 4639976c437853f4c93cc9e1af3a3593, type: 3}
+  - {fileID: 21300000, guid: 643d254332cf23c4c8c7c76caea9ebc0, type: 3}
+  - {fileID: 21300000, guid: cbb39bcccb629354cadd4ee2edc6424f, type: 3}
+  - {fileID: 21300000, guid: 3cabd430030e13a49bf3241967d081a7, type: 3}
   selectionSpritesKorean:
-  - {fileID: 21300000, guid: 138a8a00903b65240b040f11d1033ea4, type: 3}
-  - {fileID: 21300000, guid: 296cc4fae35796345826bbaa271f7f9d, type: 3}
-  - {fileID: 21300000, guid: 973e5861f4829ba4d8842d3fafcaa332, type: 3}
-  - {fileID: 21300000, guid: 6ecf5ffc0aede334695f06c5019a3537, type: 3}
+  - {fileID: 21300000, guid: b0ecf6a90471c8f4c89e363cb3f84c57, type: 3}
+  - {fileID: 21300000, guid: 5e0e59e614575514db3137ab5128258e, type: 3}
+  - {fileID: 21300000, guid: da9b371edae30ff4081927f7f1b8eb5e, type: 3}
+  - {fileID: 21300000, guid: 8b687fde54194dc448e538ea46b6fdb2, type: 3}
   selectionButton: {fileID: 376309103}
   settingButton: {fileID: 1274113535}
   languageButton: {fileID: 761979388}
@@ -874,6 +874,7 @@ MonoBehaviour:
   creditCloseButton: {fileID: 1429487273}
   resetButton: {fileID: 1956901211}
   creditUI: {fileID: 992651108}
+  fadeUI: {fileID: 0}
 --- !u!1001 &474131349
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1138,7 +1139,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fabcbb16112b29c47a01d95a589d36f5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: cbb39bcccb629354cadd4ee2edc6424f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1442,7 +1443,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8cbd9dfc5b961de4b92b394d03497c32, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3cabd430030e13a49bf3241967d081a7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1984,7 +1985,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 08fa79b8fbfb77448b1fdee6a98ae500, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 643d254332cf23c4c8c7c76caea9ebc0, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2766,23 +2767,23 @@ MonoBehaviour:
   - imageRT: {fileID: 1115368804}
     leftBound: -10500
     rightBound: 6000
-    speed: 60
+    speed: 40
   - imageRT: {fileID: 87459663}
     leftBound: -10500
     rightBound: 6000
-    speed: 60
+    speed: 40
   - imageRT: {fileID: 220812429}
     leftBound: -3000
     rightBound: 3000
-    speed: 100
+    speed: 50
   - imageRT: {fileID: 314160627}
     leftBound: -2388
     rightBound: 2388
-    speed: 100
+    speed: 50
   - imageRT: {fileID: 430284389}
     leftBound: -2550
     rightBound: 2550
-    speed: 100
+    speed: 50
 --- !u!1001 &2189237196002839233
 PrefabInstance:
   m_ObjectHideFlags: 0

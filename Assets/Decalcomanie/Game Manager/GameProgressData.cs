@@ -4,6 +4,14 @@ using System.Collections.Generic;
 public class GameProgressData
 {
     public const string SaveKey = "game_progress";
+
+    public static GameProgressData Load()
+    {
+        var data = SaveManager.Instance.Load<GameProgressData>(SaveKey, new());
+        if (GameManager.Instance != null)
+            data.highestUnlockedStage = System.Math.Min(data.highestUnlockedStage, GameManager.Instance.TotalStages);
+        return data;
+    }
     public int highestUnlockedStage = 0;
     public List<StageAchievementData> stageAchievements = new List<StageAchievementData>();
 
@@ -27,7 +35,7 @@ public class GameProgressData
         data.achievedMinMoves = data.achievedMinMoves || achievedMinMoves;
 
         if (stageIndex + 1 > highestUnlockedStage)
-            highestUnlockedStage = stageIndex + 1;
+            highestUnlockedStage = System.Math.Min(stageIndex + 1, GameManager.Instance.TotalStages);
     }
 }
 

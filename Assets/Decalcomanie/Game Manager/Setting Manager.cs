@@ -15,13 +15,16 @@ public class SettingManager : MonoBehaviour
 
     public void OpenSetting()
     {
-        settingUI.ShowUI();
-        settingUI.SetGameButtons(GameManager.Instance.currentScene != SceneType.Title);
+        if (!settingUI.is_shown)
+        {
+            settingUI.ShowUI();
+            settingUI.SetGameButtons(GameManager.Instance.currentScene != SceneType.Title);
+        }
     }
 
     public void CloseSetting()
     {
-        settingUI.HideUI();
+        if (settingUI.is_shown) settingUI.HideUI();
     }
 
     public void SetSettingUI()

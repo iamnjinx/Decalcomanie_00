@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class TitleManager : MonoBehaviour
@@ -16,6 +17,14 @@ public class TitleManager : MonoBehaviour
         titleUI.creditButton.OnSingleClick += ShowCredit;
 
         titleUI.SetLanguage(GameManager.Instance.CurrentLanguage);
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SettingManager.Instance.CloseSetting();
+        }
     }
 
     public void MoveToSelectScene()

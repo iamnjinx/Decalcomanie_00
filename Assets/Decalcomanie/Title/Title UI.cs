@@ -24,6 +24,8 @@ public class TitleUI : MonoBehaviour
 
     public BaseUI creditUI;
 
+    public BaseUI fadeUI;
+
     public void SetLanguage(GameLanguage language)
     {
         Sprite[] selectedSprites = language == GameLanguage.English ? selectionSpritesEnglish : selectionSpritesKorean;

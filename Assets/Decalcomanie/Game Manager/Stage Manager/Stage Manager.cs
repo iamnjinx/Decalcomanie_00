@@ -14,6 +14,8 @@ public class StageManager : MonoBehaviour
 
     private Achievements achievements = new Achievements(false, false, false);
 
+    private bool is_ready_for_next_stage = false;
+
     void Awake()
     {
         stageUI.nextStageButton.OnSingleClick += () => MoveToNextStage();
@@ -71,14 +73,24 @@ public class StageManager : MonoBehaviour
 
     void Update()
     {
-        if (currentGameState == GameState.End) return;
+        if (currentGameState == GameState.End)
+        {
+            if(Input.anyKeyDown)
+            {
+                MoveToNextStage();
+            }
+            return;
+        }
+        if(tutorialManager != null && tutorialManager.CurTutoID != -1) return;
 
         if (Input.GetKeyDown(KeyCode.R))         ResetButton();
         if (Input.GetKeyDown(KeyCode.Tab))       SwitchState();
-        if (currentGameState == GameState.Paint && tutorialManager != null && tutorialManager.CurTutoID == -1)
+
+        if (currentGameState == GameState.Paint)
         {
             if (Input.GetKeyDown(KeyCode.Alpha1)) paintManager.FoldHorizontal();
             if (Input.GetKeyDown(KeyCode.Alpha2)) paintManager.FoldVertical();
+            if (Input.GetMouseButtonDown(1)) paintManager.UndoPaintAction();
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -122,7 +134,7 @@ public class StageManager : MonoBehaviour
         paintManager.ResetPaint();
     }
 
-    public void GameCleared()
+    public async void GameCleared()
     {
         if (currentGameState == GameState.End) return;
         AudioManager.Instance.PlaySFX("stage_clear");
@@ -134,14 +146,15 @@ public class StageManager : MonoBehaviour
         SaveProgress();
 
         // 화면 어두워지고 클리어 UI.
-        stageUI.ShowStageCleared(achievements.Is_Cleared, achievements.ObtainedStar, achievements.Min_Moves, boardManager.CurrentBoard.BoardData.minMoves);
+        await stageUI.ShowStageCleared(achievements.Is_Cleared, achievements.ObtainedStar, achievements.Min_Moves, boardManager.CurrentBoard.BoardData.minMoves);
+        is_ready_for_next_stage = true;
     }
 
     private void SaveProgress()
     {
         if (GameManager.Instance == null || SaveManager.Instance == null) return;
 
-        var progress = SaveManager.Instance.Load<GameProgressData>(GameProgressData.SaveKey, new GameProgressData());
+        var progress = GameProgressData.Load();
         progress.RecordStageCleared(
             GameManager.Instance.CurrentStageIndex,
             achievements.ObtainedStar,
@@ -151,9 +164,13 @@ public class StageManager : MonoBehaviour
 
     public void MoveToNextStage()
     {
-        // 다음 스테이지로 이동.
-        Debug.Log($"Move To Next Stage!");
-        GameManager.Instance.LoadStage(GameManager.Instance.CurrentStageIndex + 1);
+        if (is_ready_for_next_stage)
+        {
+            is_ready_for_next_stage = false;
+            // 다음 스테이지로 이동.
+            Debug.Log($"Move To Next Stage!");
+            GameManager.Instance.LoadStage(GameManager.Instance.CurrentStageIndex + 1);   
+        }
     }
 }
 

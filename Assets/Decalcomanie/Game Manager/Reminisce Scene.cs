@@ -1,8 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Njinx.UI;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ReminisceScene : MonoBehaviour
 {
@@ -22,8 +21,9 @@ public class ReminisceScene : MonoBehaviour
     {
         foreach (var img in reminisceImages)
         {
-            img.ShowUI();
+            img.ShowUI(1f).Forget();
             yield return new WaitForSeconds(displayDuration);
+            img.HideUI(1f).Forget();
         }
 
         LoadFadeScene();
@@ -32,6 +32,8 @@ public class ReminisceScene : MonoBehaviour
     public async void LoadFadeScene()
     {
         await fadeUI.ShowUI(.5f);
+
+        await UniTask.Delay(1000);
 
         if (reminisceType == ReminisceType.Intro)
             GameManager.Instance.LoadStage(0);

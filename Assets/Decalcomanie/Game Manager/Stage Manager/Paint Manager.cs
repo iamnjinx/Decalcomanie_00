@@ -33,12 +33,6 @@ public class PaintManager : MonoBehaviour
 
     public int paintCount = 0;
 
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(1))
-            UndoPaintAction();
-    }
-
     public void CreateTileControllers()
     {
         Board board = boardManager.CurrentBoard;

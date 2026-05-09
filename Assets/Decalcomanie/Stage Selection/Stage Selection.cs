@@ -31,7 +31,8 @@ public class StageSelection : MonoBehaviour
         }
 
         currentChapterIndex = Mathf.Clamp(SaveManager.Instance.Load(ChapterIndexKey, 0), 0, maxChapterIndex);
-        UpdateChapterDisplay(currentChapterIndex, true);
+        int d = GameManager.Instance.CurrentStageIndex == 0 ? 0 : (GameManager.Instance.CurrentStageIndex-1) / 10 + 1;
+        UpdateChapterDisplay(d, true);
 
         stageSelectionUI.SetStagePanel();
         for(int i = 0; i < stageSelectionUI.stagePanels.Count; i++)
@@ -63,7 +64,7 @@ public class StageSelection : MonoBehaviour
     {
         yield return null; // wait for all Start() calls to finish
 
-        var progress = SaveManager.Instance.Load<GameProgressData>(GameProgressData.SaveKey, new());
+        var progress = GameProgressData.Load();
         Debug.Log(progress.highestUnlockedStage);
         for(int i = 0; i < stageSelectionUI.stagePanels.Count; i++)
         {
@@ -99,7 +100,7 @@ public class StageSelection : MonoBehaviour
 
     public void OnStageSelected(int stageIndex)
     {
-        var progress = SaveManager.Instance.Load<GameProgressData>(GameProgressData.SaveKey, new());
+        var progress = GameProgressData.Load();
         if (!progress.IsStageUnlocked(stageIndex)) return;
 
         GameManager.Instance.LoadStage(stageIndex);

@@ -78,7 +78,7 @@ public class StageUI : MonoBehaviour
         );
     }
 
-    public async void ShowStageCleared(bool isCleared, bool obtainedStar, bool minMoves, int minMoveNum)
+    public async UniTask ShowStageCleared(bool isCleared, bool obtainedStar, bool minMoves, int minMoveNum)
     {
         minMovesText.text = $"{minMoveNum}"; 
 

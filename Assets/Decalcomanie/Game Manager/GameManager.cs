@@ -22,8 +22,8 @@ public class GameManager : MonoBehaviour
     public DecalcomanieSceneManager SceneManager;
 
     public SceneType currentScene;
-    public int CurrentStageIndex { get; private set; } = 1;
-    int totalStages = 30;
+    public int CurrentStageIndex { get; private set; } = 30;
+    public int TotalStages { get; private set; } = 30;
     public GameLanguage CurrentLanguage { get; private set; } = GameLanguage.English;
 
     void Start()
@@ -93,6 +93,7 @@ public class GameManager : MonoBehaviour
     public void LoadSelectScene()
     {
         if (currentScene == SceneType.StageSelection) return;
+        else if(currentScene == SceneType.Title) CurrentStageIndex = GameProgressData.Load().highestUnlockedStage;
         currentScene = SceneType.StageSelection;
         SceneManager.MoveSceneTo(SceneNames.StageSelection);
     }
@@ -107,8 +108,10 @@ public class GameManager : MonoBehaviour
 
     public void LoadStage(int stageIndex)
     {
-        if (stageIndex > totalStages)
+        if (stageIndex > TotalStages)
         {
+            CurrentStageIndex = TotalStages;
+            Debug.Log(CurrentStageIndex);
             LoadOutroScene();
             return;
         }

@@ -62,7 +62,7 @@ namespace Njinx.UI
         {
             if(is_shown) return;
 
-            await canvasGroup.DOFade(1f, delay).SetEase(Ease.Linear).AsyncWaitForCompletion();
+            await canvasGroup.DOFade(1f, delay).SetEase(Ease.InSine).AsyncWaitForCompletion();
 
             SetInteractable(true);
             is_shown = true;
@@ -72,11 +72,12 @@ namespace Njinx.UI
         {
             if(!is_shown) return;
 
-            await canvasGroup.DOFade(0f, delay).SetEase(Ease.Linear).AsyncWaitForCompletion();
+            await canvasGroup.DOFade(0f, delay).SetEase(Ease.InSine).AsyncWaitForCompletion();
 
             SetInteractable(false);
             is_shown = false;
         }
+
 
         public void SetInteractable(bool is_interactable)
         {

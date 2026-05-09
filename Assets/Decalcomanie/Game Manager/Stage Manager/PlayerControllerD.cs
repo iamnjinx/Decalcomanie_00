@@ -21,6 +21,8 @@ public class PlayerControllerD : MonoBehaviour
     [SerializeField] private float fallDuration = 0.4f;
     [SerializeField] private float fallSpinSpeed = 720f;
 
+    private static readonly WaitForSeconds WaitForControllerEnable = new(0.1f);
+
     private Vector3 _respawnPosition;
     private bool _isFalling;
 
@@ -33,6 +35,14 @@ public class PlayerControllerD : MonoBehaviour
     void Start()
     {
         _respawnPosition = transform.position;
+        tarodevController.InputEnabled = false;
+        StartCoroutine(EnableControllerDelayed());
+    }
+
+    private IEnumerator EnableControllerDelayed()
+    {
+        yield return WaitForControllerEnable;
+        tarodevController.InputEnabled = true;
     }
 
     void OnTriggerEnter2D(Collider2D collision)
