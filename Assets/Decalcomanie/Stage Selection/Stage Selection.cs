@@ -11,6 +11,8 @@ public class StageSelection : MonoBehaviour
 
     private const string ChapterIndexKey = "LastChapterIndex";
 
+    private List<Sprite> stageScreenshots = new();
+
     void Awake()
     {
         stageSelectionUI.LeftButton.OnSingleClick += () => MoveToPreviousChapter();
@@ -19,6 +21,15 @@ public class StageSelection : MonoBehaviour
 
     void Start()
     {
+        int j = 0;
+        while (true)
+        {
+            var sprite = Resources.Load<Sprite>($"Stage SS/StageSS_{j}");
+            if (sprite == null) break;
+            stageScreenshots.Add(sprite);
+            j++;
+        }
+
         currentChapterIndex = Mathf.Clamp(SaveManager.Instance.Load(ChapterIndexKey, 0), 0, maxChapterIndex);
         UpdateChapterDisplay(currentChapterIndex, true);
 
@@ -53,10 +64,12 @@ public class StageSelection : MonoBehaviour
         yield return null; // wait for all Start() calls to finish
 
         var progress = SaveManager.Instance.Load<GameProgressData>(GameProgressData.SaveKey, new());
+        Debug.Log(progress.highestUnlockedStage);
         for(int i = 0; i < stageSelectionUI.stagePanels.Count; i++)
         {
             var achievement = progress.GetAchievement(i);
-            stageSelectionUI.stagePanels[i].SetStagePanel(i, achievement.isCleared, achievement.obtainedStar, achievement.achievedMinMoves);
+            var ss = i < stageScreenshots.Count ? stageScreenshots[i] : null;
+            stageSelectionUI.stagePanels[i].SetStagePanel(i, achievement.isCleared, achievement.obtainedStar, achievement.achievedMinMoves, progress.highestUnlockedStage >= i, ss);
         }
     }
 
