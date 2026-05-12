@@ -20,7 +20,7 @@ public class StagePanel: MonoBehaviour
         stageNameText.text = $"stage {stageID}";
         panelImage.color = GameManager.Instance.GameData.chapterColors[(stageID+9) / 10];
 
-        Debug.Log($"Setting Stage Panel: StageID={stageID}, Cleared={isCleared}, ObtainedStar={obtainedStar}, AchievedMinMoves={achievedMinMoves}");
+        //Debug.Log($"Setting Stage Panel: StageID={stageID}, Cleared={isCleared}, ObtainedStar={obtainedStar}, AchievedMinMoves={achievedMinMoves}");
 
         SetIcon(starIcons[0], isCleared);
         SetIcon(starIcons[1], isCleared && obtainedStar);

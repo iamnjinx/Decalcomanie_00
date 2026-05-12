@@ -65,7 +65,6 @@ public class StageSelection : MonoBehaviour
         yield return null; // wait for all Start() calls to finish
 
         var progress = GameProgressData.Load();
-        Debug.Log(progress.highestUnlockedStage);
         for(int i = 0; i < stageSelectionUI.stagePanels.Count; i++)
         {
             var achievement = progress.GetAchievement(i);

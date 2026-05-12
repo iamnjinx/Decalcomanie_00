@@ -533,7 +533,7 @@ MonoBehaviour:
   - {fileID: 1149482928}
   - {fileID: 726557102}
   fadeUI: {fileID: 471125075}
-  displayDuration: 6
+  displayDuration: 4
   reminisceType: 0
 --- !u!4 &557607452
 Transform:

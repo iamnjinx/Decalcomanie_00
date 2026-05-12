@@ -37,7 +37,6 @@ namespace Njinx.UI
         {
             if (show) await ShowUI(delay);
             else await HideUI(delay);
-            Debug.Log($"gameobject {gameObject.name} set to {(show ? "shown" : "hidden")} with delay {delay}");
         }
 
         public virtual void ShowUI()
