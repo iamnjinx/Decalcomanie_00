@@ -53,6 +53,7 @@ public class StageUI : MonoBehaviour
 
     public void SetStageBackground(int stageID)
     {
+        if (stageID <= 0 || stageID > stageBackgroundSprites.Count * 10) return; // stageID가 유효한 경우에만 배경을 설정
         stageMainBackgroundImage.sprite = stageBackgroundSprites[(stageID+9) / 10];
     }
 
