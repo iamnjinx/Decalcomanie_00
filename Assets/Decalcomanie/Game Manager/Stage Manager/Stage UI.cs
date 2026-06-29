@@ -12,6 +12,7 @@ public class StageUI : MonoBehaviour
 
     public ButtonUI switchButton;
     public ButtonUI resetButton;
+    public ButtonUI undoButton;
 
     public ButtonUI flipHorizontalButton;
     public ButtonUI flipVerticalButton;
@@ -100,7 +101,8 @@ public class StageUI : MonoBehaviour
 
         if (isCleared)
         {
-            AudioManager.Instance.PlaySFX("stage_clear_star");
+            if (AudioManager.Instance != null)
+                AudioManager.Instance.PlaySFX("stage_clear_star");
             stars[0].ShowUI(.1f).Forget();
         }
         if (obtainedStar)

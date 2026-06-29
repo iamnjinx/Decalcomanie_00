@@ -9,7 +9,7 @@ public class SceneInitiator : MonoBehaviour
 
     void Start()
     {
-        if (!string.IsNullOrEmpty(bgmName))
+        if (!string.IsNullOrEmpty(bgmName) && AudioManager.Instance != null)
             AudioManager.Instance.PlayBGM(bgmName);
     }
 }

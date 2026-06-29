@@ -55,7 +55,8 @@ public class PaintManager : MonoBehaviour
         if (allTileControllers[id].Tile.type != TileType.Empty) return;
         allTileControllers[id].PaintTile();
         paintCount++;
-        AudioManager.Instance.PlayRandomSFX(new[] { "paint_1", "paint_2" });
+        if(AudioManager.Instance != null)
+            AudioManager.Instance.PlayRandomSFX(new[] { "paint_1", "paint_2" });
     }
 
     public void AddPaintAction(List<int> paintedTiles, bool is_paint = true) => paintActions.Push(new TilePaintAction(paintedTiles, is_paint));
@@ -109,7 +110,8 @@ public class PaintManager : MonoBehaviour
         System.Func<List<int>> performFold)
     {
         _isFolding = true;
-        AudioManager.Instance.PlaySFX("fold_paper");
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlaySFX("fold_paper");
         await paintUI.SetBasePaintUI(false);
 
         Vector3 start1 = panels.panel1.eulerAngles;

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class StageManager : MonoBehaviour
@@ -22,6 +23,7 @@ public class StageManager : MonoBehaviour
 
         stageUI.switchButton.OnSingleClick += () => SwitchState();
         stageUI.resetButton.OnSingleClick += () => ResetButton();
+        stageUI.undoButton.OnSingleClick += () => paintManager.UndoPaintAction();
 
         stageUI.flipHorizontalButton.OnSingleClick += () => paintManager.FoldHorizontal();
         stageUI.flipVerticalButton.OnSingleClick += () => paintManager.FoldVertical();
@@ -29,7 +31,11 @@ public class StageManager : MonoBehaviour
 
     void Start()
     {
-        if(GameManager.Instance == null || GameManager.Instance.GetCurrentStageAsset() == null)
+        if (EditorManager.SavedBoard != null)
+        {
+            boardManager.CreateBoard(ConvertEditorBoardToBoardData(EditorManager.SavedBoard));
+        }
+        else if(GameManager.Instance == null || GameManager.Instance.GetCurrentStageAsset() == null)
         {
             boardManager.CreateBoard(testBoardDataTextAsset);
         }
@@ -137,7 +143,8 @@ public class StageManager : MonoBehaviour
     public async void GameCleared()
     {
         if (currentGameState == GameState.End) return;
-        AudioManager.Instance.PlaySFX("stage_clear");
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlaySFX("stage_clear");
         ChangeGameState(GameState.End);
         Debug.Log($"Game Cleared!");
 
@@ -160,6 +167,27 @@ public class StageManager : MonoBehaviour
             achievements.ObtainedStar,
             achievements.Min_Moves);
         SaveManager.Instance.Save(GameProgressData.SaveKey, progress);
+    }
+
+    private static BoardData ConvertEditorBoardToBoardData(TileType[] board)
+    {
+        const int size = 8;
+        Vector2 ToVec(int idx) => new Vector2(idx % size + 1, idx / size + 1);
+
+        int startIdx = System.Array.IndexOf(board, TileType.Start);
+        int endIdx   = System.Array.IndexOf(board, TileType.End);
+        int starIdx  = System.Array.IndexOf(board, TileType.Star);
+        int keyIdx   = System.Array.IndexOf(board, TileType.Key);
+
+        var fixedPoints = new List<Vector2>();
+        var holePoints  = new List<Vector2>();
+        for (int i = 0; i < board.Length; i++)
+        {
+            if (board[i] == TileType.Fixed) fixedPoints.Add(ToVec(i));
+            if (board[i] == TileType.Hole)  holePoints.Add(ToVec(i));
+        }
+
+        return new BoardData(size, ToVec(startIdx), ToVec(endIdx), ToVec(starIdx), ToVec(keyIdx), fixedPoints, holePoints);
     }
 
     public void MoveToNextStage()

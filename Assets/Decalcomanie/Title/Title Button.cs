@@ -31,7 +31,8 @@ public class TitleButton : ButtonUI
     public override void OnPointerDown(PointerEventData eventData)
     {
         base.OnPointerDown(eventData);
-        AudioManager.Instance.PlaySFX("button_click");
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlaySFX("button_click");
     }
 
 }

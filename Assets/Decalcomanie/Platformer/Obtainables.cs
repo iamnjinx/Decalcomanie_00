@@ -14,7 +14,8 @@ public class Obtainables : MonoBehaviour, IObtainable
     public string obtainSFX => _obtainSFX;
     public virtual void OnObtained()
     {
-        AudioManager.Instance.PlaySFX(obtainSFX);
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlaySFX(obtainSFX);
         gameObject.SetActive(false);
     }
 }

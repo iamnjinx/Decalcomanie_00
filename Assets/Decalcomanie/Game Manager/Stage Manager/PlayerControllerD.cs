@@ -73,7 +73,8 @@ public class PlayerControllerD : MonoBehaviour
         tarodevController.enabled = false;
         spriteRenderer.sprite = playerSprites[2];
 
-        AudioManager.Instance.PlaySFX("fall_in_hole");
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlaySFX("fall_in_hole");
 
         Vector3 startPos = transform.position;
         Vector3 startScale = transform.localScale;

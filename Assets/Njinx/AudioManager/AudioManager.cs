@@ -32,7 +32,7 @@ public class AudioManager : MonoBehaviour
                 _instance = FindObjectOfType<AudioManager>();
                 if (_instance == null)
                 {
-                    Debug.LogError("[AudioManager] 씬에 AudioManager가 없습니다!");
+                    Debug.LogWarning("[AudioManager] 씬에 AudioManager가 없습니다!");
                 }
             }
             return _instance;
