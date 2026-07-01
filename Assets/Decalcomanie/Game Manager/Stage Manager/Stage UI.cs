@@ -39,6 +39,8 @@ public class StageUI : MonoBehaviour
     public List<BaseUI> stars;
     public ButtonUI nextStageButton;
     public TextMeshProUGUI minMovesText;
+    [Header("Guide UI")]
+    public SpriteRenderer guideImage;
 
     void Start()
     {
@@ -78,6 +80,12 @@ public class StageUI : MonoBehaviour
             objectiveNumTextXPos[(int)language],
             objectiveNumText.rectTransform.anchoredPosition.y
         );
+    }
+
+    public void SetPlatformerOnlyMode()
+    {
+        switchButton.gameObject.SetActive(false);
+        resetButton.gameObject.SetActive(false);
     }
 
     public async UniTask ShowStageCleared(bool isCleared, bool obtainedStar, bool minMoves, int minMoveNum)

@@ -22,8 +22,8 @@ public class GameManager : MonoBehaviour
     public DecalcomanieSceneManager SceneManager;
 
     public SceneType currentScene;
-    public int CurrentStageIndex { get; private set; } = 990;
-    public int TotalStages { get; private set; } = 30;
+    public int CurrentStageIndex { get; private set; } = 1;
+    public int TotalStages { get; private set; } = 50;
     public GameLanguage CurrentLanguage { get; private set; } = GameLanguage.English;
 
     void Start()

@@ -10,7 +10,6 @@ public class DecalcomanieSceneManager : MonoBehaviour
     void Awake()
     {
         fadeUI.ShowUI();
-        Debug.Log(fadeUI.canvasGroup.alpha);
     }
 
     void Start()

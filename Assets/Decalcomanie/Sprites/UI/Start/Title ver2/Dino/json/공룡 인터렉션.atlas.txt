@@ -1,0 +1,12 @@
+공룡 인터렉션.png
+size:1310,1164
+filter:Linear,Linear
+일러스트
+bounds:2,2,1306,1160
+offsets:84,31,1390,1283
+
+공룡 인터렉션_2.png
+size:949,1174
+filter:Linear,Linear
+레이어 403
+bounds:2,2,945,1170

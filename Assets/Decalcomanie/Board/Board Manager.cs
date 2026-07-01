@@ -68,8 +68,8 @@ public class Board
 
         allTiles[boardData.StartPoint].ChangeTileType(TileType.Start);
         allTiles[boardData.EndPoint].ChangeTileType(TileType.End);
-        allTiles[boardData.StarPoint].ChangeTileType(TileType.Star);
-        allTiles[boardData.KeyPoint].ChangeTileType(TileType.Key);
+        if (boardData.StarPoint != -1) allTiles[boardData.StarPoint].ChangeTileType(TileType.Star);
+        if (boardData.KeyPoint != -1) allTiles[boardData.KeyPoint].ChangeTileType(TileType.Key);
 
         foreach (int fixedPoint in boardData.FixedPoints)
         {
@@ -205,6 +205,7 @@ public class BoardData
 
     private int GetIndex(Vector2 point, int size)
     {
+        if ((int)point.x == 0 || (int)point.y == 0) return -1;
         return (int)point.x-1 + size * ((int)point.y-1);
     }
 

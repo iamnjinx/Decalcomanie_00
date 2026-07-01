@@ -7,4 +7,11 @@ public class GameData: ScriptableObject
 {
     public List<Color>  chapterColors;
     public List<Color> chapterColors2;
+
+    public List<Sprite> chapterBackgroundSprites;
+
+    public List<Sprite> chapterDecoL;
+    public List<Sprite> chapterDecoR;
+
+    public List<Sprite> guideSprites;
 }

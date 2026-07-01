@@ -26,7 +26,7 @@ public class StageAssetReader : MonoBehaviour
 
     public TextAsset LoadStageAsset(int stageIndex)
     {
-        string path = $"Stage/stage_{stageIndex}";
+        string path = $"Stage/stage_{stageIndex+1}";
         TextAsset data = Resources.Load<TextAsset>(path);
         if (data == null)
         {

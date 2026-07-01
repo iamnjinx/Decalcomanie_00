@@ -16,6 +16,7 @@ public class StageManager : MonoBehaviour
     private Achievements achievements = new Achievements(false, false, false);
 
     private bool is_ready_for_next_stage = false;
+    private bool isPlatformerOnly = false;
 
     void Awake()
     {
@@ -43,7 +44,23 @@ public class StageManager : MonoBehaviour
         {
             boardManager.CreateBoard(GameManager.Instance.GetCurrentStageAsset());
             stageUI.SetStageBackground(GameManager.Instance.CurrentStageIndex);
+            if(GameManager.Instance.CurrentStageIndex < 5)
+            {
+                stageUI.guideImage.sprite = GameManager.Instance.GameData.guideSprites[GameManager.Instance.CurrentStageIndex];
+                stageUI.guideImage.gameObject.SetActive(true);
+            }
+            else
+            {
+                stageUI.guideImage.gameObject.SetActive(false);
+            }
         }
+        isPlatformerOnly = GameManager.Instance != null && GameManager.Instance.CurrentStageIndex <= 2;
+        if (isPlatformerOnly)
+        {
+            stageUI.SetPlatformerOnlyMode();
+            ChangeGameState(GameState.Platformer);
+        }
+
         stageUI.objectiveNumText.text = $"{boardManager.CurrentBoard.BoardData.minMoves}";
         var language = GameManager.Instance != null ? GameManager.Instance.CurrentLanguage : GameLanguage.English;
         stageUI.SetObjectivePanel(language);
@@ -51,8 +68,8 @@ public class StageManager : MonoBehaviour
         stageUI.SetCurStageText(GameManager.Instance != null ? GameManager.Instance.CurrentStageIndex : 0);
         paintManager.CreateTileControllers();
 
-        if (GameManager.Instance != null && GameManager.Instance.CurrentStageIndex == 0)
-            tutorialManager.StartTutorial();
+        // if (GameManager.Instance != null && GameManager.Instance.CurrentStageIndex == 0)
+        //     tutorialManager.StartTutorial();
     }
 
     public void ChangeGameState(GameState newGameState)
@@ -89,8 +106,8 @@ public class StageManager : MonoBehaviour
         }
         if(tutorialManager != null && tutorialManager.CurTutoID != -1) return;
 
-        if (Input.GetKeyDown(KeyCode.R))         ResetButton();
-        if (Input.GetKeyDown(KeyCode.Tab))       SwitchState();
+        if (Input.GetKeyDown(KeyCode.R))   { if (!isPlatformerOnly) ResetButton(); }
+        if (Input.GetKeyDown(KeyCode.Tab)) { if (!isPlatformerOnly) SwitchState(); }
 
         if (currentGameState == GameState.Paint)
         {
@@ -107,6 +124,7 @@ public class StageManager : MonoBehaviour
 
     public void SwitchState()
     {
+        if (isPlatformerOnly) return;
         if (paintManager.IsFolding) return;
         if (currentGameState == GameState.Paint)
             ChangeGameState(GameState.Platformer);
@@ -128,6 +146,7 @@ public class StageManager : MonoBehaviour
 
     public void ResetButton()
     {
+        if (isPlatformerOnly) return;
         if (paintManager.IsFolding) return;
         if (currentGameState == GameState.Platformer)
         {
@@ -148,7 +167,11 @@ public class StageManager : MonoBehaviour
         ChangeGameState(GameState.End);
         Debug.Log($"Game Cleared!");
 
-        achievements = new Achievements(true, platformerManager.obtainedStar, paintManager.paintCount <= boardManager.CurrentBoard.BoardData.minMoves);
+        bool isEarlyStage = GameManager.Instance != null && GameManager.Instance.CurrentStageIndex <= 4;
+        achievements = new Achievements(
+            true,
+            isEarlyStage || platformerManager.obtainedStar,
+            isEarlyStage || paintManager.paintCount <= boardManager.CurrentBoard.BoardData.minMoves);
 
         SaveProgress();
 

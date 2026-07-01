@@ -94,6 +94,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 7605ff105c6e7be4fa8d7b71bb7ac2d7, type: 3}
   - {fileID: 21300000, guid: 9d5295a3b31eb8b4e954656ee79fc385, type: 3}
   - {fileID: 21300000, guid: 82ed7f6ace8bd6847964f96aa40ddbe3, type: 3}
+  isBlocked: 0
 --- !u!223 &4197546336149474029
 Canvas:
   m_ObjectHideFlags: 0
@@ -202,7 +203,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2624138991192291316}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0

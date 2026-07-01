@@ -1,14 +1,22 @@
 {
-  "Size": 8,
-  "StartPoint": { "x": 1, "y": 1 },
-  "EndPoint":   { "x": 2, "y": 7 },
-  "StarPoint":  { "x": 8, "y": 8 },
-  "KeyPoint":   { "x": 7, "y": 2 },
-  "FixedPoints": [
-    { "x": 4, "y": 5 },
-    { "x": 5, "y": 4 }
-  ],
-  "HolePoints": [
-  ],
-  "MinMoves": 3
+    "Size": 8,
+    "StartPoint": {
+        "x": 1.0,
+        "y": 3.0
+    },
+    "EndPoint": {
+        "x": 8.0,
+        "y": 3.0
+    },
+    "StarPoint": {
+        "x": 6.0,
+        "y": 3.0
+    },
+    "KeyPoint": {
+        "x": 3.0,
+        "y": 3.0
+    },
+    "FixedPoints": [],
+    "HolePoints": [],
+    "MinMoves": 0
 }

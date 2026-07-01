@@ -11,14 +11,15 @@ public class StagePanel: MonoBehaviour
     public TextMeshProUGUI stageNameText; 
     public ButtonUI button;
 
+    public GameObject questionMakrkIcon;
     public Image screenshot;
 
     public BaseUI[] starIcons = new BaseUI[3];
 
     public void SetStagePanel(int stageID, bool isCleared, bool obtainedStar, bool achievedMinMoves, bool isOpened = false, Sprite ss = null)
     {
-        stageNameText.text = $"stage {stageID}";
-        panelImage.color = GameManager.Instance.GameData.chapterColors[(stageID+9) / 10];
+        stageNameText.text = $"STAGE {stageID/10+1}-{stageID%10+1}";
+        panelImage.color = GameManager.Instance.GameData.chapterColors[stageID / 10];
 
         //Debug.Log($"Setting Stage Panel: StageID={stageID}, Cleared={isCleared}, ObtainedStar={obtainedStar}, AchievedMinMoves={achievedMinMoves}");
 
@@ -43,5 +44,6 @@ public class StagePanel: MonoBehaviour
     {
         screenshot.sprite = ss;
         screenshot.gameObject.SetActive(true);
+        questionMakrkIcon.SetActive(false);
     }
 }

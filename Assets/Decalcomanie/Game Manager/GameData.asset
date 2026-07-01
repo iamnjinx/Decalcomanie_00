@@ -14,13 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chapterColors:
   - {r: 1, g: 1, b: 1, a: 1}
-  - {r: 1, g: 0, b: 0, a: 1}
-  - {r: 1, g: 0.5, b: 0, a: 1}
-  - {r: 0, g: 1, b: 0, a: 1}
-  - {r: 0, g: 0, b: 1, a: 1}
+  - {r: 1, g: 0.39999998, b: 0.39999998, a: 1}
+  - {r: 1, g: 0.70117646, b: 0.39999998, a: 1}
+  - {r: 0.39999998, g: 1, b: 0.39999998, a: 1}
+  - {r: 0.39999998, g: 0.39999998, b: 1, a: 1}
   chapterColors2:
   - {r: 1, g: 1, b: 1, a: 1}
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 0, g: 1, b: 0, a: 1}
   - {r: 0, g: 0, b: 1, a: 1}
   - {r: 0, g: 0, b: 0, a: 1}
+  chapterBackgroundSprites:
+  - {fileID: 21300000, guid: 3c530e7f3f6ecee40958dfebb2f4537a, type: 3}
+  - {fileID: 21300000, guid: 31a371e22204fdb4fb331912ddb4f905, type: 3}
+  - {fileID: 21300000, guid: f78546d10fa2a154eb5c9737412adc7d, type: 3}
+  - {fileID: 21300000, guid: 46dd0ed87c9f14c42b36a76eca81636e, type: 3}
+  - {fileID: 21300000, guid: caea0087d18411b49b28e2c6b3ecbf47, type: 3}
+  chapterDecoL:
+  - {fileID: 21300000, guid: 5335c74f1cf091e48a15372fc1da0c07, type: 3}
+  - {fileID: 21300000, guid: edfc22e23578d2c4b96bc1ceec10597c, type: 3}
+  - {fileID: 21300000, guid: dfc8c068769c60243850f319171742e5, type: 3}
+  - {fileID: 21300000, guid: 6f5ca99efb562814c8f8be4d8bdc82c7, type: 3}
+  - {fileID: 21300000, guid: 4656e16897051a7468e7ae96726cca2d, type: 3}
+  chapterDecoR:
+  - {fileID: 21300000, guid: 643febe93199e13448cf9a6ed8121f18, type: 3}
+  - {fileID: 21300000, guid: ae76e1d418fbd904cab8a3d2b33a2bb7, type: 3}
+  - {fileID: 21300000, guid: 29a2aaae6fbe76948ad219cf6c2fc5de, type: 3}
+  - {fileID: 21300000, guid: 2260d289c25005a41b11fe3a30a12dfb, type: 3}
+  - {fileID: 21300000, guid: 4656e16897051a7468e7ae96726cca2d, type: 3}
+  guideSprites:
+  - {fileID: 21300000, guid: 47c607ce147f31e49bb6cb4c45b5fd6d, type: 3}
+  - {fileID: 21300000, guid: 47c607ce147f31e49bb6cb4c45b5fd6d, type: 3}
+  - {fileID: 21300000, guid: 81a314a692eaf7140af9564908a57edf, type: 3}
+  - {fileID: 21300000, guid: c55a264807b762a47843e277d0d67e87, type: 3}
+  - {fileID: 21300000, guid: e2fceb29835231a40a9a195a04455890, type: 3}

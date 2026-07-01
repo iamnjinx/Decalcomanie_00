@@ -9,11 +9,19 @@ public class TitleManager : MonoBehaviour
 
     void Start()
     {
-        titleUI.selectionButton.OnSingleClick += MoveToSelectScene;
-        titleUI.settingButton.OnSingleClick += OpenSetting;
+        for (int i = 0; i < titleUI.selectionButtons.Length; i++)
+        {
+            if (i < titleUI.selectionButtons.Length)
+            {
+                TitleSelectionButtons buttons = titleUI.selectionButtons[i];
+                buttons.selectionButton.OnSingleClick += MoveToSelectScene;
+                buttons.settingButton.OnSingleClick += OpenSetting;
+                buttons.languageButton.OnSingleClick += ChangeLanguage;
+                buttons.quitButton.OnSingleClick += QuitGame;
+            }
+        }
+        
         titleUI.resetButton.OnSingleClick += ResetProgress;
-        titleUI.languageButton.OnSingleClick += ChangeLanguage;
-        titleUI.quitButton.OnSingleClick += QuitGame;
         titleUI.creditButton.OnSingleClick += ShowCredit;
 
         titleUI.SetLanguage(GameManager.Instance.CurrentLanguage);
