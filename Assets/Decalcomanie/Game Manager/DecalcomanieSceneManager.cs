@@ -7,6 +7,12 @@ public class DecalcomanieSceneManager : MonoBehaviour
 {
     [SerializeField] BaseUI fadeUI;
 
+    void Awake()
+    {
+        fadeUI.ShowUI();
+        Debug.Log(fadeUI.canvasGroup.alpha);
+    }
+
     void Start()
     {
         fadeUI.HideUI(.2f).Forget();
