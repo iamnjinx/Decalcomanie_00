@@ -29,10 +29,12 @@ public class StageUI : MonoBehaviour
 
 
     [Header("Objectives")]
-    public Image objectivePanelImage;
-    public Sprite[] languageObjectivePanelSprites; // 0: English, 1: Korean
-    public TextMeshProUGUI objectiveNumText;
-    public float[] objectiveNumTextXPos;
+    // 0: Stage Clear (early stage only), 1: Star Earned, 2: Star & Min Moves
+    public TextMeshProUGUI[] objectiveTexts = new TextMeshProUGUI[3];
+    public GameObject objectiveObj;
+    private static readonly string[] stageClearTexts = { "STAGE CLEAR!!", "스테이지 클리어!!" }; // 0: English, 1: Korean
+    private static readonly string[] starEarnedTexts = { "STAR EARNED!!", "별 획득!!" }; // 0: English, 1: Korean
+    private static readonly string[] starMovesFormats = { "STAR & Paint <= {0}", "별 & 이동 <= {0}" }; // 0: English, 1: Korean
 
     [Header("Stage Cleared UI")]
     public BaseUI stageClearedUI;
@@ -51,13 +53,13 @@ public class StageUI : MonoBehaviour
     {
         Material material = stageTitleText.fontMaterial;
         material.SetFloat(ShaderUtilities.ID_UnderlayDilate, 1.2f); // 1보다 큰 값
-        stageTitleText.text = $"STAGE {stageID}";
+        stageTitleText.text = $"STAGE {stageID / 10 + 1}-{stageID % 10 + 1}";
     }
 
     public void SetStageBackground(int stageID)
     {
-        if (stageID <= 0 || stageID > stageBackgroundSprites.Count * 10) return; // stageID가 유효한 경우에만 배경을 설정
-        stageMainBackgroundImage.sprite = stageBackgroundSprites[(stageID+9) / 10];
+        if (stageID < 0 || stageID >= stageBackgroundSprites.Count * 10) return; // stageID가 유효한 경우에만 배경을 설정
+        stageMainBackgroundImage.sprite = stageBackgroundSprites[stageID / 10];
     }
 
     public void SetShortKeySprite(GameState gameState, GameLanguage language)
@@ -72,14 +74,13 @@ public class StageUI : MonoBehaviour
             platformerShortKeyImage.sprite = platformerShortKeySprites[(int)language];
     }
 
-    public void SetObjectivePanel(GameLanguage language)
+    public void SetObjectiveTexts(GameLanguage language, bool isEarlyStage, int minMoves)
     {
-        objectivePanelImage.sprite = languageObjectivePanelSprites[(int)language];
-        // Adjust the position of the objective number text based on the language
-        objectiveNumText.rectTransform.anchoredPosition = new Vector2(
-            objectiveNumTextXPos[(int)language],
-            objectiveNumText.rectTransform.anchoredPosition.y
-        );
+        objectiveObj.SetActive(!isEarlyStage);
+
+        objectiveTexts[0].text = stageClearTexts[(int)language];
+        objectiveTexts[1].text = starEarnedTexts[(int)language];
+        objectiveTexts[2].text = string.Format(starMovesFormats[(int)language], minMoves);
     }
 
     public void SetPlatformerOnlyMode()

@@ -17,6 +17,7 @@ public class StageManager : MonoBehaviour
 
     private bool is_ready_for_next_stage = false;
     private bool isPlatformerOnly = false;
+    private bool isEarlyStage = false;
 
     void Awake()
     {
@@ -54,16 +55,16 @@ public class StageManager : MonoBehaviour
                 stageUI.guideImage.gameObject.SetActive(false);
             }
         }
-        isPlatformerOnly = GameManager.Instance != null && GameManager.Instance.CurrentStageIndex <= 2;
+        isPlatformerOnly = GameManager.Instance != null && GameManager.Instance.CurrentStageIndex < 2;
         if (isPlatformerOnly)
         {
             stageUI.SetPlatformerOnlyMode();
             ChangeGameState(GameState.Platformer);
         }
 
-        stageUI.objectiveNumText.text = $"{boardManager.CurrentBoard.BoardData.minMoves}";
+        isEarlyStage = GameManager.Instance != null && GameManager.Instance.CurrentStageIndex <= 3;
         var language = GameManager.Instance != null ? GameManager.Instance.CurrentLanguage : GameLanguage.English;
-        stageUI.SetObjectivePanel(language);
+        stageUI.SetObjectiveTexts(language, isEarlyStage, boardManager.CurrentBoard.BoardData.minMoves);
         stageUI.SetShortKeySprite(currentGameState, language);
         stageUI.SetCurStageText(GameManager.Instance != null ? GameManager.Instance.CurrentStageIndex : 0);
         paintManager.CreateTileControllers();
@@ -165,9 +166,7 @@ public class StageManager : MonoBehaviour
         if (AudioManager.Instance != null)
             AudioManager.Instance.PlaySFX("stage_clear");
         ChangeGameState(GameState.End);
-        Debug.Log($"Game Cleared!");
 
-        bool isEarlyStage = GameManager.Instance != null && GameManager.Instance.CurrentStageIndex <= 4;
         achievements = new Achievements(
             true,
             isEarlyStage || platformerManager.obtainedStar,

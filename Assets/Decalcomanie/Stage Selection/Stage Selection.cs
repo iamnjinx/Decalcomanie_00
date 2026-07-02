@@ -33,7 +33,7 @@ public class StageSelection : MonoBehaviour
         }
 
         currentChapterIndex = Mathf.Clamp(SaveManager.Instance.Load(ChapterIndexKey, 0), 0, maxChapterIndex);
-        int d = GameManager.Instance.CurrentStageIndex == 0 ? 0 : (GameManager.Instance.CurrentStageIndex-1) / 10 + 1;
+        int d = GameManager.Instance.CurrentStageIndex / 10;
         UpdateChapterDisplay(d, true, true);
 
         stageSelectionUI.SetStagePanel();
@@ -73,9 +73,10 @@ public class StageSelection : MonoBehaviour
 
             var achievement = progress.GetAchievement(index);
             var ss = index < stageScreenshots.Count ? stageScreenshots[index] : null;
+            Debug.Log($"Highest Unlocked Stage: {progress.highestUnlockedStage}, Current Index: {index}");
             stageSelectionUI.stagePanels[i].SetStagePanel(index, achievement.isCleared, achievement.obtainedStar, achievement.achievedMinMoves, progress.highestUnlockedStage >= index, ss);
 
-            stageSelectionUI.stagePanels[i].button.OnSingleClick += () => OnStageSelected(index);
+            stageSelectionUI.stagePanels[i].button.OnSingleClick = () => OnStageSelected(index);
         }
     }
 

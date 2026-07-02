@@ -43,7 +43,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 2260d289c25005a41b11fe3a30a12dfb, type: 3}
   - {fileID: 21300000, guid: 4656e16897051a7468e7ae96726cca2d, type: 3}
   guideSprites:
-  - {fileID: 21300000, guid: 47c607ce147f31e49bb6cb4c45b5fd6d, type: 3}
+  - {fileID: 21300000, guid: 01702b73552cb594193ef3d497c2de9b, type: 3}
   - {fileID: 21300000, guid: 47c607ce147f31e49bb6cb4c45b5fd6d, type: 3}
   - {fileID: 21300000, guid: 81a314a692eaf7140af9564908a57edf, type: 3}
   - {fileID: 21300000, guid: c55a264807b762a47843e277d0d67e87, type: 3}

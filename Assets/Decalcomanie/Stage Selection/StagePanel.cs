@@ -27,10 +27,7 @@ public class StagePanel: MonoBehaviour
         SetIcon(starIcons[1], isCleared && obtainedStar);
         SetIcon(starIcons[2], isCleared && achievedMinMoves);
 
-        if (isOpened)
-        {
-            SetOpened(ss);
-        }
+        SetOpened(ss, isOpened);
     }
 
     private void SetIcon(BaseUI icon, bool show)
@@ -40,10 +37,10 @@ public class StagePanel: MonoBehaviour
         else icon.HideUI();
     }
 
-    private void SetOpened(Sprite ss)
+    private void SetOpened(Sprite ss, bool isOpened = true)
     {
         screenshot.sprite = ss;
-        screenshot.gameObject.SetActive(true);
-        questionMakrkIcon.SetActive(false);
+        screenshot.gameObject.SetActive(isOpened);
+        questionMakrkIcon.SetActive(!isOpened);
     }
 }

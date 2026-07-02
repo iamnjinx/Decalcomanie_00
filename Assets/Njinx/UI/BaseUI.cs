@@ -63,6 +63,8 @@ namespace Njinx.UI
 
             await canvasGroup.DOFade(1f, delay).SetEase(Ease.InSine).AsyncWaitForCompletion();
 
+            if (this == null || canvasGroup == null) return;
+
             SetInteractable(true);
             is_shown = true;
         }
@@ -73,6 +75,8 @@ namespace Njinx.UI
 
             await canvasGroup.DOFade(0f, delay).SetEase(Ease.InSine).AsyncWaitForCompletion();
 
+            if (this == null || canvasGroup == null) return;
+
             SetInteractable(false);
             is_shown = false;
         }
@@ -80,6 +84,8 @@ namespace Njinx.UI
 
         public void SetInteractable(bool is_interactable)
         {
+            if (canvasGroup == null) return;
+
             canvasGroup.interactable = is_interactable;
             if(is_blockRaycast) canvasGroup.blocksRaycasts = is_interactable;
             //canvasGroup.alpha = is_interactable ? 1f : 0f;

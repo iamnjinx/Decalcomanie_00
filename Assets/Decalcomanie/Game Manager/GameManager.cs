@@ -108,7 +108,7 @@ public class GameManager : MonoBehaviour
 
     public void LoadStage(int stageIndex)
     {
-        if (stageIndex > TotalStages)
+        if (stageIndex >= TotalStages)
         {
             CurrentStageIndex = TotalStages;
             Debug.Log(CurrentStageIndex);

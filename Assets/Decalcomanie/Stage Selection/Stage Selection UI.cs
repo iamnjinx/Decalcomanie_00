@@ -77,7 +77,6 @@ public class StageSelectionUI : MonoBehaviour
 
             await UniTask.Delay((int)(nextDuration * 500));
 
-            Debug.Log($"Chapter Index: {chapterIndex}, Background Index: {chapterIndex/10}");
             chapterBackgroundImage.sprite = GameManager.Instance.GameData.chapterBackgroundSprites[chapterIndex];
 
             chapterDeco[0].sprite = GameManager.Instance.GameData.chapterDecoL[chapterIndex];
