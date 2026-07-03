@@ -1,20 +1,20 @@
 {
     "Size": 8,
     "StartPoint": {
-        "x": 8.0,
+        "x": 1.0,
         "y": 1.0
     },
     "EndPoint": {
-        "x": 8.0,
-        "y": 3.0
+        "x": 5.0,
+        "y": 5.0
     },
     "StarPoint": {
-        "x": 4.0,
-        "y": 1.0
+        "x": 6.0,
+        "y": 3.0
     },
     "KeyPoint": {
         "x": 1.0,
-        "y": 1.0
+        "y": 3.0
     },
     "FixedPoints": [],
     "HolePoints": [],
