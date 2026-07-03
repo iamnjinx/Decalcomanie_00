@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -26,8 +27,12 @@ public class GameManager : MonoBehaviour
     public int TotalStages { get; private set; } = 50;
     public GameLanguage CurrentLanguage { get; private set; } = GameLanguage.English;
 
+    [SerializeField] private TextMeshProUGUI verText;
+
     void Start()
     {
+        verText.text = $"ver {Application.version}";
+
         currentScene = (SceneType)SceneManager.GetCurrentSceneIndex();
         LoadSettings();
     }
