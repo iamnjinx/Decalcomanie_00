@@ -22,7 +22,7 @@ public class StageSelectionUI : MonoBehaviour
     public CanvasGroup chapterCG;
     public StagePanel[] stagePanels = new StagePanel[10];
     public Image[] chapterDeco = new Image[2];
-    public BaseUI[] chapterFlip = new BaseUI[2];
+    public BaseUI[] chapterFlip = new BaseUI[4];
 
     public bool is_changingChapter = false;
 
@@ -61,31 +61,33 @@ public class StageSelectionUI : MonoBehaviour
         }
         else
         {
-            // 배경 어두워짐.
+            StartCoroutine(WaitforChangeChapter(chapterIndex));
+
             if (AudioManager.Instance != null)
             AudioManager.Instance.PlaySFX("fold_paper");
 
-            chapterBackgroundImage.DOFade(0.7f, nextDuration).SetEase(Ease.InQuad);
-
-            if(is_right) chapterFlip[1].ShowUI();
+            if(is_right) chapterFlip[3].ShowUI();
             else chapterFlip[0].ShowUI();
 
-            await UniTask.Delay((int)(nextDuration * 500));
+            await UniTask.Delay(TimeSpan.FromSeconds(nextDuration/2));
 
-            if(is_right) chapterFlip[1].HideUI();
-            else chapterFlip[0].HideUI();
+            if(is_right) {chapterFlip[3].HideUI(); chapterFlip[2].ShowUI(); }
+            else {chapterFlip[0].HideUI(); chapterFlip[1].ShowUI(); }
 
-            await UniTask.Delay((int)(nextDuration * 500));
+            await UniTask.Delay(TimeSpan.FromSeconds(nextDuration/2));
 
-            chapterBackgroundImage.sprite = GameManager.Instance.GameData.chapterBackgroundSprites[chapterIndex];
+            if(is_right) {chapterFlip[2].HideUI(); chapterFlip[1].ShowUI(); }
+            else {chapterFlip[1].HideUI(); chapterFlip[2].ShowUI(); }
 
-            chapterDeco[0].sprite = GameManager.Instance.GameData.chapterDecoL[chapterIndex];
-            chapterDeco[1].sprite = GameManager.Instance.GameData.chapterDecoR[chapterIndex];
-            OnChapterChanged?.Invoke();
+            await UniTask.Delay(TimeSpan.FromSeconds(nextDuration/2));
 
-            chapterBackgroundImage.DOFade(1f, nextDuration).SetEase(Ease.InQuad);
+            if(is_right) {chapterFlip[1].HideUI(); chapterFlip[0].ShowUI(); }
+            else {chapterFlip[2].HideUI(); chapterFlip[3].ShowUI(); }
 
-            await UniTask.Delay((int)(nextDuration * 1000));
+            await UniTask.Delay(TimeSpan.FromSeconds(nextDuration/2));
+
+            if(is_right) {chapterFlip[0].HideUI(); }
+            else {chapterFlip[3].HideUI(); }
         }
 
         ChangeButtonState(chapterIndex, maxChapterIndex);
@@ -112,5 +114,17 @@ public class StageSelectionUI : MonoBehaviour
         {
             RightButton.SetUI(true);
         }
+    }
+
+    IEnumerator WaitforChangeChapter(int chapterIndex)
+    {
+        chapterBackgroundImage.DOFade(0.7f, nextDuration).SetEase(Ease.InQuad);
+        yield return new WaitForSeconds(nextDuration);
+        chapterBackgroundImage.sprite = GameManager.Instance.GameData.chapterBackgroundSprites[chapterIndex];
+        chapterBackgroundImage.DOFade(1f, nextDuration).SetEase(Ease.InQuad);
+
+        chapterDeco[0].sprite = GameManager.Instance.GameData.chapterDecoL[chapterIndex];
+        chapterDeco[1].sprite = GameManager.Instance.GameData.chapterDecoR[chapterIndex];
+        OnChapterChanged?.Invoke();
     }
 }
