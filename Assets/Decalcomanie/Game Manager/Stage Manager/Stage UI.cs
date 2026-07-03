@@ -38,6 +38,7 @@ public class StageUI : MonoBehaviour
 
     [Header("Stage Cleared UI")]
     public BaseUI stageClearedUI;
+    public BaseUI stageClearedAchievementUI;
     public List<BaseUI> stars;
     public ButtonUI nextStageButton;
     public TextMeshProUGUI minMovesText;
@@ -89,16 +90,19 @@ public class StageUI : MonoBehaviour
         resetButton.gameObject.SetActive(false);
     }
 
-    public async UniTask ShowStageCleared(bool isCleared, bool obtainedStar, bool minMoves, int minMoveNum)
+    public async UniTask ShowStageCleared(bool isCleared, bool obtainedStar, bool minMoves, int minMoveNum, bool isEarlyStage)
     {
-        minMovesText.text = $"{minMoveNum}"; 
+        await stageClearedUI.ShowUI(1f);        
 
         await UniTask.Delay(1000);
 
-        await stageClearedUI.ShowUI(1f);
+        if (!isEarlyStage)
+        {
+            minMovesText.text = $"{minMoveNum}"; 
+            await stageClearedAchievementUI.ShowUI(1f);
 
-        await ShowAchivementStars(isCleared, obtainedStar, minMoves);
-
+            await ShowAchivementStars(isCleared, obtainedStar, minMoves);   
+        }
 
         // 화면 터치 시, 다음 스테이지로 넘어가게.
         nextStageButton.ShowUI();

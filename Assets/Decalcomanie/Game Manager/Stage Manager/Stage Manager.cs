@@ -175,7 +175,7 @@ public class StageManager : MonoBehaviour
         SaveProgress();
 
         // 화면 어두워지고 클리어 UI.
-        await stageUI.ShowStageCleared(achievements.Is_Cleared, achievements.ObtainedStar, achievements.Min_Moves, boardManager.CurrentBoard.BoardData.minMoves);
+        await stageUI.ShowStageCleared(achievements.Is_Cleared, achievements.ObtainedStar, achievements.Min_Moves, boardManager.CurrentBoard.BoardData.minMoves, isEarlyStage);
         is_ready_for_next_stage = true;
     }
 
