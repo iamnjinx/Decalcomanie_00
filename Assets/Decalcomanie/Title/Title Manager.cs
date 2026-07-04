@@ -24,6 +24,12 @@ public class TitleManager : MonoBehaviour
         titleUI.resetButton.OnSingleClick += ResetProgress;
         titleUI.creditButton.OnSingleClick += ShowCredit;
 
+        StartCoroutine(InitLanguageNextFrame());
+    }
+
+    IEnumerator InitLanguageNextFrame()
+    {
+        yield return null;
         titleUI.SetLanguage(GameManager.Instance.CurrentLanguage);
     }
 
