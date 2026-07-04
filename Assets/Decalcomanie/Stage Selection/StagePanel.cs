@@ -19,7 +19,7 @@ public class StagePanel: MonoBehaviour
     public void SetStagePanel(int stageID, bool isCleared, bool obtainedStar, bool achievedMinMoves, bool isOpened = false, Sprite ss = null)
     {
         stageNameText.text = $"STAGE {stageID/10+1}-{stageID%10+1}";
-        panelImage.color = GameManager.Instance.GameData.chapterColors[stageID / 10];
+        panelImage.color = GameManager.Instance.GameData.chapterColors[stageID / 5];
 
         //Debug.Log($"Setting Stage Panel: StageID={stageID}, Cleared={isCleared}, ObtainedStar={obtainedStar}, AchievedMinMoves={achievedMinMoves}");
 
