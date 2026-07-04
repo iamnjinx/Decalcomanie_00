@@ -99,7 +99,7 @@ public class StageSelection : MonoBehaviour
     private void UpdateChapterDisplay(int chapterIndex, bool is_right, bool is_instant = false)
     {
         if(stageSelectionUI.is_changingChapter) return;
-        currentChapterIndex = chapterIndex;
+        currentChapterIndex = Mathf.Clamp(chapterIndex, 0, maxChapterIndex);
         SaveManager.Instance.Save(ChapterIndexKey, currentChapterIndex);
         stageSelectionUI.ChangeChapterDisplay(chapterIndex, maxChapterIndex, is_right, is_instant);
     }

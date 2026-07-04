@@ -304,7 +304,7 @@ MonoBehaviour:
   StageAssetReader: {fileID: 4770179498204225158}
   SceneManager: {fileID: 9009326301886050671}
   currentScene: 0
-  verText: {fileID: 0}
+  verText: {fileID: 3949007917732128569}
 --- !u!114 &9009326301886050671
 MonoBehaviour:
   m_ObjectHideFlags: 0

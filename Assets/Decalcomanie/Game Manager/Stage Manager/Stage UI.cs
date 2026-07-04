@@ -34,11 +34,14 @@ public class StageUI : MonoBehaviour
     public GameObject objectiveObj;
     private static readonly string[] stageClearTexts = { "STAGE CLEAR!!", "스테이지 클리어!!" }; // 0: English, 1: Korean
     private static readonly string[] starEarnedTexts = { "STAR EARNED!!", "별 획득!!" }; // 0: English, 1: Korean
-    private static readonly string[] starMovesFormats = { "STAR & Paint <= {0}", "별 & 이동 <= {0}" }; // 0: English, 1: Korean
+    private static readonly string[] starMovesFormats = { "STAR & Paint <= {0}", "별 & 색칠 <= {0}" }; // 0: English, 1: Korean
 
     [Header("Stage Cleared UI")]
     public BaseUI stageClearedUI;
     public BaseUI stageClearedAchievementUI;
+    public TextMeshProUGUI[] stageClearedTexts = new TextMeshProUGUI[3]; // 0: Stage Clear, 1: Star Earned, 2: Min Moves
+
+    public Image achivementImage;
     public List<BaseUI> stars;
     public ButtonUI nextStageButton;
     public TextMeshProUGUI minMovesText;
@@ -98,7 +101,11 @@ public class StageUI : MonoBehaviour
 
         if (!isEarlyStage)
         {
-            minMovesText.text = $"{minMoveNum}"; 
+            int language = (int)GameManager.Instance.CurrentLanguage;
+            stageClearedTexts[0].text = stageClearTexts[language];
+            stageClearedTexts[1].text = starEarnedTexts[language];
+            stageClearedTexts[2].text = string.Format(starMovesFormats[language], minMoves);
+            achivementImage.sprite = GameManager.Instance.GameData.achievementSprites[language];
             await stageClearedAchievementUI.ShowUI(1f);
 
             await ShowAchivementStars(isCleared, obtainedStar, minMoves);   

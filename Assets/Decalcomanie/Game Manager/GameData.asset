@@ -48,3 +48,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: f287db29c7d58de458af929c74a628bc, type: 3}
   - {fileID: 21300000, guid: c55a264807b762a47843e277d0d67e87, type: 3}
   - {fileID: 21300000, guid: 40f2c83164b95b840828db96ff80ddb4, type: 3}
+  achievementSprites:
+  - {fileID: 21300000, guid: 4c85169b9c7f57e4aa811051a300e643, type: 3}
+  - {fileID: 21300000, guid: e5b90423247b4cc45b7e747567023c23, type: 3}
