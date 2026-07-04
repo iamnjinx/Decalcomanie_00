@@ -73,7 +73,6 @@ public class StageSelection : MonoBehaviour
 
             var achievement = progress.GetAchievement(index);
             var ss = index < stageScreenshots.Count ? stageScreenshots[index] : null;
-            Debug.Log($"Highest Unlocked Stage: {progress.highestUnlockedStage}, Current Index: {index}");
             stageSelectionUI.stagePanels[i].SetStagePanel(index, achievement.isCleared, achievement.obtainedStar, achievement.achievedMinMoves, progress.highestUnlockedStage >= index, ss);
 
             stageSelectionUI.stagePanels[i].button.OnSingleClick = () => OnStageSelected(index);

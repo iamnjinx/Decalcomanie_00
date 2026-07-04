@@ -48,6 +48,8 @@ public class StageManager : MonoBehaviour
             if(GameManager.Instance.CurrentStageIndex < 5)
             {
                 stageUI.guideImage.sprite = GameManager.Instance.GameData.guideSprites[GameManager.Instance.CurrentStageIndex];
+                //guideimage 오브젝트 sorting layer를 early stage일떄 아닐떄 다르게 설정
+                stageUI.guideImage.gameObject.layer = LayerMask.NameToLayer(GameManager.Instance.CurrentStageIndex < 2 ? "Tile" : "Guide");
                 stageUI.guideImage.gameObject.SetActive(true);
             }
             else
