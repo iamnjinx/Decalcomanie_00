@@ -40,7 +40,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: edfc22e23578d2c4b96bc1ceec10597c, type: 3}
   - {fileID: 21300000, guid: dfc8c068769c60243850f319171742e5, type: 3}
   - {fileID: 21300000, guid: 6f5ca99efb562814c8f8be4d8bdc82c7, type: 3}
-  - {fileID: 21300000, guid: 4656e16897051a7468e7ae96726cca2d, type: 3}
+  - {fileID: 21300000, guid: c05049bf2aea6fa4f8398a27a77d75e7, type: 3}
   chapterDecoR:
   - {fileID: 21300000, guid: 643febe93199e13448cf9a6ed8121f18, type: 3}
   - {fileID: 21300000, guid: ae76e1d418fbd904cab8a3d2b33a2bb7, type: 3}
