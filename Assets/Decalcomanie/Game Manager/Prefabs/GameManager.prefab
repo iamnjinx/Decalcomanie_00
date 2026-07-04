@@ -204,8 +204,8 @@ CanvasGroup:
   m_GameObject: {fileID: 2624138991192291316}
   m_Enabled: 1
   m_Alpha: 0
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
 --- !u!114 &9019423139799532215
 MonoBehaviour:
@@ -248,10 +248,10 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 0
   m_TargetGraphic: {fileID: 5524469730837518104}
-  startHidden: 0
+  startHidden: 1
   is_blockRaycast: 1
   canvasGroup: {fileID: 1196211230910958902}
-  is_shown: 1
+  is_shown: 0
 --- !u!1 &8368203217563876033
 GameObject:
   m_ObjectHideFlags: 0
