@@ -5,6 +5,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine.UI;
+using Unity.Burst.CompilerServices;
 
 public class StageUI : MonoBehaviour
 {
@@ -45,6 +46,11 @@ public class StageUI : MonoBehaviour
     public List<BaseUI> stars;
     public ButtonUI nextStageButton;
     public TextMeshProUGUI minMovesText;
+
+    [Header("Hint UI")]
+    public HintButton[] hintButtons = new HintButton[3];
+
+
     [Header("Guide UI")]
     public SpriteRenderer guideImage;
 

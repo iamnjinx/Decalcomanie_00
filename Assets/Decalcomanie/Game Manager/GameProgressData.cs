@@ -13,7 +13,9 @@ public class GameProgressData
         return data;
     }
     public int highestUnlockedStage = 0;
+    public int remainingStarCount = 0;
     public List<StageAchievementData> stageAchievements = new List<StageAchievementData>();
+    public List<bool> lastHintUnlockedStages = new List<bool>();
 
     public StageAchievementData GetAchievement(int stageIndex)
     {
@@ -24,7 +26,20 @@ public class GameProgressData
 
     public bool IsStageUnlocked(int stageIndex) => stageIndex <= highestUnlockedStage;
 
-    public void RecordStageCleared(int stageIndex, bool obtainedStar, bool achievedMinMoves)
+    public bool IsStarObtained(int stageIndex) => GetAchievement(stageIndex).starObtained;
+
+    public bool IsLastHintUnlocked(int stageIndex) =>
+        stageIndex < lastHintUnlockedStages.Count && lastHintUnlockedStages[stageIndex];
+
+    public void SetLastHintUnlocked(int stageIndex)
+    {
+        while (lastHintUnlockedStages.Count <= stageIndex)
+            lastHintUnlockedStages.Add(false);
+
+        lastHintUnlockedStages[stageIndex] = true;
+    }
+
+    public void RecordStageCleared(int stageIndex, bool obtainedStar, bool achievedMinMoves, bool starObtained)
     {
         while (stageAchievements.Count <= stageIndex)
             stageAchievements.Add(new StageAchievementData());
@@ -33,6 +48,10 @@ public class GameProgressData
         data.isCleared = true;
         data.obtainedStar = data.obtainedStar || obtainedStar;
         data.achievedMinMoves = data.achievedMinMoves || achievedMinMoves;
+
+        if (starObtained && !data.starObtained)
+            remainingStarCount++;
+        data.starObtained = data.starObtained || starObtained;
 
         if (stageIndex + 1 > highestUnlockedStage)
             highestUnlockedStage = System.Math.Min(stageIndex + 1, GameManager.Instance.TotalStages);
@@ -45,4 +64,5 @@ public class StageAchievementData
     public bool isCleared;
     public bool obtainedStar;
     public bool achievedMinMoves;
+    public bool starObtained;
 }

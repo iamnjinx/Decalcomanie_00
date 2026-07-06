@@ -13,10 +13,10 @@
         "y": 1.0
     },
     "KeyPoint": {
-        "x": 3.0,
+        "x": 4.0,
         "y": 8.0
     },
     "FixedPoints": [],
     "HolePoints": [],
-    "MinMoves": 0
+    "MinMoves": 2
 }

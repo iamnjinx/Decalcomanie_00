@@ -18,22 +18,22 @@ public class AlphaRaycastFilter : MonoBehaviour, ICanvasRaycastFilter
     {
         m_sprite = m_image.sprite;
         if (m_sprite == null) return true;
+        if (!m_sprite.texture.isReadable) return true;
 
-        // 로컬 좌표로 변환
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             m_image.rectTransform, screenPoint, eventCamera, out Vector2 localPoint);
 
-        // 스프라이트 픽셀 좌표로 변환
         var rect = m_image.rectTransform.rect;
-        var spriteRect = m_sprite.textureRect;
 
-        float u = (localPoint.x - rect.x) / rect.width;
-        float v = (localPoint.y - rect.y) / rect.height;
+        float u = Mathf.Clamp01((localPoint.x - rect.x) / rect.width);
+        float v = Mathf.Clamp01((localPoint.y - rect.y) / rect.height);
 
-        int tx = (int)(spriteRect.x + u * spriteRect.width);
-        int ty = (int)(spriteRect.y + v * spriteRect.height);
+        // sprite.rect(=textureRect)는 알파 트리밍된 좁은 영역이라 RectTransform 전체 비율을
+        // 여기에 다시 매핑하면 항상 트리밍 박스 안쪽(대부분 불투명)만 샘플링하게 된다.
+        // 이 스프라이트는 아틀라스로 패킹되지 않고 텍스처 전체를 그대로 쓰므로 텍스처 크기 기준으로 샘플링한다.
+        int tx = Mathf.Clamp((int)(u * m_sprite.texture.width), 0, m_sprite.texture.width - 1);
+        int ty = Mathf.Clamp((int)(v * m_sprite.texture.height), 0, m_sprite.texture.height - 1);
 
-        // 알파값 체크
         float alpha = m_sprite.texture.GetPixel(tx, ty).a;
         return alpha >= alphaThreshold;
     }
