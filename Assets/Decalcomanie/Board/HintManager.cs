@@ -12,6 +12,9 @@ public class HintManager : MonoBehaviour
 
     private void Awake()
     {
+        if (GameManager.Instance.CurrentStageIndex < 5)
+            hintUI.gameObject.SetActive(false);
+
         hintUI.hintButtons[0].OnPressed += OnFirstHintPressed;
         hintUI.hintButtons[0].OnReleased += OnFirstHintReleased;
 

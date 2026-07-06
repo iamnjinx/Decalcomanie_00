@@ -47,9 +47,6 @@ public class StageUI : MonoBehaviour
     public ButtonUI nextStageButton;
     public TextMeshProUGUI minMovesText;
 
-    [Header("Hint UI")]
-    public HintButton[] hintButtons = new HintButton[3];
-
 
     [Header("Guide UI")]
     public SpriteRenderer guideImage;
@@ -110,7 +107,7 @@ public class StageUI : MonoBehaviour
             int language = (int)GameManager.Instance.CurrentLanguage;
             stageClearedTexts[0].text = stageClearTexts[language];
             stageClearedTexts[1].text = starEarnedTexts[language];
-            stageClearedTexts[2].text = string.Format(starMovesFormats[language], minMoves);
+            stageClearedTexts[2].text = string.Format(starMovesFormats[language], minMoveNum);
             achivementImage.sprite = GameManager.Instance.GameData.achievementSprites[language];
             await stageClearedAchievementUI.ShowUI(1f);
 
