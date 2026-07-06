@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     public int CurrentStageIndex { get; private set; } = 1;
     public int TotalStages { get; private set; } = 50;
     public GameLanguage CurrentLanguage { get; private set; } = GameLanguage.English;
+    public bool IsFullscreen { get; private set; } = true;
 
     [SerializeField] private TextMeshProUGUI verText;
 
@@ -45,7 +46,8 @@ public class GameManager : MonoBehaviour
             masterVolume = AudioManager.Instance.MasterVolume,
             bgmVolume = AudioManager.Instance.BgmVolume,
             sfxVolume = AudioManager.Instance.SfxVolume,
-            isMuted = AudioManager.Instance.IsMuted
+            isMuted = AudioManager.Instance.IsMuted,
+            isFullscreen = IsFullscreen
         });
     }
 
@@ -70,6 +72,28 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.SetBGMVolume(settings.bgmVolume);
         AudioManager.Instance.SetSFXVolume(settings.sfxVolume);
         AudioManager.Instance.SetMute(settings.isMuted);
+
+        IsFullscreen = settings.isFullscreen;
+        ApplyDisplayMode();
+    }
+
+    public void ToggleDisplayMode()
+    {
+        IsFullscreen = !IsFullscreen;
+        ApplyDisplayMode();
+        SaveSettings();
+    }
+
+    private void ApplyDisplayMode()
+    {
+        if (IsFullscreen)
+        {
+            Screen.SetResolution(Display.main.systemWidth, Display.main.systemHeight, FullScreenMode.FullScreenWindow);
+        }
+        else
+        {
+            Screen.SetResolution(1920, 1080, FullScreenMode.Windowed);
+        }
     }
 
     public void LoadIntroScene()

@@ -27,7 +27,6 @@ public class HintManager : MonoBehaviour
 
     private void OnFirstHintPressed()
     {
-        Debug.Log(GameManager.Instance.CurrentStageIndex);
         hintUI.ShowFirstHint(CurrentHintElement.Hint1Pos, CurrentHintElement.Hint1Num);
     }
     private void OnFirstHintReleased() => hintUI.HideFirstHint(CurrentHintElement.Hint1Pos);
@@ -60,6 +59,6 @@ public class HintManager : MonoBehaviour
         progress.SetLastHintUnlocked(GameManager.Instance.CurrentStageIndex);
         SaveManager.Instance.Save(GameProgressData.SaveKey, progress);
 
-        hintUI.ShowLastHint(CurrentHintElement.Hint3Sprite);
+        //hintUI.ShowLastHint(CurrentHintElement.Hint3Sprite);
     }
 }

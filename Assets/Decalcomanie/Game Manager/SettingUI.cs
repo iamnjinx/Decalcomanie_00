@@ -1,4 +1,5 @@
 using Njinx.UI;
+using TMPro;
 using UnityEngine;
 
 public class SettingUI : BaseUI
@@ -10,6 +11,8 @@ public class SettingUI : BaseUI
 
     [SerializeField] private ButtonUI titleButton;
     [SerializeField] private ButtonUI stageButton;
+    [SerializeField] private ButtonUI displayButton;
+    [SerializeField] private TextMeshProUGUI displayText;
 
     protected override void Start()
     {
@@ -36,11 +39,22 @@ public class SettingUI : BaseUI
             SettingManager.Instance.CloseSetting();
             GameManager.Instance.LoadSelectScene();
         };
+
+        displayButton.OnSingleClick += () =>
+        {
+            SettingManager.Instance.ChangeDisplaySetting();
+            UpdateDisplayText();
+        };
     }
 
     public void SetGameButtons(bool is_true)
     {
         titleButton.gameObject.SetActive(is_true);
         stageButton.gameObject.SetActive(is_true);
+    }
+
+    public void UpdateDisplayText()
+    {
+        displayText.text = GameManager.Instance.IsFullscreen ? "Change Display : full screen" : "Change Display : windowed";
     }
 }

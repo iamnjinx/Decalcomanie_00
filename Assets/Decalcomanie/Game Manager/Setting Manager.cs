@@ -19,6 +19,7 @@ public class SettingManager : MonoBehaviour
         {
             settingUI.ShowUI();
             settingUI.SetGameButtons(GameManager.Instance.currentScene != SceneType.Title);
+            settingUI.UpdateDisplayText();
         }
     }
 
@@ -37,5 +38,10 @@ public class SettingManager : MonoBehaviour
         {
             OpenSetting();
         }
+    }
+
+    public void ChangeDisplaySetting()
+    {
+        GameManager.Instance.ToggleDisplayMode();
     }
 }
