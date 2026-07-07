@@ -11567,6 +11567,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hintUI: {fileID: 1022413224}
   hintData: {fileID: 11400000, guid: f67569f6d004cc04292d0a026f4086e3, type: 2}
+  stageManager: {fileID: 1780840587}
   lastHintCost: 1
 --- !u!1 &1804035178
 GameObject:

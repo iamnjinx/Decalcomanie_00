@@ -29691,6 +29691,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stats: {fileID: 11400000, guid: 05e6a06c5af93134ab98ff12e2c27265, type: 2}
+  _debugCornerCorrection: 1
 --- !u!114 &5735363120750688076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29773,8 +29774,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.12}
-  m_Size: {x: 1.5, y: 1.5}
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 1.5, y: 2}
   m_Direction: 0
 --- !u!1 &7815607673630595641
 GameObject:

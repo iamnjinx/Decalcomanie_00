@@ -35,6 +35,15 @@ namespace TarodevController
         [Tooltip("The detection distance for grounding and roof detection"), Range(0f, 0.5f)]
         public float GrounderDistance = 0.05f;
 
+        [Header("CORNER CORRECTION")] [Tooltip("천장 모서리에서 캐릭터 상단 가장자리로부터 이 거리 안쪽만 걸렸다면 코너로 판단해 옆으로 밀어 통과시킵니다"), Range(0f, 1f)]
+        public float CornerCorrectionTolerance = 0.1f;
+
+        [Tooltip("코너에 걸렸을 때 옆으로 밀어내는 속도. 순간이동이 아니라 이 속도로 자연스럽게 밀려납니다")]
+        public float CornerCorrectionSpeed = 10f;
+
+        [Tooltip("코너 보정 중 최소한으로 보장할 상승 속도. 점프 정점 부근이라 상승 속도가 거의 없을 때도 옆과 함께 위로 살짝 밀어줍니다")]
+        public float CornerCorrectionUpwardBoost = 4f;
+
         [Header("JUMP")] [Tooltip("The immediate velocity applied when jumping")]
         public float JumpPower = 36;
 

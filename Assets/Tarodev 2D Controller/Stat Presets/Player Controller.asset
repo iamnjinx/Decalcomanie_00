@@ -24,6 +24,9 @@ MonoBehaviour:
   AirDeceleration: 30
   GroundingForce: -1.5
   GrounderDistance: 0.05
+  CornerCorrectionTolerance: 0.688
+  CornerCorrectionSpeed: 15
+  CornerCorrectionUpwardBoost: 25
   JumpPower: 25
   MaxFallSpeed: 40
   FallAcceleration: 110

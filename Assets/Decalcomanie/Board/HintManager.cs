@@ -6,6 +6,7 @@ public class HintManager : MonoBehaviour
 {
     [SerializeField] private HintUI hintUI;
     [SerializeField] private HintData hintData;
+    [SerializeField] private StageManager stageManager;
     [SerializeField] private int lastHintCost = 1;
 
     private HintElement CurrentHintElement => hintData.hintElements[GameManager.Instance.CurrentStageIndex];
@@ -14,6 +15,9 @@ public class HintManager : MonoBehaviour
     {
         if (GameManager.Instance.CurrentStageIndex < 5)
             hintUI.gameObject.SetActive(false);
+
+        if (stageManager != null)
+            stageManager.OnGameStateChanged += OnGameStateChanged;
 
         if (GameProgressData.Load().IsLastHintUnlocked(GameManager.Instance.CurrentStageIndex))
             hintUI.hintButtons[2].UnlockHint3Button();
@@ -46,6 +50,12 @@ public class HintManager : MonoBehaviour
     }
 
     private void OnLastHintReleased() => hintUI.HideLastHint();
+
+    private void OnGameStateChanged(GameState newState)
+    {
+        if (GameManager.Instance.CurrentStageIndex < 5) return;
+        hintUI.gameObject.SetActive(newState == GameState.Paint);
+    }
 
     private void ShowLastHintWarning()
     {

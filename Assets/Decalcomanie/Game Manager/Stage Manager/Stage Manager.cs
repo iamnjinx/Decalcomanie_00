@@ -19,6 +19,8 @@ public class StageManager : MonoBehaviour
     private bool isPlatformerOnly = false;
     private bool isEarlyStage = false;
 
+    public event System.Action<GameState> OnGameStateChanged;
+
     void Awake()
     {
         stageUI.nextStageButton.OnSingleClick += () => MoveToNextStage();
@@ -79,6 +81,7 @@ public class StageManager : MonoBehaviour
     {
         currentGameState = newGameState;
         stageUI.SetShortKeySprite(currentGameState, GameManager.Instance != null ? GameManager.Instance.CurrentLanguage : GameLanguage.English);
+        OnGameStateChanged?.Invoke(currentGameState);
 
         switch (currentGameState)
         {
