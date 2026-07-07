@@ -11,12 +11,10 @@ public class TitleUI : MonoBehaviour
 
     [Header("Selection")]
     public Image[] selectionImages;
-    public Image selectionBackgroundImage;
-    public Sprite[] selectionBackgroundSprites;
     public BaseUI[] selectionUIList;
 
     [Header("Buttons")]
-    public TitleSelectionButtons[] selectionButtons = new TitleSelectionButtons[2];
+    public TitleSelectionButtons[] selectionButtons = new TitleSelectionButtons[3];
     public ButtonUI creditButton;
     public ButtonUI creditCloseButton;
 
@@ -28,9 +26,6 @@ public class TitleUI : MonoBehaviour
 
     public void SetLanguage(GameLanguage language)
     {
-        Sprite selectedBackgroundSprite = language == GameLanguage.English ? selectionBackgroundSprites[0] : selectionBackgroundSprites[1];
-        selectionBackgroundImage.sprite = selectedBackgroundSprite;
-
         for (int i = 0; i < selectionUIList.Length; i++)
         {
             if (i == (int)language)

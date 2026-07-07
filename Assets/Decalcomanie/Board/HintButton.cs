@@ -7,14 +7,17 @@ using UnityEngine.EventSystems;
 
 public class HintButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
+    public bool isUnlocked = true;
     public Image HintButtonImage;
     public Sprite[] HintButtonSprites; // 0: idle, 1. pressed
+    public Sprite Hint3ButtonUnlockedSprite; // unlocked;
 
     public event Action OnPressed;
     public event Action OnReleased;
 
     public void SetHintButtonState(bool isPressed)
     {
+        if (!isUnlocked) return;
         if (isPressed)
         {
             HintButtonImage.sprite = HintButtonSprites[1];
@@ -37,4 +40,9 @@ public class HintButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         OnReleased?.Invoke();
     }
 
+    public void UnlockHint3Button()
+    {
+        isUnlocked = true;
+        HintButtonImage.sprite = Hint3ButtonUnlockedSprite;
+    }
 }

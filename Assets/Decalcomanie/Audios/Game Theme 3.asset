@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4a7d0deef4ac78a46876e1108d46130b, type: 3}
-  m_Name: Game Theme
+  m_Name: Game Theme 3
   m_EditorClassIdentifier: 
-  key: Game Theme
-  clip: {fileID: 8300000, guid: b0651b66286759e478830d89a48bde06, type: 3}
+  key: Game Theme 3
+  clip: {fileID: 8300000, guid: 5a6491e05b0faf842b68f0ad9639324c, type: 3}
   volume: 1
   pitch: 1
   priority: 128

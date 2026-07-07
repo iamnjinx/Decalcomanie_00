@@ -24,18 +24,13 @@ public class StageUI : MonoBehaviour
     public TextMeshProUGUI stageTitleText;
 
     public Image paintShortKeyImage;
-    [SerializeField] private Sprite[] paintShortKeySprites; // 0: English, 1: Korean
     public Image platformerShortKeyImage;
-    [SerializeField] private Sprite[] platformerShortKeySprites; // 0: English, 1: Korean
 
 
     [Header("Objectives")]
     // 0: Stage Clear (early stage only), 1: Star Earned, 2: Star & Min Moves
     public TextMeshProUGUI[] objectiveTexts = new TextMeshProUGUI[3];
     public GameObject objectiveObj;
-    private static readonly string[] stageClearTexts = { "STAGE CLEAR!!", "스테이지 클리어!!" }; // 0: English, 1: Korean
-    private static readonly string[] starEarnedTexts = { "STAR EARNED!!", "별 획득!!" }; // 0: English, 1: Korean
-    private static readonly string[] starMovesFormats = { "STAR & Paint <= {0}", "별 & 색칠 <= {0}" }; // 0: English, 1: Korean
 
     [Header("Stage Cleared UI")]
     public BaseUI stageClearedUI;
@@ -75,19 +70,21 @@ public class StageUI : MonoBehaviour
         paintShortKeyImage.gameObject.SetActive(isPaint);
         platformerShortKeyImage.gameObject.SetActive(!isPaint);
 
+        LocalizedData data = GameManager.Instance.LocalizationData.GetData(language);
         if (isPaint)
-            paintShortKeyImage.sprite = paintShortKeySprites[(int)language];
+            paintShortKeyImage.sprite = data.paintShortKeySprite;
         else
-            platformerShortKeyImage.sprite = platformerShortKeySprites[(int)language];
+            platformerShortKeyImage.sprite = data.platformerShortKeySprite;
     }
 
     public void SetObjectiveTexts(GameLanguage language, bool isEarlyStage, int minMoves)
     {
         objectiveObj.SetActive(!isEarlyStage);
 
-        objectiveTexts[0].text = stageClearTexts[(int)language];
-        objectiveTexts[1].text = starEarnedTexts[(int)language];
-        objectiveTexts[2].text = string.Format(starMovesFormats[(int)language], minMoves);
+        LocalizedData data = GameManager.Instance.LocalizationData.GetData(language);
+        objectiveTexts[0].text = data.stageClearText;
+        objectiveTexts[1].text = data.starEarnedText;
+        objectiveTexts[2].text = string.Format(data.starMovesFormat, minMoves);
     }
 
     public void SetPlatformerOnlyMode()
@@ -104,11 +101,11 @@ public class StageUI : MonoBehaviour
 
         if (!isEarlyStage)
         {
-            int language = (int)GameManager.Instance.CurrentLanguage;
-            stageClearedTexts[0].text = stageClearTexts[language];
-            stageClearedTexts[1].text = starEarnedTexts[language];
-            stageClearedTexts[2].text = string.Format(starMovesFormats[language], minMoveNum);
-            achivementImage.sprite = GameManager.Instance.GameData.achievementSprites[language];
+            LocalizedData data = GameManager.Instance.CurrentLocalizedData;
+            stageClearedTexts[0].text = data.stageClearText;
+            stageClearedTexts[1].text = data.starEarnedText;
+            stageClearedTexts[2].text = string.Format(data.starMovesFormat, minMoveNum);
+            achivementImage.sprite = data.achievementSprite;
             await stageClearedAchievementUI.ShowUI(1f);
 
             await ShowAchivementStars(isCleared, obtainedStar, minMoves);   

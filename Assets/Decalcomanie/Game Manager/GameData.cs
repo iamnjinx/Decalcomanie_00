@@ -14,6 +14,4 @@ public class GameData: ScriptableObject
     public List<Sprite> chapterDecoR;
 
     public List<Sprite> guideSprites;
-
-    public List<Sprite> achievementSprites;
 }

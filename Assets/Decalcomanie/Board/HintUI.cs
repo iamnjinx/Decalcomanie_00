@@ -14,6 +14,7 @@ public class HintUI : MonoBehaviour
     [SerializeField] private HintSpace2[] hint2Images = new HintSpace2[2];
     [Header("Hint Space 3")]
     [SerializeField] private HintSpace3 hint3Image;
+    
 
     [SerializeField] private HintWarningUI lastHintWarningUI;
 

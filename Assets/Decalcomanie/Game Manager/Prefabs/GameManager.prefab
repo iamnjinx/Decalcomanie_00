@@ -301,6 +301,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GameData: {fileID: 11400000, guid: 6a1c6dfc545004557a9a36a008a616c4, type: 2}
+  LocalizationData: {fileID: 11400000, guid: b7ca54b18aa951f4f96f3ac22ddc8f15, type: 2}
   StageAssetReader: {fileID: 4770179498204225158}
   SceneManager: {fileID: 9009326301886050671}
   currentScene: 0

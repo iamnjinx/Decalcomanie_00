@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     }
 
     public GameData GameData;
+    public LocalizationData LocalizationData;
     public StageAssetReader StageAssetReader;
     public DecalcomanieSceneManager SceneManager;
 
@@ -27,6 +28,8 @@ public class GameManager : MonoBehaviour
     public int TotalStages { get; private set; } = 50;
     public GameLanguage CurrentLanguage { get; private set; } = GameLanguage.English;
     public bool IsFullscreen { get; private set; } = true;
+
+    public LocalizedData CurrentLocalizedData => LocalizationData.GetData(CurrentLanguage);
 
     [SerializeField] private TextMeshProUGUI verText;
 
@@ -53,7 +56,9 @@ public class GameManager : MonoBehaviour
 
     public GameLanguage ToggleLanguage()
     {
-        CurrentLanguage = CurrentLanguage == GameLanguage.English ? GameLanguage.Korean : GameLanguage.English;
+        var languages = (GameLanguage[])System.Enum.GetValues(typeof(GameLanguage));
+        int nextIndex = (System.Array.IndexOf(languages, CurrentLanguage) + 1) % languages.Length;
+        CurrentLanguage = languages[nextIndex];
         SaveSettings();
         return CurrentLanguage;
     }
@@ -176,9 +181,4 @@ public static class SceneNames
 public enum SceneType
 {
     Title, StageSelection, Game, Tutorial, Credit
-}
-
-public enum GameLanguage
-{
-    English, Korean
 }

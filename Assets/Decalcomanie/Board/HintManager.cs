@@ -15,6 +15,9 @@ public class HintManager : MonoBehaviour
         if (GameManager.Instance.CurrentStageIndex < 5)
             hintUI.gameObject.SetActive(false);
 
+        if (GameProgressData.Load().IsLastHintUnlocked(GameManager.Instance.CurrentStageIndex))
+            hintUI.hintButtons[2].UnlockHint3Button();
+
         hintUI.hintButtons[0].OnPressed += OnFirstHintPressed;
         hintUI.hintButtons[0].OnReleased += OnFirstHintReleased;
 
@@ -59,6 +62,6 @@ public class HintManager : MonoBehaviour
         progress.SetLastHintUnlocked(GameManager.Instance.CurrentStageIndex);
         SaveManager.Instance.Save(GameProgressData.SaveKey, progress);
 
-        //hintUI.ShowLastHint(CurrentHintElement.Hint3Sprite);
+        hintUI.hintButtons[2].UnlockHint3Button();
     }
 }

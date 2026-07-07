@@ -1549,9 +1549,9 @@ Transform:
   m_Children:
   - {fileID: 2126622676}
   - {fileID: 855368765}
+  - {fileID: 1700724619}
   - {fileID: 1712745155}
   - {fileID: 1917483714}
-  - {fileID: 1700724619}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &195030651
@@ -2149,6 +2149,7 @@ MonoBehaviour:
   canvasGroup: {fileID: 244392210}
   is_shown: 0
   hintImage: {fileID: 1527599956}
+  unlockedHintSprite: {fileID: 0}
 --- !u!225 &244392210
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -2157,7 +2158,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 244392205}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
@@ -4199,7 +4200,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 517538936}
-  - component: {fileID: 517538935}
+  - component: {fileID: 517538937}
   m_Layer: 0
   m_Name: SceneInitator
   m_TagString: Untagged
@@ -4207,19 +4208,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &517538935
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 517538934}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbf1235bc24eb4d42977cd6f325be7d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bgmName: Game Theme
 --- !u!4 &517538936
 Transform:
   m_ObjectHideFlags: 0
@@ -4235,6 +4223,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &517538937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 517538934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcfaf26b4e2ef444f966e15d3b969763, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bgmName: 
 --- !u!1 &536462900
 GameObject:
   m_ObjectHideFlags: 0
@@ -5611,13 +5612,7 @@ MonoBehaviour:
   stageMainBackgroundImage: {fileID: 160161772}
   stageTitleText: {fileID: 1427167671}
   paintShortKeyImage: {fileID: 687521630}
-  paintShortKeySprites:
-  - {fileID: 21300000, guid: c0e0faffbfc60cf41a14e9e6a8645e81, type: 3}
-  - {fileID: 21300000, guid: 2bc289cdd09046b46a9bc091bf3c590a, type: 3}
   platformerShortKeyImage: {fileID: 1910238440}
-  platformerShortKeySprites:
-  - {fileID: 21300000, guid: 4f66edaeaa59153409597a43126a81b6, type: 3}
-  - {fileID: 21300000, guid: 4f66edaeaa59153409597a43126a81b6, type: 3}
   objectiveTexts:
   - {fileID: 100788426}
   - {fileID: 1991828766}
@@ -6767,10 +6762,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cb78fcc43400cc479f445719cdcc739, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isUnlocked: 1
   HintButtonImage: {fileID: 907275945}
   HintButtonSprites:
   - {fileID: 21300000, guid: 359f0fb11ae303c4086fe9f34defb794, type: 3}
   - {fileID: 21300000, guid: 14ad914668a62e144ab345d23c11b28e, type: 3}
+  Hint3ButtonUnlockedSprite: {fileID: 0}
 --- !u!114 &907275948
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9955,7 +9952,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ca0d263156b8cfe458ea3a88545cfa46, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4bf511ed9a7e32a41918aaa243240953, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9985,10 +9982,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cb78fcc43400cc479f445719cdcc739, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isUnlocked: 0
   HintButtonImage: {fileID: 1574494571}
   HintButtonSprites:
   - {fileID: 21300000, guid: ca0d263156b8cfe458ea3a88545cfa46, type: 3}
   - {fileID: 21300000, guid: 3d3af0e8dda9a364ba085c90bc709ecb, type: 3}
+  Hint3ButtonUnlockedSprite: {fileID: 21300000, guid: ca0d263156b8cfe458ea3a88545cfa46,
+    type: 3}
 --- !u!114 &1574494574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10538,10 +10538,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cb78fcc43400cc479f445719cdcc739, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isUnlocked: 1
   HintButtonImage: {fileID: 1637680678}
   HintButtonSprites:
   - {fileID: 21300000, guid: 8aa414a20be35654685593587ab1d980, type: 3}
   - {fileID: 21300000, guid: 250a8b214c298d84b8453a03cfe10a18, type: 3}
+  Hint3ButtonUnlockedSprite: {fileID: 0}
 --- !u!114 &1637680682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11209,7 +11211,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &1700724618
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -11251,12 +11253,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 47c607ce147f31e49bb6cb4c45b5fd6d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7876fe1300405334a861adfb2171e7b0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 38.399998, y: 21.599998}
+  m_Size: {x: 38.4, y: 21.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -11271,7 +11273,7 @@ Transform:
   m_GameObject: {fileID: 1700724617}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8.37, y: 10.66, z: 0}
+  m_LocalPosition: {x: 8.71, y: 8.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
