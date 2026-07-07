@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using Njinx.UI;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HintWarningUI : BaseUI
 {
     [SerializeField] private ButtonUI yesButton;
     [SerializeField] private ButtonUI noButton;
+
+    [SerializeField] private Image warningImage;
 
     [SerializeField] private TextMeshProUGUI remainingStarText;
 
@@ -19,6 +22,8 @@ public class HintWarningUI : BaseUI
 
         yesButton.OnSingleClick += OnYesClicked;
         noButton.OnSingleClick += OnNoClicked;
+
+        warningImage.sprite = GameManager.Instance.CurrentLocalizedData.hintWarningSprite;
     }
 
     private void OnYesClicked()

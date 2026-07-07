@@ -382,7 +382,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 18.400024, y: -60}
+  m_AnchoredPosition: {x: 18.399902, y: -60}
   m_SizeDelta: {x: 817, y: 1645}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &43281947
@@ -6404,7 +6404,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -960.00006, y: -539.9999}
+  m_AnchoredPosition: {x: -960, y: -539.9999}
   m_SizeDelta: {x: -74.99988, y: 766}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &856132964
@@ -11835,6 +11835,7 @@ MonoBehaviour:
   is_shown: 0
   yesButton: {fileID: 1839723870}
   noButton: {fileID: 93426824}
+  warningImage: {fileID: 338849488}
   remainingStarText: {fileID: 1980100532}
   hintManager: {fileID: 1780840590}
 --- !u!1 &1825227298
