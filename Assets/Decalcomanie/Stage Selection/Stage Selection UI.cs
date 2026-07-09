@@ -30,9 +30,18 @@ public class StageSelectionUI : MonoBehaviour
 
     [SerializeField] private float nextDuration = 0.3f;
 
+    [Header("Demo")]
+    public GameObject demoUI;
+    public Image demoImage;
+    public ButtonUI demoButton;
+    [SerializeField] private string demoLinkUrl;
+
     void Start()
     {
         BackButton.OnSingleClick += () => GameManager.Instance.LoadTitleScene();
+        demoButton.OnSingleClick += () => Application.OpenURL(demoLinkUrl);
+
+        demoImage.sprite = GameManager.Instance.CurrentLocalizedData.demoSprite;
     }
 
     public void SetStagePanel()
@@ -78,6 +87,7 @@ public class StageSelectionUI : MonoBehaviour
 
             if(is_right) {chapterFlip[2].HideUI(); chapterFlip[1].ShowUI(); }
             else {chapterFlip[1].HideUI(); chapterFlip[2].ShowUI(); }
+            UpdateDemoUI(chapterIndex, maxChapterIndex);
 
             await UniTask.Delay(TimeSpan.FromSeconds(nextDuration/2));
 
@@ -93,6 +103,12 @@ public class StageSelectionUI : MonoBehaviour
         ChangeButtonState(chapterIndex, maxChapterIndex);
 
         is_changingChapter = false;
+    }
+
+    private void UpdateDemoUI(int chapterIndex, int maxChapterIndex)
+    {
+        if (demoUI == null) return;
+        demoUI.SetActive(GameManager.Instance.IsDemo && chapterIndex == maxChapterIndex);
     }
 
     private void ChangeButtonState(int chapterIndex, int maxChapterIndex)

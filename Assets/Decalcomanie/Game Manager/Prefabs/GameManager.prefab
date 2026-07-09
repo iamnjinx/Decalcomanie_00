@@ -304,6 +304,9 @@ MonoBehaviour:
   LocalizationData: {fileID: 11400000, guid: b7ca54b18aa951f4f96f3ac22ddc8f15, type: 2}
   StageAssetReader: {fileID: 4770179498204225158}
   SceneManager: {fileID: 9009326301886050671}
+  isDemo: 0
+  fullConfig: {fileID: 11400000, guid: 7a31fb9909b3460e965af0c6a9ace211, type: 2}
+  demoConfig: {fileID: 11400000, guid: 249ddb449f4a4f80919a7059cc8cf1e0, type: 2}
   currentScene: 0
   verText: {fileID: 3949007917732128569}
 --- !u!114 &9009326301886050671

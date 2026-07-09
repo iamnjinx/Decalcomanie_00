@@ -7,12 +7,10 @@ public class StageSelection : MonoBehaviour
 {
     [SerializeField] StageSelectionUI stageSelectionUI;
 
-    private int maxChapterIndex = 4; // Example maximum chapter index
+    private int maxChapterIndex;
     private int currentChapterIndex = 0;
 
     private const string ChapterIndexKey = "LastChapterIndex";
-
-    private List<Sprite> stageScreenshots = new();
 
     void Awake()
     {
@@ -23,14 +21,7 @@ public class StageSelection : MonoBehaviour
 
     void Start()
     {
-        int j = 0;
-        while (true)
-        {
-            var sprite = Resources.Load<Sprite>($"Stage SS/StageSS_{j}");
-            if (sprite == null) break;
-            stageScreenshots.Add(sprite);
-            j++;
-        }
+        maxChapterIndex = (GameManager.Instance.TotalStages - 1) / 10;
 
         currentChapterIndex = Mathf.Clamp(SaveManager.Instance.Load(ChapterIndexKey, 0), 0, maxChapterIndex);
         int d = GameManager.Instance.CurrentStageIndex / 10;
@@ -72,8 +63,8 @@ public class StageSelection : MonoBehaviour
             int index = i + currentChapterIndex * 10; // Adjust index based on current chapter
 
             var achievement = progress.GetAchievement(index);
-            var ss = index < stageScreenshots.Count ? stageScreenshots[index] : null;
-            stageSelectionUI.stagePanels[i].SetStagePanel(index, achievement.isCleared, achievement.obtainedStar, achievement.achievedMinMoves, progress.highestUnlockedStage >= index, ss);
+            var stageData = GameManager.Instance.GetStageData(index);
+            stageSelectionUI.stagePanels[i].SetStagePanel(index, achievement.isCleared, achievement.obtainedStar, achievement.achievedMinMoves, progress.highestUnlockedStage >= index, stageData?.screenshot);
 
             stageSelectionUI.stagePanels[i].button.OnSingleClick = () => OnStageSelected(index);
         }

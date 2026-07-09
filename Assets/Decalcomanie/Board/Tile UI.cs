@@ -11,6 +11,8 @@ public class TileUI : MonoBehaviour
 
     [SerializeField] SpriteRenderer paint_SpriteRenderer;
 
+    [SerializeField] List<Animator> tileTypeAnimators;
+
     private int lastTileTypeID = 0;
 
     public void UpdateTileUI(int tileTypeID, int paintColorID = -1)
@@ -47,10 +49,21 @@ public class TileUI : MonoBehaviour
     public void ShowTile()
     {
         gameObject.SetActive(true);
+        SetTileTypeAnimatorsEnabled(true);
     }
 
     public void HideTile()
     {
         gameObject.SetActive(false);
+        SetTileTypeAnimatorsEnabled(false);
+    }
+
+    private void SetTileTypeAnimatorsEnabled(bool isEnabled)
+    {
+        foreach (Animator animator in tileTypeAnimators)
+        {
+            if (animator != null)
+                animator.enabled = isEnabled;
+        }
     }
 }

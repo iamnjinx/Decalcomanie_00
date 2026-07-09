@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key: button_click
   clip: {fileID: 8300000, guid: 3f0dcc4ab47f8f04e8b3b079e7c859d3, type: 3}
-  volume: 1
+  volume: 0.5
   pitch: 1
   priority: 128
   useCustom3DRange: 0

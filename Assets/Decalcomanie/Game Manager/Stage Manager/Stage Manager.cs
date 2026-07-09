@@ -71,6 +71,7 @@ public class StageManager : MonoBehaviour
         stageUI.SetObjectiveTexts(language, isEarlyStage, boardManager.CurrentBoard.BoardData.minMoves);
         stageUI.SetShortKeySprite(currentGameState, language);
         stageUI.SetCurStageText(GameManager.Instance != null ? GameManager.Instance.CurrentStageIndex : 0);
+        stageUI.ShowMainUI(isPlatformerOnly);
         paintManager.CreateTileControllers();
 
         // if (GameManager.Instance != null && GameManager.Instance.CurrentStageIndex == 0)

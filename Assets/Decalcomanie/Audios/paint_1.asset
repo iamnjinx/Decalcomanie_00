@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key: paint_1
   clip: {fileID: 8300000, guid: ca4822a198332d04c8aaa9bb5159ca19, type: 3}
-  volume: 1
+  volume: 0.5
   pitch: 1
   priority: 128
   useCustom3DRange: 0

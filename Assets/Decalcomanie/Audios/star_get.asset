@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key: star_get
   clip: {fileID: 8300000, guid: 261f574709408bd4d8288d024f7aaf92, type: 3}
-  volume: 1
+  volume: 0.5
   pitch: 1
   priority: 128
   useCustom3DRange: 0

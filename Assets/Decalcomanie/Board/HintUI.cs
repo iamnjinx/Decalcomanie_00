@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Njinx.UI;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,6 +16,7 @@ public class HintUI : MonoBehaviour
     [Header("Hint Space 3")]
     [SerializeField] private HintSpace3 hint3Image;
     
+    [SerializeField] private TextMeshProUGUI remainingStarText;
 
     [SerializeField] private HintWarningUI lastHintWarningUI;
 
@@ -49,6 +51,12 @@ public class HintUI : MonoBehaviour
     public void HideLastHint()
     {
         hint3Image.HideUI();
+    }
+
+    public void SetRemainingStarText(int remainingStarCount)
+    {
+        if (remainingStarText != null)
+            remainingStarText.text = "= " + remainingStarCount.ToString();
     }
 
     public void ShowLastHintWarning(int remainingStarCount, bool canAffordLastHint)

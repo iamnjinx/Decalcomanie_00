@@ -20,6 +20,9 @@ public class LocalizedData
 
     [Header("Hint")]
     public Sprite hintWarningSprite;
+
+    [Header("Demo")]
+    public Sprite demoSprite;
 }
 
 [CreateAssetMenu(fileName = "LocalizationData", menuName = "ScriptableObjects/LocalizationData", order = 2)]

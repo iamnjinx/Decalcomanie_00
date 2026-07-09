@@ -1242,6 +1242,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
+    - target: {fileID: 8889839480670587568, guid: adf8464502288534aa59e8ea17203309,
+        type: 3}
+      propertyPath: isDemo
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9019423139799532215, guid: adf8464502288534aa59e8ea17203309,
         type: 3}
       propertyPath: is_blockRaycast

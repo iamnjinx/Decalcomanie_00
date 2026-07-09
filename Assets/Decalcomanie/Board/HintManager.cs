@@ -5,14 +5,14 @@ using UnityEngine;
 public class HintManager : MonoBehaviour
 {
     [SerializeField] private HintUI hintUI;
-    [SerializeField] private HintData hintData;
     [SerializeField] private StageManager stageManager;
     [SerializeField] private int lastHintCost = 1;
 
-    private HintElement CurrentHintElement => hintData.hintElements[GameManager.Instance.CurrentStageIndex];
+    private HintElement CurrentHintElement => GameManager.Instance.ActiveHintData.hintElements[GameManager.Instance.CurrentStageIndex];
 
     private void Awake()
     {
+        Debug.Log($"Current Stage Index: {GameManager.Instance.CurrentStageIndex}, {GameManager.Instance.CurrentStageIndex < 5}");
         if (GameManager.Instance.CurrentStageIndex < 5)
             hintUI.gameObject.SetActive(false);
 
@@ -30,6 +30,11 @@ public class HintManager : MonoBehaviour
 
         hintUI.hintButtons[2].OnPressed += OnLastHintPressed;
         hintUI.hintButtons[2].OnReleased += OnLastHintReleased;
+    }
+
+    void Start()
+    {
+        hintUI.SetRemainingStarText(GameProgressData.Load().remainingStarCount);       
     }
 
     private void OnFirstHintPressed()
@@ -73,5 +78,7 @@ public class HintManager : MonoBehaviour
         SaveManager.Instance.Save(GameProgressData.SaveKey, progress);
 
         hintUI.hintButtons[2].UnlockHint3Button();
+
+        hintUI.SetRemainingStarText(GameProgressData.Load().remainingStarCount);
     }
 }

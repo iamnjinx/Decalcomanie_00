@@ -9,6 +9,10 @@ using Unity.Burst.CompilerServices;
 
 public class StageUI : MonoBehaviour
 {
+
+    [SerializeField] BaseUI mainUI;
+
+    [Header("Stage UI Buttons")]
     public ButtonUI menuButton;
 
     public ButtonUI switchButton;
@@ -49,6 +53,15 @@ public class StageUI : MonoBehaviour
     void Start()
     {
         menuButton.OnSingleClick += () => SettingManager.Instance.OpenSetting();
+    }
+
+    public async void ShowMainUI(bool isPlatformerOnly = false)
+    {
+        if (!isPlatformerOnly)
+        {
+            await UniTask.Delay(1000);
+        }
+        await mainUI.ShowUI(.5f);
     }
 
     public void SetCurStageText(int stageID)

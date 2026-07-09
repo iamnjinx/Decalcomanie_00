@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key: stage_clear_star
   clip: {fileID: 8300000, guid: 3850efc76badff442b85c6269390d2cf, type: 3}
-  volume: 1
+  volume: 0.5
   pitch: 1
   priority: 128
   useCustom3DRange: 0

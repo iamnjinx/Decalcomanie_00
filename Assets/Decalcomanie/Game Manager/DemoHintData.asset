@@ -1,0 +1,140 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9078fc270675e914492885edd3507f81, type: 3}
+  m_Name: DemoHintData
+  m_EditorClassIdentifier: 
+  hintElements:
+  - Hint1Pos: 0
+    Hint1Num: 0
+    Hint2Pos: 0
+    Hint2Sprite: {fileID: 0}
+    Hint3Sprite: {fileID: 0}
+  - Hint1Pos: 0
+    Hint1Num: 0
+    Hint2Pos: 0
+    Hint2Sprite: {fileID: 0}
+    Hint3Sprite: {fileID: 0}
+  - Hint1Pos: 0
+    Hint1Num: 0
+    Hint2Pos: 0
+    Hint2Sprite: {fileID: 0}
+    Hint3Sprite: {fileID: 0}
+  - Hint1Pos: 0
+    Hint1Num: 0
+    Hint2Pos: 0
+    Hint2Sprite: {fileID: 0}
+    Hint3Sprite: {fileID: 0}
+  - Hint1Pos: 0
+    Hint1Num: 0
+    Hint2Pos: 0
+    Hint2Sprite: {fileID: 0}
+    Hint3Sprite: {fileID: 0}
+  - Hint1Pos: 1
+    Hint1Num: 2
+    Hint2Pos: 1
+    Hint2Sprite: {fileID: 21300000, guid: 05f3fcdaa09816242a518798f9e286ce, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: 9d007fd887a2c40498dfb00d319c4316, type: 3}
+  - Hint1Pos: 1
+    Hint1Num: 2
+    Hint2Pos: 1
+    Hint2Sprite: {fileID: 21300000, guid: 7e46fd9738e805a45a2cec9007cbe2aa, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: 826ac54c89dd2d64cb3ac527942e3a56, type: 3}
+  - Hint1Pos: 1
+    Hint1Num: 2
+    Hint2Pos: 1
+    Hint2Sprite: {fileID: 21300000, guid: e0d38b12965977c45b9dc5a0c915bde8, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: ea45162aa4e9dad4f8eaf4361993f22e, type: 3}
+  - Hint1Pos: 1
+    Hint1Num: 2
+    Hint2Pos: 1
+    Hint2Sprite: {fileID: 21300000, guid: dfd62b4fc3494fb4d8f7b206197e6e7a, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: daea6774ccc10e74995bc4aaedc8bb27, type: 3}
+  - Hint1Pos: 0
+    Hint1Num: 1
+    Hint2Pos: 0
+    Hint2Sprite: {fileID: 21300000, guid: edab5c70b48660a49bad2c4f019ffb94, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: ee302514f76d1ce4584bd5e16b06e4ae, type: 3}
+  - Hint1Pos: 1
+    Hint1Num: 1
+    Hint2Pos: 1
+    Hint2Sprite: {fileID: 21300000, guid: ed2875386f819db48a029ac550d096d3, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: 28486794a039dc746b5fd6412d6a338c, type: 3}
+  - Hint1Pos: 0
+    Hint1Num: 2
+    Hint2Pos: 0
+    Hint2Sprite: {fileID: 21300000, guid: a0a0562bd1c776c4cad4c13ca2f5792d, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: 0a107a231dad4024abb07f96f89f75d2, type: 3}
+  - Hint1Pos: 0
+    Hint1Num: 2
+    Hint2Pos: 1
+    Hint2Sprite: {fileID: 21300000, guid: 41add4a5a25340243a139bf95cdebb38, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: 0f71d56661dfbdb4ea61e2347aac47c4, type: 3}
+  - Hint1Pos: 0
+    Hint1Num: 1
+    Hint2Pos: 0
+    Hint2Sprite: {fileID: 21300000, guid: b45b0ec32f6cb7f4f9b7eed47b1b5025, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: d948fdc21d8765643b39d2fcc8451676, type: 3}
+  - Hint1Pos: 1
+    Hint1Num: 2
+    Hint2Pos: 1
+    Hint2Sprite: {fileID: 21300000, guid: 9143354d64e89a6468dbb868c15d69e9, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: 125f745ec472b7b409921a46f3232dd5, type: 3}
+  - Hint1Pos: 1
+    Hint1Num: 2
+    Hint2Pos: 1
+    Hint2Sprite: {fileID: 21300000, guid: e237512c72230af4bb15a46ba6cd8782, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: 4ebdbde74b158f3458d07f470005acef, type: 3}
+  - Hint1Pos: 1
+    Hint1Num: 2
+    Hint2Pos: 1
+    Hint2Sprite: {fileID: 21300000, guid: bf675eed01b89f54798aafd864abba3c, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: 6c55dd801c939684d9ec10e04df72d0a, type: 3}
+  - Hint1Pos: 1
+    Hint1Num: 3
+    Hint2Pos: 1
+    Hint2Sprite: {fileID: 21300000, guid: b94d8cee57e1e3a4099b4c63c48b2bf8, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: 187c1d586cdc78543825ac6d3fec2bac, type: 3}
+  - Hint1Pos: 1
+    Hint1Num: 2
+    Hint2Pos: 1
+    Hint2Sprite: {fileID: 21300000, guid: 53b14534c0c557a4f903ead27d30b1e1, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: ffc960207b0a5894c86d271adedaabb2, type: 3}
+  - Hint1Pos: 0
+    Hint1Num: 2
+    Hint2Pos: 0
+    Hint2Sprite: {fileID: 21300000, guid: 90f613205cc978442b8ba5976b8ff30d, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: fb1aa162e96a1cc428adee78c7f85390, type: 3}
+  - Hint1Pos: 1
+    Hint1Num: 3
+    Hint2Pos: 1
+    Hint2Sprite: {fileID: 21300000, guid: a6119356711342746a9e3badfbf9838b, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: c9c933727a9e6f44c92547bcab25f902, type: 3}
+  - Hint1Pos: 1
+    Hint1Num: 5
+    Hint2Pos: 1
+    Hint2Sprite: {fileID: 21300000, guid: 6fb0c4234d82ec54485f68b4900079da, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: 47b0f102909026f428a034ee8b4b6d7e, type: 3}
+  - Hint1Pos: 0
+    Hint1Num: 3
+    Hint2Pos: 1
+    Hint2Sprite: {fileID: 21300000, guid: 4d1d7f2cd149e13489e65c650a64e042, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: 4448b01c42b50884bb9d016e0273ba4b, type: 3}
+  - Hint1Pos: 1
+    Hint1Num: 2
+    Hint2Pos: 0
+    Hint2Sprite: {fileID: 21300000, guid: 53944de204c6c6a43842721539cd8dec, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: a9900a22d328ce444aa1e1e2dd7a8400, type: 3}
+  - Hint1Pos: 0
+    Hint1Num: 4
+    Hint2Pos: 0
+    Hint2Sprite: {fileID: 21300000, guid: 341b3d1524d25654295f1299fca9be24, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: 00fa5717727fd974baf662eac6795e97, type: 3}

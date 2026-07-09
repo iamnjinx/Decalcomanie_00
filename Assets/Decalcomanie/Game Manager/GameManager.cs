@@ -23,9 +23,23 @@ public class GameManager : MonoBehaviour
     public StageAssetReader StageAssetReader;
     public DecalcomanieSceneManager SceneManager;
 
+    [SerializeField] private bool isDemo;
+    [SerializeField] private BuildVariantConfig fullConfig;
+    [SerializeField] private BuildVariantConfig demoConfig;
+
+    public bool IsDemo => isDemo;
+    public BuildVariantConfig Config => isDemo ? demoConfig : fullConfig;
+    public int TotalStages => Config.stages.Count;
+    public HintData ActiveHintData => Config.hintData;
+
+    public StageData GetStageData(int stageIndex)
+    {
+        if (stageIndex < 0 || stageIndex >= Config.stages.Count) return null;
+        return Config.stages[stageIndex];
+    }
+
     public SceneType currentScene;
     public int CurrentStageIndex { get; private set; } = 1;
-    public int TotalStages { get; private set; } = 50;
     public GameLanguage CurrentLanguage { get; private set; } = GameLanguage.English;
     public bool IsFullscreen { get; private set; } = true;
 

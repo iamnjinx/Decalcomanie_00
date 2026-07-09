@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 102bd0ebc38c45b79bb87a67b77af6b0, type: 3}
+  m_Name: BuildVariantConfig_Full
+  m_EditorClassIdentifier: 
+  stages:
+  - stageJson: {fileID: 4900000, guid: 70d8a90abdfebe8469c73c73cc03ad20, type: 3}
+    screenshot: {fileID: 21300000, guid: 000b012864cca41e798f72bfad456373, type: 3}
+  - stageJson: {fileID: 4900000, guid: f3cbe1e245caa4ebf8aaa6fed9cd79ea, type: 3}
+    screenshot: {fileID: 21300000, guid: 1fd86b648fc68bd428e262131dd6fd6d, type: 3}
+  - stageJson: {fileID: 4900000, guid: 9493e3f37afb81846808d5ebbe6e19a0, type: 3}
+    screenshot: {fileID: 21300000, guid: 6252ae56a7f3e45b89e8899c21d4b80b, type: 3}
+  - stageJson: {fileID: 4900000, guid: 2a34985f720b741838251ad6c3846c37, type: 3}
+    screenshot: {fileID: 21300000, guid: d3d978ce0240042b0abdb6ee01fd7720, type: 3}
+  - stageJson: {fileID: 4900000, guid: 539fe9791aab04e4bb37e237ae4129d4, type: 3}
+    screenshot: {fileID: 21300000, guid: 2acf22f43dac44e2e8172f13356c143f, type: 3}
+  - stageJson: {fileID: 4900000, guid: dae3c3c642c1dda4d86e25a0d172f997, type: 3}
+    screenshot: {fileID: 21300000, guid: 6098e9b0b68b247509253c279ec7f76b, type: 3}
+  - stageJson: {fileID: 4900000, guid: fc774b2fd9ecfc54db31c999851b7585, type: 3}
+    screenshot: {fileID: 21300000, guid: c587642f026fc4181986f9870c6b67b2, type: 3}
+  - stageJson: {fileID: 4900000, guid: cd26c3a4c6f354b06b7e0c54561cab11, type: 3}
+    screenshot: {fileID: 21300000, guid: bf291f2980b7e42499540db180f0143d, type: 3}
+  - stageJson: {fileID: 4900000, guid: bb6c73a62a9791e41b40ec44c739f060, type: 3}
+    screenshot: {fileID: 21300000, guid: 939ec33c2375241e197c28c0a355cc5f, type: 3}
+  - stageJson: {fileID: 4900000, guid: f1540f61d1aec4717b8219a7c6f4d8c8, type: 3}
+    screenshot: {fileID: 21300000, guid: a6f8228db38ce4b1a824ba738ea1974d, type: 3}
+  - stageJson: {fileID: 4900000, guid: 8708bca4b67384d8bbc4de81f43dcdc4, type: 3}
+    screenshot: {fileID: 21300000, guid: 5cfdf362ee73c498e96e6a1e9a337e24, type: 3}
+  - stageJson: {fileID: 4900000, guid: 0274af4f25c8b444092d7b6726ef42c4, type: 3}
+    screenshot: {fileID: 21300000, guid: c69cc2fdb8e764233a8a9993ed5c7c93, type: 3}
+  - stageJson: {fileID: 4900000, guid: 2ea1c043efe2adf4c962cc973a283edd, type: 3}
+    screenshot: {fileID: 21300000, guid: 4b6f9a82c4af343a3ae2c4f3cea49427, type: 3}
+  - stageJson: {fileID: 4900000, guid: 9dcc17e1a1986684a95965baadffc81c, type: 3}
+    screenshot: {fileID: 21300000, guid: 91415401fe18746d69ebd994562e96bb, type: 3}
+  - stageJson: {fileID: 4900000, guid: 244c4e7ef764b204b8c1214525ac3850, type: 3}
+    screenshot: {fileID: 21300000, guid: d8841d24c8cea4cd7bc57fb4d22c44fa, type: 3}
+  - stageJson: {fileID: 4900000, guid: 4629bd8c7ab00cf489c3fc17b8f877ca, type: 3}
+    screenshot: {fileID: 21300000, guid: 20f55a6d041954590980eefd27380c37, type: 3}
+  - stageJson: {fileID: 4900000, guid: 785ccf9a1a607ea428bdffebea9594d9, type: 3}
+    screenshot: {fileID: 21300000, guid: 35aa5ce6585f24c20a8ac693c523926a, type: 3}
+  - stageJson: {fileID: 4900000, guid: 6e12916458da5ad4ea2e5ffb0150765c, type: 3}
+    screenshot: {fileID: 21300000, guid: dc8f58bed765d417cb9d4726ecc6e4f4, type: 3}
+  - stageJson: {fileID: 4900000, guid: 718a6972424d7f14ba333eea76d782f5, type: 3}
+    screenshot: {fileID: 21300000, guid: 588e8c981eada454b83fdc4908920046, type: 3}
+  - stageJson: {fileID: 4900000, guid: 5a03a1ca7399aa64d9acecad43c8b08c, type: 3}
+    screenshot: {fileID: 21300000, guid: 7e05b277a18f46549b58c58142511237, type: 3}
+  - stageJson: {fileID: 4900000, guid: f7b3bb8ab1d89444a96f7b4bb9c20c2c, type: 3}
+    screenshot: {fileID: 21300000, guid: 403c4a07078684e699a2df055032355b, type: 3}
+  - stageJson: {fileID: 4900000, guid: 2dee5d51b59acd145b9add2ab80a0a50, type: 3}
+    screenshot: {fileID: 21300000, guid: 4e61edaa59f819e4398b65fd9eab645b, type: 3}
+  - stageJson: {fileID: 4900000, guid: d3c5b935941b0864c8165f30961a4b32, type: 3}
+    screenshot: {fileID: 21300000, guid: 4d2fd144cdd4a42e397723bc6f70b52d, type: 3}
+  - stageJson: {fileID: 4900000, guid: df3bcb2e8e22d01488cd5eb376396551, type: 3}
+    screenshot: {fileID: 21300000, guid: e574e31531092440a8c8fe1f371ffaaa, type: 3}
+  - stageJson: {fileID: 4900000, guid: 67c6969a89969dd40a298e6554ac2026, type: 3}
+    screenshot: {fileID: 21300000, guid: 7a5bdcba4e3b9479690570b453df9c4b, type: 3}
+  - stageJson: {fileID: 4900000, guid: f5d6a2603d5a9dc4cb2c265aa2b0d67d, type: 3}
+    screenshot: {fileID: 21300000, guid: 074552304c6e68540968a193a2a41aa6, type: 3}
+  - stageJson: {fileID: 4900000, guid: 4cd2c52a320aa044cbd48ebb985f721d, type: 3}
+    screenshot: {fileID: 21300000, guid: a7e7fa0b8b6df444989fece14bf26468, type: 3}
+  - stageJson: {fileID: 4900000, guid: 9ab743496a357894b974e7a9b6bcfdf8, type: 3}
+    screenshot: {fileID: 21300000, guid: 5655b05f171855c41a7be47a61e5809d, type: 3}
+  - stageJson: {fileID: 4900000, guid: 003dfa4b1d74990469db0e220cbb812f, type: 3}
+    screenshot: {fileID: 21300000, guid: d8fed11e024cb4a1c9ffb0f3cf49a2b8, type: 3}
+  - stageJson: {fileID: 4900000, guid: 8a5da64d256e82240a79b061447589ac, type: 3}
+    screenshot: {fileID: 21300000, guid: 1c13ec0b227684af78392b9f17f2ec24, type: 3}
+  - stageJson: {fileID: 4900000, guid: 5d65d6223c243094ea9e82fbb80d21c8, type: 3}
+    screenshot: {fileID: 21300000, guid: c2aa297cebec548a38d078dc23814344, type: 3}
+  - stageJson: {fileID: 4900000, guid: a04f84386c908454393ea935c2fb34a3, type: 3}
+    screenshot: {fileID: 21300000, guid: baa791f939163f844bbc7e2286ee7b2d, type: 3}
+  - stageJson: {fileID: 4900000, guid: 11ab81adc6291b441b946d0165e036c4, type: 3}
+    screenshot: {fileID: 21300000, guid: 82e4c74368a8a3943ab0bda018a7d4dd, type: 3}
+  - stageJson: {fileID: 4900000, guid: fb5a59cd73dae4a4480f4628467d096a, type: 3}
+    screenshot: {fileID: 21300000, guid: b0b117cbd2129f34893636cdee41e04d, type: 3}
+  - stageJson: {fileID: 4900000, guid: e7aa8f9edf251ed4d9736054dc2b4456, type: 3}
+    screenshot: {fileID: 21300000, guid: 96aa6a4ce1a5ce544a8b222e91f28fe9, type: 3}
+  - stageJson: {fileID: 4900000, guid: 550246588eca4a2469677045c98e4c75, type: 3}
+    screenshot: {fileID: 21300000, guid: ef06795cf5ee07644a8d0adb9d49fda0, type: 3}
+  - stageJson: {fileID: 4900000, guid: 5bc5df32165d5594ba9e25d7b26be97a, type: 3}
+    screenshot: {fileID: 21300000, guid: 87b4c2dccb410014a95a43cc1623a53c, type: 3}
+  - stageJson: {fileID: 4900000, guid: 0d66f60756b624b41af183a89e98c0a7, type: 3}
+    screenshot: {fileID: 21300000, guid: e3e47d1f94d236349813385224693ceb, type: 3}
+  - stageJson: {fileID: 4900000, guid: 3ec9fec13173478429de7c9369755568, type: 3}
+    screenshot: {fileID: 21300000, guid: 0de08852359fb294bb5e3cde8646dbe1, type: 3}
+  - stageJson: {fileID: 4900000, guid: 1bc8cc1305f1c9945800287778efe053, type: 3}
+    screenshot: {fileID: 21300000, guid: 2384a6d5546e25e46b6fb3f1adade71e, type: 3}
+  - stageJson: {fileID: 4900000, guid: a114aac2a819cfd4faa3632a93f6225f, type: 3}
+    screenshot: {fileID: 21300000, guid: e6c2fe57fb1d9884291a651da376ae6f, type: 3}
+  - stageJson: {fileID: 4900000, guid: 70e4724304be0f94383d39d61b031940, type: 3}
+    screenshot: {fileID: 21300000, guid: 1f54ba323c02a1c488bf8a6cccfb3f8f, type: 3}
+  - stageJson: {fileID: 4900000, guid: c625f6ad7ede1304898538f339b19c59, type: 3}
+    screenshot: {fileID: 21300000, guid: d830d550b75db7844aa7d2eb235af76c, type: 3}
+  - stageJson: {fileID: 4900000, guid: 3f462e99ca9c2a143b4e53390c49e7c2, type: 3}
+    screenshot: {fileID: 21300000, guid: 7663381a1f837b94da7244c48aab5750, type: 3}
+  - stageJson: {fileID: 4900000, guid: d95b0c8dff9e05342bdabd228c25cbef, type: 3}
+    screenshot: {fileID: 21300000, guid: 912921c3ba7936d4288eceb70b2ff98e, type: 3}
+  - stageJson: {fileID: 4900000, guid: be640ff9c8090c84a8f9c22a0a224273, type: 3}
+    screenshot: {fileID: 21300000, guid: d3856d8d61d21ed439bfc39ee62971f7, type: 3}
+  - stageJson: {fileID: 4900000, guid: 4aaf8c0841a66ba4c8308c0dc6352c21, type: 3}
+    screenshot: {fileID: 21300000, guid: 56b72d87b64d2d44b98beb90da0d62d4, type: 3}
+  - stageJson: {fileID: 4900000, guid: 673ed9db8f120c74d84beb2b084750bc, type: 3}
+    screenshot: {fileID: 21300000, guid: 5c00e2084c1eb6c46bec7080bc899a63, type: 3}
+  - stageJson: {fileID: 4900000, guid: 6d96064e6b692ad43b917a6e0b1295ea, type: 3}
+    screenshot: {fileID: 21300000, guid: 47af56d8d9bbce249b0f9c1e2df1ccbd, type: 3}
+  - stageJson: {fileID: 4900000, guid: c972b589bf3c2114ba723743ba5a9aee, type: 3}
+    screenshot: {fileID: 21300000, guid: 6daa03147e488864bb3cb990b5abf218, type: 3}
+  hintData: {fileID: 11400000, guid: f67569f6d004cc04292d0a026f4086e3, type: 2}
