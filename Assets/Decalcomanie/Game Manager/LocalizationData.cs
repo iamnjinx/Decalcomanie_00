@@ -18,6 +18,11 @@ public class LocalizedData
     [Header("Stage Cleared - Achievement")]
     public Sprite achievementSprite;
 
+    [Header("Stage Cleared - After Button Texts")]
+    public string nextStageText;
+    public string stageSelectionText;
+    public string restartStageText;
+
     [Header("Hint")]
     public Sprite hintWarningSprite;
 

@@ -23,6 +23,9 @@ MonoBehaviour:
     starMovesFormat: STAR & Paint <= {0}
     achievementSprite: {fileID: 21300000, guid: 4c85169b9c7f57e4aa811051a300e643,
       type: 3}
+    nextStageText: Next Stage
+    stageSelectionText: Stage Select
+    restartStageText: Play Again
     hintWarningSprite: {fileID: 21300000, guid: 66a681a2bab7f214ebaddd211902f808,
       type: 3}
     demoSprite: {fileID: 21300000, guid: 4e9f66cf351e5644497ee15a10d18f9a, type: 3}
@@ -36,6 +39,9 @@ MonoBehaviour:
     starMovesFormat: "\uBCC4 & \uC0C9\uCE60 <= {0}"
     achievementSprite: {fileID: 21300000, guid: e5b90423247b4cc45b7e747567023c23,
       type: 3}
+    nextStageText: "\uB2E4\uC74C \uC2A4\uD14C\uC774\uC9C0"
+    stageSelectionText: "\uC2A4\uD14C\uC774\uC9C0 \uC120\uD0DD"
+    restartStageText: "\uB2E4\uC2DC\uD558\uAE30"
     hintWarningSprite: {fileID: 21300000, guid: fccb572ab2b2cbf4f99b1fa2cd1e2488,
       type: 3}
     demoSprite: {fileID: 21300000, guid: 9bd60eb350bd59c488678491a8156927, type: 3}
@@ -49,6 +55,9 @@ MonoBehaviour:
     starMovesFormat: "\u661F & \u5857\u308A \u2264 {0}"
     achievementSprite: {fileID: 21300000, guid: 4c85169b9c7f57e4aa811051a300e643,
       type: 3}
+    nextStageText: 
+    stageSelectionText: 
+    restartStageText: 
     hintWarningSprite: {fileID: 21300000, guid: 411c599bc33f9dc409924c66f1cbb3bf,
       type: 3}
     demoSprite: {fileID: 21300000, guid: fbdebcbfba96a9344a5d6319a0f57a30, type: 3}

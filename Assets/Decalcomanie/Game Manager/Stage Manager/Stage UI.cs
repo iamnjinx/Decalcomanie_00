@@ -48,6 +48,11 @@ public class StageUI : MonoBehaviour
     public BaseUI stageClearedAchievementUI;
     public TextMeshProUGUI[] stageClearedTexts = new TextMeshProUGUI[3]; // 0: Stage Clear, 1: Star Earned, 2: Min Moves
 
+    public ButtonUI stageClearedNextStageButton;
+    public ButtonUI stageClearedStageSelectionButton;
+    public ButtonUI stageClearedRestartStageButton;
+    public TextMeshProUGUI[] stageClearedAfterButtonTexts = new TextMeshProUGUI[3]; // 0: Next Stage, 1: Stage Selection, 2: Restart Stage
+
     public Image achivementImage;
     public List<BaseUI> stars;
     public ButtonUI nextStageButton;
@@ -119,6 +124,14 @@ public class StageUI : MonoBehaviour
         currentMinMoves = minMoves;
     }
 
+    public void SetAfterButtonTexts(GameLanguage language)
+    {
+        LocalizedData data = GameManager.Instance.LocalizationData.GetData(language);
+        stageClearedAfterButtonTexts[0].text = data.nextStageText;
+        stageClearedAfterButtonTexts[1].text = data.stageSelectionText;
+        stageClearedAfterButtonTexts[2].text = data.restartStageText;
+    }
+
     public void UpdateUsedTileText(int usedTileCount)
     {
         usedTileText.text = usedTileCount.ToString();
@@ -151,6 +164,10 @@ public class StageUI : MonoBehaviour
 
         // 화면 터치 시, 다음 스테이지로 넘어가게.
         nextStageButton.ShowUI();
+
+        stageClearedNextStageButton.ShowUI();
+        stageClearedStageSelectionButton.ShowUI();
+        stageClearedRestartStageButton.ShowUI();
     }
 
     public async UniTask ShowAchivementStars(bool isCleared, bool obtainedStar, bool minMoves)

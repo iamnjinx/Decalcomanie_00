@@ -23,7 +23,11 @@ public class StageManager : MonoBehaviour
 
     void Awake()
     {
-        stageUI.nextStageButton.OnSingleClick += () => MoveToNextStage();
+        //stageUI.nextStageButton.OnSingleClick += () => MoveToNextStage();
+
+        stageUI.stageClearedNextStageButton.OnSingleClick += () => MoveToNextStage();
+        stageUI.stageClearedStageSelectionButton.OnSingleClick += () => GoToStageSelection();
+        stageUI.stageClearedRestartStageButton.OnSingleClick += () => RestartStage();
 
         stageUI.switchButton.OnSingleClick += () => SwitchState();
         stageUI.resetButton.OnSingleClick += () => ResetButton();
@@ -71,6 +75,7 @@ public class StageManager : MonoBehaviour
         isEarlyStage = GameManager.Instance != null && GameManager.Instance.CurrentStageIndex <= 3;
         var language = GameManager.Instance != null ? GameManager.Instance.CurrentLanguage : GameLanguage.English;
         stageUI.SetObjectiveTexts(language, isEarlyStage, boardManager.CurrentBoard.BoardData.minMoves);
+        stageUI.SetAfterButtonTexts(language);
         stageUI.UpdateUsedTileText(paintManager.paintCount);
         stageUI.SetShortKeySprite(currentGameState, language);
         stageUI.SetCurStageText(GameManager.Instance != null ? GameManager.Instance.CurrentStageIndex : 0);
@@ -108,10 +113,9 @@ public class StageManager : MonoBehaviour
     {
         if (currentGameState == GameState.End)
         {
-            if(Input.anyKeyDown)
-            {
-                MoveToNextStage();
-            }
+            if (Input.GetKeyDown(KeyCode.Escape)) GoToStageSelection();
+            if (Input.GetKeyDown(KeyCode.Space))  MoveToNextStage();
+            if (Input.GetKeyDown(KeyCode.R))      RestartStage();
             return;
         }
         if(tutorialManager != null && tutorialManager.CurTutoID != -1) return;
@@ -123,7 +127,7 @@ public class StageManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Alpha1)) paintManager.FoldHorizontal();
             if (Input.GetKeyDown(KeyCode.Alpha2)) paintManager.FoldVertical();
-            if (Input.GetMouseButtonDown(1)) paintManager.UndoPaintAction();
+            if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Z)) paintManager.UndoPaintAction();
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -229,7 +233,27 @@ public class StageManager : MonoBehaviour
             is_ready_for_next_stage = false;
             // 다음 스테이지로 이동.
             Debug.Log($"Move To Next Stage!");
-            GameManager.Instance.LoadStage(GameManager.Instance.CurrentStageIndex + 1);   
+            GameManager.Instance.LoadStage(GameManager.Instance.CurrentStageIndex + 1);
+        }
+    }
+
+    public void RestartStage()
+    {
+        if (is_ready_for_next_stage)
+        {
+            is_ready_for_next_stage = false;
+            // 현재 스테이지 다시 시작.
+            GameManager.Instance.LoadStage(GameManager.Instance.CurrentStageIndex);
+        }
+    }
+
+    public void GoToStageSelection()
+    {
+        if (is_ready_for_next_stage)
+        {
+            is_ready_for_next_stage = false;
+            // 스테이지 선택 화면으로 이동.
+            GameManager.Instance.LoadSelectScene();
         }
     }
 }
