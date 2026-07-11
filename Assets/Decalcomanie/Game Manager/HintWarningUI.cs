@@ -22,7 +22,11 @@ public class HintWarningUI : BaseUI
 
         yesButton.OnSingleClick += OnYesClicked;
         noButton.OnSingleClick += OnNoClicked;
+    }
 
+    protected override void Start()
+    {
+        base.Start();
         warningImage.sprite = GameManager.Instance.CurrentLocalizedData.hintWarningSprite;
     }
 
