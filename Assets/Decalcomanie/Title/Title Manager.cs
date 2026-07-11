@@ -51,7 +51,7 @@ public class TitleManager : MonoBehaviour
 
     public void OpenSetting()
     {
-        SettingManager.Instance.OpenSetting();
+        SettingManager.Instance.OpenSetting(showGameButtons: false);
     }
 
     public void ChangeLanguage()

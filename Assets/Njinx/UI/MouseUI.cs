@@ -27,7 +27,7 @@ public class MouseUI : MonoBehaviour
         // 이 오브젝트 전용 Canvas로 격리 — localPosition 변경 시 부모 Canvas 리빌드 방지
         Canvas selfCanvas = GetComponent<Canvas>();
         selfCanvas.overrideSorting = true;
-        selfCanvas.sortingOrder = 999;
+        selfCanvas.sortingOrder = 30001; // TMP_Dropdown 팝업(Canvas sortingOrder 30000)보다 위에 그려지도록
     }
 
     void Start()

@@ -14,6 +14,8 @@ public class SettingUI : BaseUI
     [SerializeField] private ButtonUI displayButton;
     [SerializeField] private TextMeshProUGUI displayText;
 
+    [SerializeField] private TMP_Dropdown resolutionDropdown;
+
     protected override void Start()
     {
         base.Start();
@@ -40,6 +42,8 @@ public class SettingUI : BaseUI
             GameManager.Instance.LoadSelectScene();
         };
 
+        resolutionDropdown.onValueChanged.AddListener(SettingManager.Instance.SetResolution);
+
         displayButton.OnSingleClick += () =>
         {
             SettingManager.Instance.ChangeDisplaySetting();
@@ -55,6 +59,6 @@ public class SettingUI : BaseUI
 
     public void UpdateDisplayText()
     {
-        displayText.text = GameManager.Instance.IsFullscreen ? "Change Display : full screen" : "Change Display : windowed";
+        displayText.text = GameManager.Instance.IsFullscreen ? "Full Screen" : "Windowed";
     }
 }
