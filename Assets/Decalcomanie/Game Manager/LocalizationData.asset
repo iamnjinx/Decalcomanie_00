@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localizedDataList:
   - language: 0
-    paintShortKeySprite: {fileID: 21300000, guid: c0e0faffbfc60cf41a14e9e6a8645e81,
+    paintShortKeySprite: {fileID: 21300000, guid: 2636442794998584080bad9aacf0a6a5,
       type: 3}
     platformerShortKeySprite: {fileID: 21300000, guid: 4f66edaeaa59153409597a43126a81b6,
       type: 3}
@@ -30,7 +30,7 @@ MonoBehaviour:
       type: 3}
     demoSprite: {fileID: 21300000, guid: 4e9f66cf351e5644497ee15a10d18f9a, type: 3}
   - language: 1
-    paintShortKeySprite: {fileID: 21300000, guid: 2bc289cdd09046b46a9bc091bf3c590a,
+    paintShortKeySprite: {fileID: 21300000, guid: 458d526395355574ead69637cfbd626f,
       type: 3}
     platformerShortKeySprite: {fileID: 21300000, guid: 4f66edaeaa59153409597a43126a81b6,
       type: 3}
@@ -46,7 +46,7 @@ MonoBehaviour:
       type: 3}
     demoSprite: {fileID: 21300000, guid: 9bd60eb350bd59c488678491a8156927, type: 3}
   - language: 2
-    paintShortKeySprite: {fileID: 21300000, guid: 88827f12e43e7494a8d746d538b17cba,
+    paintShortKeySprite: {fileID: 21300000, guid: 7c5f580cea6b2214980a1f00f18292c1,
       type: 3}
     platformerShortKeySprite: {fileID: 21300000, guid: 4f66edaeaa59153409597a43126a81b6,
       type: 3}

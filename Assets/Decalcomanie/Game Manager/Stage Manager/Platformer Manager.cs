@@ -12,6 +12,7 @@ public class PlatformerManager : MonoBehaviour
     [SerializeField] private Obtainables starPrefab;
     [SerializeField] private Obtainables keyPrefab;
     [SerializeField] private HoleController holePrefab;
+    [SerializeField] private HoleController longHolePrefab; // 2칸짜리(가로 기본, 세로는 90도 회전해서 사용)
     [SerializeField] private DoorController doorPrefab;
     [SerializeField] private PlayerControllerD playerPrefab;
     [SerializeField] private PaintedController tilePrefab;
@@ -76,6 +77,47 @@ public class PlatformerManager : MonoBehaviour
                 HoleController hole = Instantiate(holePrefab, PlatformerObjectParent);
                 hole.transform.position = board.GetWorldPosition(i) + new Vector3(1.25f, 1.25f, 0f);
                 hole.transform.localScale *= 2f;
+            }
+        }
+
+        // 1x2 (가로로 두 칸)
+        for (int i = 0; i < board.allTiles.Length; i++)
+        {
+            if (consumed.Contains(i) || board.allTiles[i].type != TileType.Hole) continue;
+
+            int x = i % size;
+            int right = i + 1;
+
+            bool is1x2 = x < size - 1
+                && board.allTiles[right].type == TileType.Hole
+                && !consumed.Contains(right);
+
+            if (is1x2)
+            {
+                consumed.Add(i); consumed.Add(right);
+                HoleController hole = Instantiate(longHolePrefab, PlatformerObjectParent);
+                hole.transform.position = board.GetWorldPosition(i) + new Vector3(1.25f, 0f, 0f);
+            }
+        }
+
+        // 2x1 (세로로 두 칸)
+        for (int i = 0; i < board.allTiles.Length; i++)
+        {
+            if (consumed.Contains(i) || board.allTiles[i].type != TileType.Hole) continue;
+
+            int y = i / size;
+            int up = i + size;
+
+            bool is2x1 = y < size - 1
+                && board.allTiles[up].type == TileType.Hole
+                && !consumed.Contains(up);
+
+            if (is2x1)
+            {
+                consumed.Add(i); consumed.Add(up);
+                HoleController hole = Instantiate(longHolePrefab, PlatformerObjectParent);
+                hole.transform.position = board.GetWorldPosition(i) + new Vector3(0f, 1.25f, 0f);
+                hole.transform.Rotate(0f, 0f, 90f);
             }
         }
 
