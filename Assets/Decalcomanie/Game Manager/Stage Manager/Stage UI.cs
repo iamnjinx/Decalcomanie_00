@@ -37,6 +37,11 @@ public class StageUI : MonoBehaviour
     // 0: Stage Clear (early stage only), 1: Star Earned, 2: Star & Min Moves
     public TextMeshProUGUI[] objectiveTexts = new TextMeshProUGUI[3];
     public GameObject objectiveObj;
+    public TextMeshProUGUI usedTileText;
+    public Color usedTileOverMinColor = Color.red;
+
+    private Color usedTileDefaultColor;
+    private int currentMinMoves;
 
     [Header("Stage Cleared UI")]
     public BaseUI stageClearedUI;
@@ -51,6 +56,11 @@ public class StageUI : MonoBehaviour
 
     [Header("Guide UI")]
     public SpriteRenderer guideImage;
+
+    void Awake()
+    {
+        usedTileDefaultColor = usedTileText.color;
+    }
 
     void Start()
     {
@@ -105,6 +115,14 @@ public class StageUI : MonoBehaviour
         objectiveTexts[0].text = data.stageClearText;
         objectiveTexts[1].text = data.starEarnedText;
         objectiveTexts[2].text = string.Format(data.starMovesFormat, minMoves);
+
+        currentMinMoves = minMoves;
+    }
+
+    public void UpdateUsedTileText(int usedTileCount)
+    {
+        usedTileText.text = usedTileCount.ToString();
+        usedTileText.color = usedTileCount > currentMinMoves ? usedTileOverMinColor : usedTileDefaultColor;
     }
 
     public void SetPlatformerOnlyMode()

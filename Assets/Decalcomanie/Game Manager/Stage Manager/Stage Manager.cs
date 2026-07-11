@@ -31,6 +31,8 @@ public class StageManager : MonoBehaviour
 
         stageUI.flipHorizontalButton.OnSingleClick += () => paintManager.FoldHorizontal();
         stageUI.flipVerticalButton.OnSingleClick += () => paintManager.FoldVertical();
+
+        paintManager.OnPaintCountChanged += stageUI.UpdateUsedTileText;
     }
 
     void Start()
@@ -69,6 +71,7 @@ public class StageManager : MonoBehaviour
         isEarlyStage = GameManager.Instance != null && GameManager.Instance.CurrentStageIndex <= 3;
         var language = GameManager.Instance != null ? GameManager.Instance.CurrentLanguage : GameLanguage.English;
         stageUI.SetObjectiveTexts(language, isEarlyStage, boardManager.CurrentBoard.BoardData.minMoves);
+        stageUI.UpdateUsedTileText(paintManager.paintCount);
         stageUI.SetShortKeySprite(currentGameState, language);
         stageUI.SetCurStageText(GameManager.Instance != null ? GameManager.Instance.CurrentStageIndex : 0);
         stageUI.ShowMainUI(isPlatformerOnly);

@@ -33,6 +33,8 @@ public class PaintManager : MonoBehaviour
 
     public int paintCount = 0;
 
+    public event System.Action<int> OnPaintCountChanged;
+
     public void CreateTileControllers()
     {
         Board board = boardManager.CurrentBoard;
@@ -55,6 +57,7 @@ public class PaintManager : MonoBehaviour
         if (allTileControllers[id].Tile.type != TileType.Empty) return;
         allTileControllers[id].PaintTile();
         paintCount++;
+        OnPaintCountChanged?.Invoke(paintCount);
         if(AudioManager.Instance != null)
             AudioManager.Instance.PlayRandomSFX(new[] { "paint_1", "paint_2" });
     }
@@ -83,7 +86,10 @@ public class PaintManager : MonoBehaviour
         }
 
         if (lastAction.is_paint)
+        {
             paintCount--;
+            OnPaintCountChanged?.Invoke(paintCount);
+        }
     }
 
     public async void FoldVertical()
@@ -141,6 +147,7 @@ public class PaintManager : MonoBehaviour
     public void ResetPaint()
     {
         paintCount = 0;
+        OnPaintCountChanged?.Invoke(paintCount);
         foreach (TileController tc in allTileControllers)
             tc.ChangeTileType(tc.Tile.IsPainted ? 0 : (int)tc.Tile.type);
 
