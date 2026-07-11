@@ -11,6 +11,8 @@ public class StageUI : MonoBehaviour
 {
 
     [SerializeField] BaseUI mainUI;
+    [SerializeField] BaseUI paintUI;
+    [SerializeField] BaseUI[] curtainUI;
 
     [Header("Stage UI Buttons")]
     public ButtonUI menuButton;
@@ -61,6 +63,11 @@ public class StageUI : MonoBehaviour
         {
             await UniTask.Delay(1000);
         }
+        foreach (var curtain in curtainUI)
+        {
+            curtain.ShowUI(.5f).Forget();
+        }
+        paintUI.ShowUI(.5f).Forget();
         await mainUI.ShowUI(.5f);
     }
 

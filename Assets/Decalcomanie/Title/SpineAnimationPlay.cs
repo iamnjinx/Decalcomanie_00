@@ -22,6 +22,7 @@ public class SpineAnimationPlay : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        AudioManager.Instance.PlaySFX("jump");
         skeletonAnimation.AnimationState.SetAnimation(0, animationName, false);
     }
 
