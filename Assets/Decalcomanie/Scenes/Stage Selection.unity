@@ -2675,8 +2675,9 @@ MonoBehaviour:
   is_changingChapter: 0
   nextDuration: 0.3
   demoUI: {fileID: 782174990}
+  demoImage: {fileID: 1026521189}
   demoButton: {fileID: 1313727675}
-  demoLinkUrl: https://store.steampowered.com/app/4375450/Dcalcomanie_Demo/
+  demoLinkUrl: https://store.steampowered.com/app/4372430/Dcalcomanie/
 --- !u!1 &1215290694
 GameObject:
   m_ObjectHideFlags: 0
@@ -2979,14 +2980,14 @@ RectTransform:
   m_GameObject: {fileID: 1313727671}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 782174991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 331.39, y: 55.52}
+  m_AnchoredPosition: {x: 331.39, y: -119.91}
   m_SizeDelta: {x: 898, y: 278}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1313727673

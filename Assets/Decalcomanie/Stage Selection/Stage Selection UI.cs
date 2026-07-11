@@ -67,6 +67,9 @@ public class StageSelectionUI : MonoBehaviour
         if (is_instant)
         {
             chapterBackgroundImage.sprite = GameManager.Instance.GameData.chapterBackgroundSprites[chapterIndex];
+            chapterDeco[0].sprite = GameManager.Instance.GameData.chapterDecoL[chapterIndex];
+            chapterDeco[1].sprite = GameManager.Instance.GameData.chapterDecoR[chapterIndex];
+            OnChapterChanged?.Invoke();
         }
         else
         {
@@ -105,7 +108,7 @@ public class StageSelectionUI : MonoBehaviour
         is_changingChapter = false;
     }
 
-    private void UpdateDemoUI(int chapterIndex, int maxChapterIndex)
+    public void UpdateDemoUI(int chapterIndex, int maxChapterIndex)
     {
         if (demoUI == null) return;
         demoUI.SetActive(GameManager.Instance.IsDemo && chapterIndex == maxChapterIndex);

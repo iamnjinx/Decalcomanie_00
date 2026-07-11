@@ -27,9 +27,11 @@ public class StageSelection : MonoBehaviour
         int d = GameManager.Instance.CurrentStageIndex / 10;
         UpdateChapterDisplay(d, true, true);
 
-        stageSelectionUI.SetStagePanel();
+        stageSelectionUI.UpdateDemoUI(currentChapterIndex, maxChapterIndex);
 
         StartCoroutine(InitializePanels());
+
+        
     }
 
     void Update()
