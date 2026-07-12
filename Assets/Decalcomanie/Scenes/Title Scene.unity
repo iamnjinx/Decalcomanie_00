@@ -1260,7 +1260,7 @@ PrefabInstance:
     - target: {fileID: 8889839480670587568, guid: adf8464502288534aa59e8ea17203309,
         type: 3}
       propertyPath: isDemo
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9019423139799532215, guid: adf8464502288534aa59e8ea17203309,
         type: 3}
@@ -1986,7 +1986,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
