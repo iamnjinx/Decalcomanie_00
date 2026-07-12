@@ -1705,8 +1705,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 494.90427}
-  m_SizeDelta: {x: 127, y: 72}
+  m_AnchoredPosition: {x: 6.32, y: 494.90427}
+  m_SizeDelta: {x: 176, y: 145}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &215446739
 MonoBehaviour:
@@ -1786,7 +1786,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: eb3be1cb492e8474f9767274681c276d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d9ed61fc413f4004bac829d74ac71a79, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5416,8 +5416,8 @@ MonoBehaviour:
   switchButton: {fileID: 1212618340}
   resetButton: {fileID: 2063328800}
   undoButton: {fileID: 1983560625}
-  flipHorizontalButton: {fileID: 818460860}
-  flipVerticalButton: {fileID: 215446739}
+  flipHorizontalButton: {fileID: 215446739}
+  flipVerticalButton: {fileID: 818460860}
   stageBackgroundSprites:
   - {fileID: 21300000, guid: 3c530e7f3f6ecee40958dfebb2f4537a, type: 3}
   - {fileID: 21300000, guid: 31a371e22204fdb4fb331912ddb4f905, type: 3}
@@ -5433,6 +5433,7 @@ MonoBehaviour:
   - {fileID: 1991828766}
   - {fileID: 1644782571}
   objectiveObj: {fileID: 508567829}
+  usedTileObj: {fileID: 1001742668}
   usedTileText: {fileID: 2143926493}
   usedTileOverMinColor: {r: 1, g: 0, b: 0, a: 1}
   stageClearedUI: {fileID: 1501246388}
@@ -5934,17 +5935,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 818460858}
-  m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.49990332, y: 0.49990332, z: 0.49990332}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 2057083458}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -489.90527, y: 0}
-  m_SizeDelta: {x: 127, y: 72}
+  m_AnchoredPosition: {x: -504.76, y: -7.97}
+  m_SizeDelta: {x: 145, y: 176}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &818460860
 MonoBehaviour:
@@ -6024,7 +6025,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: eb3be1cb492e8474f9767274681c276d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 37eeafa9f9a234c48837a587e60bd9aa, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -12324,7 +12325,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 1152
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0

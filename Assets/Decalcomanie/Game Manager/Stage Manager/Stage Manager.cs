@@ -56,8 +56,6 @@ public class StageManager : MonoBehaviour
             if(GameManager.Instance.CurrentStageIndex < 5)
             {
                 stageUI.guideImage.sprite = GameManager.Instance.GameData.guideSprites[GameManager.Instance.CurrentStageIndex];
-                //guideimage 오브젝트 sorting layer를 early stage일떄 아닐떄 다르게 설정
-                stageUI.guideImage.gameObject.layer = LayerMask.NameToLayer(GameManager.Instance.CurrentStageIndex < 2 ? "Tile" : "Guide");
                 stageUI.guideImage.gameObject.SetActive(true);
             }
             else
@@ -95,9 +93,11 @@ public class StageManager : MonoBehaviour
         switch (currentGameState)
         {
             case GameState.Paint:
+                stageUI.guideImage.gameObject.layer = LayerMask.NameToLayer("Guide");
                 ResetState();
                 break;
             case GameState.Platformer:
+                stageUI.guideImage.gameObject.layer = LayerMask.NameToLayer("GuideTile");
                 paintManager.PausePaint();
                 platformerManager.SetPlatformerObjects(boardManager.CurrentBoard);
 
@@ -125,8 +125,8 @@ public class StageManager : MonoBehaviour
 
         if (currentGameState == GameState.Paint)
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1)) paintManager.FoldHorizontal();
-            if (Input.GetKeyDown(KeyCode.Alpha2)) paintManager.FoldVertical();
+            if (Input.GetKeyDown(KeyCode.Alpha1)) paintManager.FoldVertical();
+            if (Input.GetKeyDown(KeyCode.Alpha2)) paintManager.FoldHorizontal();
             if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Z)) paintManager.UndoPaintAction();
         }
 

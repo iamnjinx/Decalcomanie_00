@@ -37,6 +37,8 @@ public class StageUI : MonoBehaviour
     // 0: Stage Clear (early stage only), 1: Star Earned, 2: Star & Min Moves
     public TextMeshProUGUI[] objectiveTexts = new TextMeshProUGUI[3];
     public GameObject objectiveObj;
+
+    public GameObject usedTileObj;
     public TextMeshProUGUI usedTileText;
     public Color usedTileOverMinColor = Color.red;
 
@@ -77,12 +79,12 @@ public class StageUI : MonoBehaviour
         if (!isPlatformerOnly)
         {
             await UniTask.Delay(1000);
+            paintUI.ShowUI(.5f).Forget();
+            foreach (var curtain in curtainUI)
+            {
+                curtain.ShowUI(.5f).Forget();
+            }
         }
-        foreach (var curtain in curtainUI)
-        {
-            curtain.ShowUI(.5f).Forget();
-        }
-        paintUI.ShowUI(.5f).Forget();
         await mainUI.ShowUI(.5f);
     }
 
@@ -135,13 +137,17 @@ public class StageUI : MonoBehaviour
     public void UpdateUsedTileText(int usedTileCount)
     {
         usedTileText.text = usedTileCount.ToString();
-        usedTileText.color = usedTileCount > currentMinMoves ? usedTileOverMinColor : usedTileDefaultColor;
+        Debug.Log(currentMinMoves);
+        if(currentMinMoves > 0)
+            usedTileText.color = usedTileCount > currentMinMoves ? usedTileOverMinColor : usedTileDefaultColor;
     }
 
     public void SetPlatformerOnlyMode()
     {
         switchButton.gameObject.SetActive(false);
         resetButton.gameObject.SetActive(false);
+        undoButton.gameObject.SetActive(false);
+        usedTileObj.SetActive(false);
     }
 
     public async UniTask ShowStageCleared(bool isCleared, bool obtainedStar, bool minMoves, int minMoveNum, bool isEarlyStage)
