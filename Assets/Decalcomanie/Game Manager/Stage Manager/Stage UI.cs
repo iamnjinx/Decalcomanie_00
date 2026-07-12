@@ -60,6 +60,7 @@ public class StageUI : MonoBehaviour
     public ButtonUI nextStageButton;
     public TextMeshProUGUI minMovesText;
 
+    public BaseUI postStageUI;
 
     [Header("Guide UI")]
     public SpriteRenderer guideImage;
@@ -169,7 +170,7 @@ public class StageUI : MonoBehaviour
         }
 
         // 화면 터치 시, 다음 스테이지로 넘어가게.
-        nextStageButton.ShowUI();
+        await postStageUI.ShowUI(.5f);
 
         stageClearedNextStageButton.ShowUI();
         stageClearedStageSelectionButton.ShowUI();
