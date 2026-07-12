@@ -95,6 +95,7 @@ public class StageManager : MonoBehaviour
             case GameState.Paint:
                 stageUI.guideImage.gameObject.layer = LayerMask.NameToLayer("Guide");
                 ResetState();
+                if (!isPlatformerOnly) stageUI.undoButton.gameObject.SetActive(true);
                 break;
             case GameState.Platformer:
                 stageUI.guideImage.gameObject.layer = LayerMask.NameToLayer("GuideTile");
@@ -103,6 +104,7 @@ public class StageManager : MonoBehaviour
 
                 platformerManager.OnCleared += GameCleared;
                 platformerManager.OnFellIntoHole += OnPlayerFellIntoHole;
+                if (!isPlatformerOnly) stageUI.undoButton.gameObject.SetActive(false);
                 break;
             case GameState.End:
                 break;

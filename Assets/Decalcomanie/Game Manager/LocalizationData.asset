@@ -29,6 +29,15 @@ MonoBehaviour:
     hintWarningSprite: {fileID: 21300000, guid: 66a681a2bab7f214ebaddd211902f808,
       type: 3}
     demoSprite: {fileID: 21300000, guid: 4e9f66cf351e5644497ee15a10d18f9a, type: 3}
+    resetWarningText: 'This will erase all your progress.
+
+      All stage records,
+      stars, and challenges will be deleted.
+
+      <color=red>This cannot be undone.</color>
+
+      Are
+      you sure you want to reset?'
   - language: 1
     paintShortKeySprite: {fileID: 21300000, guid: 458d526395355574ead69637cfbd626f,
       type: 3}
@@ -45,6 +54,10 @@ MonoBehaviour:
     hintWarningSprite: {fileID: 21300000, guid: fccb572ab2b2cbf4f99b1fa2cd1e2488,
       type: 3}
     demoSprite: {fileID: 21300000, guid: 9bd60eb350bd59c488678491a8156927, type: 3}
+    resetWarningText: "\uBAA8\uB4E0 \uC9C4\uD589 \uC0C1\uD669\uC744 \uCD08\uAE30\uD654\uD569\uB2C8\uB2E4.\r\n\uD074\uB9AC\uC5B4
+      \uAE30\uB85D, \uBCC4, \uB3C4\uC804\uACFC\uC81C\uAC00 \uC804\uBD80 \uC0AD\uC81C\uB418\uBA70,\r\n<color=red>\uC0AD\uC81C\uB41C
+      \uB370\uC774\uD130\uB294 \uB418\uB3CC\uB9B4 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.</color>\n\uC815\uB9D0
+      \uCD08\uAE30\uD654\uD560\uAE4C\uC694?"
   - language: 2
     paintShortKeySprite: {fileID: 21300000, guid: 7c5f580cea6b2214980a1f00f18292c1,
       type: 3}
@@ -61,3 +74,4 @@ MonoBehaviour:
     hintWarningSprite: {fileID: 21300000, guid: 411c599bc33f9dc409924c66f1cbb3bf,
       type: 3}
     demoSprite: {fileID: 21300000, guid: fbdebcbfba96a9344a5d6319a0f57a30, type: 3}
+    resetWarningText: "\u3059\u3079\u3066\u306E\u9032\u884C\u30C7\u30FC\u30BF\u3092\u521D\u671F\u5316\u3057\u307E\u3059\u3002\r\n\u30AF\u30EA\u30A2\u8A18\u9332\u30FB\u661F\u30FB\u30C1\u30E3\u30EC\u30F3\u30B8\u306E\u9054\u6210\u72B6\u6CC1\u304C\u3059\u3079\u3066\u524A\u9664\u3055\u308C\u3001\r\n<color=red>\u524A\u9664\u3055\u308C\u305F\u30C7\u30FC\u30BF\u306F\u5143\u306B\u623B\u305B\u307E\u305B\u3093\u3002</color>\r\n\u672C\u5F53\u306B\u521D\u671F\u5316\u3057\u307E\u3059\u304B\uFF1F"

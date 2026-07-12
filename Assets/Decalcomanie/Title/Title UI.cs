@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Njinx.UI;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,6 +25,12 @@ public class TitleUI : MonoBehaviour
 
     public BaseUI fadeUI;
 
+    [Header("Reset Warning")]
+    public BaseUI resetWarning;
+    public TextMeshProUGUI resetWarningText;
+    public ButtonUI resetWarningYesButton;
+    public ButtonUI resetWarningNoButton;
+
     public void SetLanguage(GameLanguage language)
     {
         for (int i = 0; i < selectionUIList.Length; i++)
@@ -36,7 +43,10 @@ public class TitleUI : MonoBehaviour
             {
                 selectionUIList[i].HideUI();
             }
-        } 
+        }
+
+        LocalizedData data = GameManager.Instance.LocalizationData.GetData(language);
+        resetWarningText.text = data.resetWarningText;
     }
 }
 

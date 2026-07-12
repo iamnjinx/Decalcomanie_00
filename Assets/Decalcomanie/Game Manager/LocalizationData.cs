@@ -28,6 +28,10 @@ public class LocalizedData
 
     [Header("Demo")]
     public Sprite demoSprite;
+
+    [Header("Title - Reset Warning")]
+    [TextArea]
+    public string resetWarningText;
 }
 
 [CreateAssetMenu(fileName = "LocalizationData", menuName = "ScriptableObjects/LocalizationData", order = 2)]

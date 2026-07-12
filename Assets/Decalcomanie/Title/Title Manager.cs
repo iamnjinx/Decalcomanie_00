@@ -21,7 +21,9 @@ public class TitleManager : MonoBehaviour
             }
         }
         
-        titleUI.resetButton.OnSingleClick += ResetProgress;
+        titleUI.resetButton.OnSingleClick += () => titleUI.resetWarning.ShowUI();
+        titleUI.resetWarningYesButton.OnSingleClick += ResetProgress;
+        titleUI.resetWarningNoButton.OnSingleClick += () => titleUI.resetWarning.HideUI();
         titleUI.creditButton.OnSingleClick += ShowCredit;
 
         StartCoroutine(InitLanguageNextFrame());
@@ -73,5 +75,6 @@ public class TitleManager : MonoBehaviour
     public void ResetProgress()
     {
         SaveManager.Instance.Delete(GameProgressData.SaveKey);
+        titleUI.resetWarning.HideUI();
     }
 }

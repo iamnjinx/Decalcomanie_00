@@ -91,8 +91,8 @@ public class StageUI : MonoBehaviour
 
     public void SetCurStageText(int stageID)
     {
-        Material material = stageTitleText.fontMaterial;
-        material.SetFloat(ShaderUtilities.ID_UnderlayDilate, 1.2f); // 1보다 큰 값
+        //Material material = stageTitleText.fontMaterial;
+        //material.SetFloat(ShaderUtilities.ID_UnderlayDilate, 1.2f); // 1보다 큰 값
         stageTitleText.text = $"STAGE {stageID / 10 + 1}-{stageID % 10 + 1}";
     }
 
