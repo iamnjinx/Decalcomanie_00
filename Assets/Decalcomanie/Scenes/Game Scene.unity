@@ -5376,10 +5376,10 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 828042147}
   - {fileID: 1212618337}
   - {fileID: 2063328797}
   - {fileID: 1983560624}
-  - {fileID: 828042147}
   - {fileID: 1910238439}
   - {fileID: 687521629}
   - {fileID: 508567830}
@@ -5511,7 +5511,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 733602828}
   m_Enabled: 1
-  m_Alpha: 0
+  m_Alpha: 1
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
@@ -5997,6 +5997,7 @@ GameObject:
   - component: {fileID: 828042150}
   - component: {fileID: 828042149}
   - component: {fileID: 828042148}
+  - component: {fileID: 828042152}
   m_Layer: 5
   m_Name: Menu Button
   m_TagString: Untagged
@@ -6119,6 +6120,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 828042146}
   m_CullTransparentMesh: 1
+--- !u!95 &828042152
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 828042146}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 92958301031b1064188bc174e252f665, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &855368764
 GameObject:
   m_ObjectHideFlags: 0
@@ -8151,6 +8173,7 @@ GameObject:
   - component: {fileID: 1212618338}
   - component: {fileID: 1212618341}
   - component: {fileID: 1212618340}
+  - component: {fileID: 1212618342}
   m_Layer: 5
   m_Name: Switch Button
   m_TagString: Untagged
@@ -8273,6 +8296,27 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!95 &1212618342
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1212618336}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b41dcb41f7c34cf4da25002900c92c60, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1217140871
 GameObject:
   m_ObjectHideFlags: 0
@@ -11509,7 +11553,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 7876fe1300405334a861adfb2171e7b0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ab031478e9a4e1b4fa4aeaecf5e6345d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -11529,9 +11573,9 @@ Transform:
   m_GameObject: {fileID: 1700724617}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8.71, y: 8.25, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 8.81, y: 9, z: 0}
+  m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 168266946}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -11923,7 +11967,6 @@ GameObject:
   - component: {fileID: 1780840584}
   - component: {fileID: 1780840586}
   - component: {fileID: 1780840588}
-  - component: {fileID: 1780840589}
   - component: {fileID: 1780840590}
   m_Layer: 0
   m_Name: Manager
@@ -11991,7 +12034,7 @@ MonoBehaviour:
   flipEase: 1
   foldTime: 0.4
   paintUI: {fileID: 504853298}
-  tutorialManager: {fileID: 1780840589}
+  tutorialManager: {fileID: 0}
   paintCount: 0
 --- !u!114 &1780840587
 MonoBehaviour:
@@ -12011,7 +12054,7 @@ MonoBehaviour:
   testBoardDataTextAsset: {fileID: 4900000, guid: 70d8a90abdfebe8469c73c73cc03ad20,
     type: 3}
   stageUI: {fileID: 733602833}
-  tutorialManager: {fileID: 1780840589}
+  tutorialManager: {fileID: 0}
 --- !u!114 &1780840588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12042,47 +12085,6 @@ MonoBehaviour:
   tilePrefab: {fileID: 3690275249829584664, guid: b7c6a62f14afa9e4394e58b087f4c3f7,
     type: 3}
   obtainedStar: 0
---- !u!114 &1780840589
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1780840583}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae8d49a4cf9ad4ffd9f096afe0f2cd8c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dinoImage: {fileID: 0}
-  dinoTutoSpritesKR:
-  - {fileID: 21300000, guid: d3263036acdf880438eb55a73262855d, type: 3}
-  - {fileID: 21300000, guid: 7a3601d65be4f3a4885006524ab4a458, type: 3}
-  - {fileID: 21300000, guid: b1a824f5aaff5f543b3411eafb7be106, type: 3}
-  - {fileID: 21300000, guid: b74f8298bafda2848846a71ad4de5024, type: 3}
-  - {fileID: 21300000, guid: 524f669b05f468b46b3732e063c884ad, type: 3}
-  - {fileID: 21300000, guid: e51b6f54f1629f242ae03cf47db92dea, type: 3}
-  - {fileID: 21300000, guid: 138fd2b8ec720c74c92e507133442047, type: 3}
-  dinoTutoSpritesEN:
-  - {fileID: 21300000, guid: d351c221664d8fc41b2ffda0ebe81241, type: 3}
-  - {fileID: 21300000, guid: 729aebab6ab8cc44daa8523e41153b11, type: 3}
-  - {fileID: 21300000, guid: f67a1e2ad5a41334fadeec4f8d898305, type: 3}
-  - {fileID: 21300000, guid: 61f94b8e256316248b76ae0078d640ff, type: 3}
-  - {fileID: 21300000, guid: ac7443f6ddbf7074a976756268f60c02, type: 3}
-  - {fileID: 21300000, guid: 9333d0c644eab654687ee758c09cbb61, type: 3}
-  - {fileID: 21300000, guid: 25d652cf8f4687048a52864702ae6dd0, type: 3}
-  clickButtons:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  TutoCanvas: {fileID: 0}
-  stageManager: {fileID: 1780840587}
-  paintManager: {fileID: 1780840586}
-  realFoldButton: {fileID: 215446737}
 --- !u!114 &1780840590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14371,6 +14373,7 @@ GameObject:
   - component: {fileID: 2063328798}
   - component: {fileID: 2063328801}
   - component: {fileID: 2063328800}
+  - component: {fileID: 2063328802}
   m_Layer: 5
   m_Name: Reset Button
   m_TagString: Untagged
@@ -14493,6 +14496,27 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!95 &2063328802
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2063328796}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 10223c3c20842034591422a2e0af2e22, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2126622675
 GameObject:
   m_ObjectHideFlags: 0

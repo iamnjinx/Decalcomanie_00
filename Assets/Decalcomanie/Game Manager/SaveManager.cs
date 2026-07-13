@@ -17,6 +17,10 @@ public class SaveManager : MonoBehaviour
         SaveGame.Encode = useEncryption;
         if (useEncryption)
             SaveGame.EncodePassword = encryptionPassword;
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        SaveGame.UsePlayerPrefs = true;
+#endif
     }
 
     public void Save<T>(string key, T data) => SaveGame.Save(key, data);

@@ -674,7 +674,7 @@ namespace BayatGames.SaveGameFree
             {
                 filePath = identifier;
             }
-            if (!Exists(filePath, path))
+            if (!Exists(identifier, path))
             {
                 Debug.LogWarningFormat(
                     "The specified identifier ({1}) does not exists. please use Exists () to check for existent before calling Load.\n" +
@@ -838,7 +838,7 @@ namespace BayatGames.SaveGameFree
             {
                 filePath = identifier;
             }
-            if (!Exists(filePath, path))
+            if (!Exists(identifier, path))
             {
                 return;
             }
@@ -981,7 +981,7 @@ namespace BayatGames.SaveGameFree
                 filePath = identifier;
             }
             FileInfo[] files = new FileInfo[0];
-            if (!Exists(filePath, path))
+            if (!Directory.Exists(filePath) && !File.Exists(filePath))
             {
                 return files;
             }
@@ -1043,7 +1043,7 @@ namespace BayatGames.SaveGameFree
                 filePath = identifier;
             }
             DirectoryInfo[] directories = new DirectoryInfo[0];
-            if (!Exists(filePath, path))
+            if (!Directory.Exists(filePath) && !File.Exists(filePath))
             {
                 return directories;
             }

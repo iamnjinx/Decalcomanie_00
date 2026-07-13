@@ -42,7 +42,7 @@ public class SettingUI : BaseUI
             GameManager.Instance.LoadSelectScene();
         };
 
-        resolutionDropdown.onValueChanged.AddListener(SettingManager.Instance.SetResolution);
+        resolutionDropdown.onValueChanged.AddListener(i => SettingManager.Instance.SetResolution(i));
 
         displayButton.OnSingleClick += () =>
         {
