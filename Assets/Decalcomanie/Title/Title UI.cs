@@ -19,17 +19,9 @@ public class TitleUI : MonoBehaviour
     public ButtonUI creditButton;
     public ButtonUI creditCloseButton;
 
-    public ButtonUI resetButton;
-
     public BaseUI creditUI;
 
     public BaseUI fadeUI;
-
-    [Header("Reset Warning")]
-    public BaseUI resetWarning;
-    public TextMeshProUGUI resetWarningText;
-    public ButtonUI resetWarningYesButton;
-    public ButtonUI resetWarningNoButton;
 
     public void SetLanguage(GameLanguage language)
     {
@@ -44,9 +36,6 @@ public class TitleUI : MonoBehaviour
                 selectionUIList[i].HideUI();
             }
         }
-
-        LocalizedData data = GameManager.Instance.LocalizationData.GetData(language);
-        resetWarningText.text = data.resetWarningText;
     }
 }
 

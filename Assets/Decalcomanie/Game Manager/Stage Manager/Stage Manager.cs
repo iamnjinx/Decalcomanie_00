@@ -75,7 +75,6 @@ public class StageManager : MonoBehaviour
         stageUI.SetObjectiveTexts(language, isEarlyStage, boardManager.CurrentBoard.BoardData.minMoves);
         stageUI.SetAfterButtonTexts(language);
         stageUI.UpdateUsedTileText(paintManager.paintCount);
-        stageUI.SetShortKeySprite(currentGameState, language);
         stageUI.SetCurStageText(GameManager.Instance != null ? GameManager.Instance.CurrentStageIndex : 0);
         stageUI.ShowMainUI(isPlatformerOnly);
         paintManager.CreateTileControllers();
@@ -87,7 +86,6 @@ public class StageManager : MonoBehaviour
     public void ChangeGameState(GameState newGameState)
     {
         currentGameState = newGameState;
-        stageUI.SetShortKeySprite(currentGameState, GameManager.Instance != null ? GameManager.Instance.CurrentLanguage : GameLanguage.English);
         OnGameStateChanged?.Invoke(currentGameState);
 
         switch (currentGameState)

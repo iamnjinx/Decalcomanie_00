@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Njinx.UI;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using TMPro;
 using UnityEngine.UI;
 using Unity.Burst.CompilerServices;
@@ -29,14 +30,18 @@ public class StageUI : MonoBehaviour
     public Image stageMainBackgroundImage;
     public TextMeshProUGUI stageTitleText;
 
-    public Image paintShortKeyImage;
-    public Image platformerShortKeyImage;
-
-
     [Header("Objectives")]
     // 0: Stage Clear (early stage only), 1: Star Earned, 2: Star & Min Moves
+    public GameObject objectiveObjParent;
     public TextMeshProUGUI[] objectiveTexts = new TextMeshProUGUI[3];
-    public GameObject objectiveObj;
+    public ButtonUI objectiveObj;
+    public float objectiveShowPosX;
+    public float objectiveMoveDuration = 0.3f;
+
+    [SerializeField] private RectTransform objectiveRectTransform;
+    private RectTransform objectiveObjRectTransform;
+    private float objectiveHidePosX;
+    private bool isObjectiveShown;
 
     public GameObject usedTileObj;
     public TextMeshProUGUI usedTileText;
@@ -68,11 +73,24 @@ public class StageUI : MonoBehaviour
     void Awake()
     {
         usedTileDefaultColor = usedTileText.color;
+
+        objectiveHidePosX = objectiveRectTransform.anchoredPosition.x;
+        objectiveObjRectTransform = objectiveObj.GetComponent<RectTransform>();
     }
 
     void Start()
     {
         menuButton.OnSingleClick += () => SettingManager.Instance.OpenSetting();
+
+        objectiveObj.OnSingleClick += ToggleObjectivePosition;
+    }
+
+    private void ToggleObjectivePosition()
+    {
+        isObjectiveShown = !isObjectiveShown;
+        float targetX = isObjectiveShown ? objectiveShowPosX : objectiveHidePosX;
+        objectiveRectTransform.DOAnchorPosX(targetX, objectiveMoveDuration).SetEase(Ease.OutQuad);
+        objectiveObjRectTransform.DOLocalRotate(new Vector3(0f, 0f, 180f), objectiveMoveDuration, RotateMode.LocalAxisAdd).SetEase(Ease.OutQuad);
     }
 
     public async void ShowMainUI(bool isPlatformerOnly = false)
@@ -102,22 +120,9 @@ public class StageUI : MonoBehaviour
         stageMainBackgroundImage.sprite = stageBackgroundSprites[stageID / 10];
     }
 
-    public void SetShortKeySprite(GameState gameState, GameLanguage language)
-    {
-        bool isPaint = gameState == GameState.Paint;
-        paintShortKeyImage.gameObject.SetActive(isPaint);
-        platformerShortKeyImage.gameObject.SetActive(!isPaint);
-
-        LocalizedData data = GameManager.Instance.LocalizationData.GetData(language);
-        if (isPaint)
-            paintShortKeyImage.sprite = data.paintShortKeySprite;
-        else
-            platformerShortKeyImage.sprite = data.platformerShortKeySprite;
-    }
-
     public void SetObjectiveTexts(GameLanguage language, bool isEarlyStage, int minMoves)
     {
-        objectiveObj.SetActive(!isEarlyStage);
+        objectiveObjParent.SetActive(!isEarlyStage);
 
         LocalizedData data = GameManager.Instance.LocalizationData.GetData(language);
         objectiveTexts[0].text = data.stageClearText;

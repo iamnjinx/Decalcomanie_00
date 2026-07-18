@@ -6,9 +6,16 @@ public class LocalizedData
 {
     public GameLanguage language;
 
-    [Header("Stage UI - Short Key")]
-    public Sprite paintShortKeySprite;
-    public Sprite platformerShortKeySprite;
+    [Header("Setting")]
+    public string fullScreenText;
+    public string windowedText;
+    public string resolutionText;
+    public string masterVolumeText;
+    public string musicVolumeText;
+    public string sfxVolumeText;
+    public string backToStageText;
+    public string titleText;
+    public string resetSaveText;
 
     [Header("Stage UI - Objective Texts")]
     public string stageClearText;

@@ -20,10 +20,7 @@ public class TitleManager : MonoBehaviour
                 buttons.quitButton.OnSingleClick += QuitGame;
             }
         }
-        
-        titleUI.resetButton.OnSingleClick += () => titleUI.resetWarning.ShowUI();
-        titleUI.resetWarningYesButton.OnSingleClick += ResetProgress;
-        titleUI.resetWarningNoButton.OnSingleClick += () => titleUI.resetWarning.HideUI();
+
         titleUI.creditButton.OnSingleClick += ShowCredit;
 
         StartCoroutine(InitLanguageNextFrame());
@@ -70,11 +67,5 @@ public class TitleManager : MonoBehaviour
     public void ShowCredit()
     {
         GameManager.Instance.LoadCreditScene();
-    }
-
-    public void ResetProgress()
-    {
-        SaveManager.Instance.Delete(GameProgressData.SaveKey);
-        titleUI.resetWarning.HideUI();
     }
 }

@@ -21,10 +21,17 @@ public class SettingManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    void Start()
+    {
+        settingUI.resetSaveButton.OnSingleClick += () => settingUI.resetWarning.ShowUI();
+        settingUI.resetWarningYesButton.OnSingleClick += ResetProgress;
+        settingUI.resetWarningNoButton.OnSingleClick += () => settingUI.resetWarning.HideUI();
+    }
+
     public void OpenSetting(bool showGameButtons = true)
     {
         settingUI.SetGameButtons(showGameButtons);
-        settingUI.UpdateDisplayText();
+        settingUI.UpdateSettingLocalization();
 
         if (!settingUI.is_shown)
         {
@@ -63,5 +70,11 @@ public class SettingManager : MonoBehaviour
         var (width, height) = resolutions[i];
         var mode = GameManager.Instance.IsFullscreen ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed;
         Screen.SetResolution(width, height, mode);
+    }
+
+    public void ResetProgress()
+    {
+        SaveManager.Instance.Delete(GameProgressData.SaveKey);
+        settingUI.resetWarning.HideUI();
     }
 }
