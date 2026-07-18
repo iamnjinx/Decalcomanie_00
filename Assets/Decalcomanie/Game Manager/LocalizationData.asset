@@ -25,7 +25,7 @@ MonoBehaviour:
     resetSaveText: Reset Save
     stageClearText: STAGE CLEAR!!
     starEarnedText: STAR EARNED!!
-    starMovesFormat: STAR & Paint <= {0}
+    starMovesFormat: Paint less than {0}
     achievementSprite: {fileID: 21300000, guid: 4c85169b9c7f57e4aa811051a300e643,
       type: 3}
     nextStageText: Next Stage
@@ -55,7 +55,7 @@ MonoBehaviour:
     resetSaveText: "\uB370\uC774\uD130 \uCD08\uAE30\uD654"
     stageClearText: "\uC2A4\uD14C\uC774\uC9C0 \uD074\uB9AC\uC5B4!!"
     starEarnedText: "\uBCC4 \uD68D\uB4DD!!"
-    starMovesFormat: "\uBCC4 & \uC0C9\uCE60 <= {0}"
+    starMovesFormat: "\uC0C9\uCE60 {0} \uC774\uD558"
     achievementSprite: {fileID: 21300000, guid: e5b90423247b4cc45b7e747567023c23,
       type: 3}
     nextStageText: "\uB2E4\uC74C \uC2A4\uD14C\uC774\uC9C0"
@@ -80,7 +80,7 @@ MonoBehaviour:
     resetSaveText: 
     stageClearText: "\u30B9\u30C6\u30FC\u30B8\u30AF\u30EA\u30A2!!"
     starEarnedText: "\u661F\u30B2\u30C3\u30C8!!"
-    starMovesFormat: "\u661F & \u5857\u308A \u2264 {0}"
+    starMovesFormat: "\u5857\u308A \u2264 {0}"
     achievementSprite: {fileID: 21300000, guid: 4c85169b9c7f57e4aa811051a300e643,
       type: 3}
     nextStageText: "\u6B21\u306E\u30B9\u30C6\u30FC\u30B8"
