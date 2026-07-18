@@ -8,7 +8,6 @@ public class PaintUI : MonoBehaviour
     [SerializeField] private Transform paintButtonParent;
     [SerializeField] private PaintButton paintButtonPrefab;
     [SerializeField] private BaseUI basePaintUI;
-    [SerializeField] private BaseUI shadow;
     [SerializeField] private List<BaseUI> curtains;
 
     public void SetPaintButtons(int count, System.Action<int> onPaintButtonClicked)
@@ -26,12 +25,10 @@ public class PaintUI : MonoBehaviour
         if (is_active)
         {
             await basePaintUI.ShowUI(.1f);
-            await shadow.ShowUI(.1f);
         }
         else
         {
             await basePaintUI.HideUI(.1f);
-            await shadow.HideUI(.1f);
         }
     }
 

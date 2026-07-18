@@ -6,7 +6,6 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using TMPro;
 using UnityEngine.UI;
-using Unity.Burst.CompilerServices;
 
 public class StageUI : MonoBehaviour
 {
@@ -142,7 +141,7 @@ public class StageUI : MonoBehaviour
 
     public void UpdateUsedTileText(int usedTileCount)
     {
-        usedTileText.text = usedTileCount.ToString();
+        usedTileText.text = usedTileCount.ToString() + "/" + currentMinMoves.ToString();
         Debug.Log(currentMinMoves);
         if(currentMinMoves > 0)
             usedTileText.color = usedTileCount > currentMinMoves ? usedTileOverMinColor : usedTileDefaultColor;
