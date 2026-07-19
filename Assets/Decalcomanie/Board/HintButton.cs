@@ -10,7 +10,7 @@ public class HintButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public bool isUnlocked = true;
     public Image HintButtonImage;
     public Sprite[] HintButtonSprites; // 0: idle, 1. pressed
-    public Sprite Hint3ButtonUnlockedSprite; // unlocked;
+    public Sprite HintButtonUnlockedSprite; // unlocked;
 
     public event Action OnPressed;
     public event Action OnReleased;
@@ -40,9 +40,9 @@ public class HintButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         OnReleased?.Invoke();
     }
 
-    public void UnlockHint3Button()
+    public void UnlockHintButton()
     {
         isUnlocked = true;
-        HintButtonImage.sprite = Hint3ButtonUnlockedSprite;
+        HintButtonImage.sprite = HintButtonUnlockedSprite;
     }
 }

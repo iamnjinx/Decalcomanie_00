@@ -31,7 +31,12 @@ public class LocalizedData
     public string restartStageText;
 
     [Header("Hint")]
-    public Sprite hintWarningSprite;
+    [TextArea]
+    public string hint2WarningText;
+    [TextArea]
+    public string hint3WarningText;
+    [TextArea]
+    public string hint3WaitText;
 
     [Header("Demo")]
     public Sprite demoSprite;

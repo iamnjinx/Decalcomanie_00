@@ -15,6 +15,7 @@ public class GameProgressData
     public int highestUnlockedStage = 0;
     public int remainingStarCount = 0;
     public List<StageAchievementData> stageAchievements = new List<StageAchievementData>();
+    public List<bool> secondHintUnlockedStages = new List<bool>();
     public List<bool> lastHintUnlockedStages = new List<bool>();
 
     public StageAchievementData GetAchievement(int stageIndex)
@@ -30,6 +31,17 @@ public class GameProgressData
 
     public bool IsLastHintUnlocked(int stageIndex) =>
         stageIndex < lastHintUnlockedStages.Count && lastHintUnlockedStages[stageIndex];
+
+    public bool IsSecondHintUnlocked(int stageIndex) =>
+        stageIndex < secondHintUnlockedStages.Count && secondHintUnlockedStages[stageIndex];
+
+    public void SetSecondHintUnlocked(int stageIndex)
+    {
+        while (secondHintUnlockedStages.Count <= stageIndex)
+            secondHintUnlockedStages.Add(false);
+
+        secondHintUnlockedStages[stageIndex] = true;
+    }
 
     public void SetLastHintUnlocked(int stageIndex)
     {

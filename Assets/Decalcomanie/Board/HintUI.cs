@@ -59,12 +59,14 @@ public class HintUI : MonoBehaviour
             remainingStarText.text = "= " + remainingStarCount.ToString();
     }
 
-    public void ShowLastHintWarning(int remainingStarCount, bool canAffordLastHint)
+    public void ShowHintWarning(HintWarningUI.HintUnlockTarget unlockTarget, int remainingStarCount, bool canAffordHint, string warningText)
     {
         if (lastHintWarningUI == null) return;
 
+        lastHintWarningUI.SetUnlockTarget(unlockTarget);
         lastHintWarningUI.SetRemainingStarText(remainingStarCount);
-        lastHintWarningUI.SetYesButtonInteractable(canAffordLastHint);
+        lastHintWarningUI.SetYesButtonInteractable(canAffordHint);
+        lastHintWarningUI.SetWarningText(warningText);
         lastHintWarningUI.ShowUI();
     }
 }

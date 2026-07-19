@@ -19,8 +19,11 @@ public class HintManager : MonoBehaviour
         if (stageManager != null)
             stageManager.OnGameStateChanged += OnGameStateChanged;
 
+        if (GameProgressData.Load().IsSecondHintUnlocked(GameManager.Instance.CurrentStageIndex))
+            hintUI.hintButtons[1].UnlockHintButton();
+
         if (GameProgressData.Load().IsLastHintUnlocked(GameManager.Instance.CurrentStageIndex))
-            hintUI.hintButtons[2].UnlockHint3Button();
+            hintUI.hintButtons[2].UnlockHintButton();
 
         hintUI.hintButtons[0].OnPressed += OnFirstHintPressed;
         hintUI.hintButtons[0].OnReleased += OnFirstHintReleased;
@@ -43,15 +46,28 @@ public class HintManager : MonoBehaviour
     }
     private void OnFirstHintReleased() => hintUI.HideFirstHint(CurrentHintElement.Hint1Pos);
 
-    private void OnSecondHintPressed() => hintUI.ShowSecondHint(CurrentHintElement.Hint2Pos, CurrentHintElement.Hint2Sprite);
-    private void OnSecondHintReleased() => hintUI.HideSecondHint(CurrentHintElement.Hint2Pos);
+    private void OnSecondHintPressed()
+    {
+        if (GameProgressData.Load().IsSecondHintUnlocked(GameManager.Instance.CurrentStageIndex))
+            hintUI.ShowSecondHint(CurrentHintElement.Hint2Pos, CurrentHintElement.Hint2Sprite);
+        else
+        {
+            ShowHintUnlockWarning(HintWarningUI.HintUnlockTarget.Second);
+        }
+    }
+
+    private void OnSecondHintReleased()
+    {
+        if (GameProgressData.Load().IsSecondHintUnlocked(GameManager.Instance.CurrentStageIndex))
+            hintUI.HideSecondHint(CurrentHintElement.Hint2Pos);
+    }
 
     private void OnLastHintPressed()
     {
         if (GameProgressData.Load().IsLastHintUnlocked(GameManager.Instance.CurrentStageIndex))
             hintUI.ShowLastHint(CurrentHintElement.Hint3Sprite);
         else
-            ShowLastHintWarning();
+            ShowHintUnlockWarning(HintWarningUI.HintUnlockTarget.Last);
     }
 
     private void OnLastHintReleased() => hintUI.HideLastHint();
@@ -62,10 +78,10 @@ public class HintManager : MonoBehaviour
         hintUI.gameObject.SetActive(newState == GameState.Paint);
     }
 
-    private void ShowLastHintWarning()
+    private void ShowHintUnlockWarning(HintWarningUI.HintUnlockTarget unlockTarget)
     {
         int remainingStarCount = GameProgressData.Load().remainingStarCount;
-        hintUI.ShowLastHintWarning(remainingStarCount, remainingStarCount >= lastHintCost);
+        hintUI.ShowHintWarning(unlockTarget, remainingStarCount, remainingStarCount >= lastHintCost, string.Empty);
     }
 
     public void UnlockLastHint()
@@ -77,7 +93,21 @@ public class HintManager : MonoBehaviour
         progress.SetLastHintUnlocked(GameManager.Instance.CurrentStageIndex);
         SaveManager.Instance.Save(GameProgressData.SaveKey, progress);
 
-        hintUI.hintButtons[2].UnlockHint3Button();
+        hintUI.hintButtons[2].UnlockHintButton();
+
+        hintUI.SetRemainingStarText(GameProgressData.Load().remainingStarCount);
+    }
+
+    public void UnlockSecondHint()
+    {
+        var progress = GameProgressData.Load();
+        if (progress.remainingStarCount < lastHintCost) return;
+
+        progress.remainingStarCount -= lastHintCost;
+        progress.SetSecondHintUnlocked(GameManager.Instance.CurrentStageIndex);
+        SaveManager.Instance.Save(GameProgressData.SaveKey, progress);
+
+        hintUI.hintButtons[1].UnlockHintButton();
 
         hintUI.SetRemainingStarText(GameProgressData.Load().remainingStarCount);
     }
