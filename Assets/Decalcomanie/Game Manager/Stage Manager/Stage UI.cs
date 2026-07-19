@@ -51,6 +51,7 @@ public class StageUI : MonoBehaviour
 
     [Header("Stage Cleared UI")]
     public BaseUI stageClearedUI;
+    public GameObject stageClearedConfettiObj;
     public BaseUI stageClearedAchievementUI;
     public TextMeshProUGUI[] stageClearedTexts = new TextMeshProUGUI[3]; // 0: Stage Clear, 1: Star Earned, 2: Min Moves
 
@@ -160,7 +161,8 @@ public class StageUI : MonoBehaviour
         stageClearedStageSelectionButton.gameObject.SetActive(!isEarlyStage);
         stageClearedRestartStageButton.gameObject.SetActive(!isEarlyStage);
 
-        await stageClearedUI.ShowUI(1f);        
+        await stageClearedUI.ShowUI(1f);
+        stageClearedConfettiObj.SetActive(true);
 
         await UniTask.Delay(1000);
 
