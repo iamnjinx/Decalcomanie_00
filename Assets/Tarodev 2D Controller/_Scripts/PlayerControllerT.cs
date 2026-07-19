@@ -28,6 +28,38 @@ namespace TarodevController
 
         public bool InputEnabled { get; set; } = true;
 
+        // 플레이어는 스테이지마다 Instantiate/Destroy되므로, 씬에 고정된 StageUI가 항상
+        // "현재 플레이어"를 찾아갈 수 있도록 정적 참조를 둡니다.
+        public static PlayerControllerT Current { get; private set; }
+
+        private void OnEnable() => Current = this;
+
+        private void OnDisable()
+        {
+            if (Current == this) Current = null;
+        }
+
+        #region Mobile Input
+        // Stage UI의 leftButton/rightButton/upButton에 EventTrigger(PointerDown/PointerUp)로 연결해서 사용합니다.
+        private bool _mobileLeftHeld;
+        private bool _mobileRightHeld;
+        private bool _mobileJumpHeld;
+        private bool _mobileJumpDownQueued;
+
+        public void OnMobileLeftDown() => _mobileLeftHeld = true;
+        public void OnMobileLeftUp() => _mobileLeftHeld = false;
+        public void OnMobileRightDown() => _mobileRightHeld = true;
+        public void OnMobileRightUp() => _mobileRightHeld = false;
+
+        public void OnMobileJumpDown()
+        {
+            _mobileJumpHeld = true;
+            _mobileJumpDownQueued = true;
+        }
+
+        public void OnMobileJumpUp() => _mobileJumpHeld = false;
+        #endregion
+
         public void ForceStop()
         {
             _frameVelocity = Vector2.zero;
@@ -65,12 +97,17 @@ namespace TarodevController
                 return;
             }
 
+            float mobileMoveX = (_mobileRightHeld ? 1f : 0f) - (_mobileLeftHeld ? 1f : 0f);
+            Vector2 move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            if (mobileMoveX != 0f) move.x = mobileMoveX;
+
             _frameInput = new FrameInput
             {
-                JumpDown = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.W),
-                JumpHeld = Input.GetButton("Jump") || Input.GetKey(KeyCode.C) || Input.GetKey(KeyCode.W),
-                Move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
+                JumpDown = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.W) || _mobileJumpDownQueued,
+                JumpHeld = Input.GetButton("Jump") || Input.GetKey(KeyCode.C) || Input.GetKey(KeyCode.W) || _mobileJumpHeld,
+                Move = move
             };
+            _mobileJumpDownQueued = false;
 
             if (_stats.SnapInput)
             {

@@ -12,9 +12,47 @@ public class ReminisceScene : MonoBehaviour
 
     [SerializeField] ReminisceType reminisceType;
 
+    [SerializeField] private float skipHoldDuration = 1f;
+
+    private Coroutine playRoutine;
+    private float spaceHoldTime;
+    private bool skipped;
+
     void Start()
     {
-        StartCoroutine(PlayReminisce());
+        playRoutine = StartCoroutine(PlayReminisce());
+    }
+
+    void Update()
+    {
+        if (skipped) return;
+
+        if (Input.GetKey(KeyCode.Space))
+        {
+            spaceHoldTime += Time.deltaTime;
+            if (spaceHoldTime >= skipHoldDuration)
+                Skip();
+        }
+        else
+        {
+            spaceHoldTime = 0f;
+        }
+    }
+
+    private void Skip()
+    {
+        skipped = true;
+
+        if (playRoutine != null)
+        {
+            StopCoroutine(playRoutine);
+            playRoutine = null;
+        }
+
+        foreach (var img in reminisceImages)
+            img.HideUI(1f).Forget();
+
+        LoadFadeScene();
     }
 
     private IEnumerator PlayReminisce()

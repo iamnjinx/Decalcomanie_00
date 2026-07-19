@@ -70,6 +70,8 @@ public class StageUI : MonoBehaviour
     [Header("Guide UI")]
     public SpriteRenderer guideImage;
 
+    public GameObject mobileControlButtonContainer;
+
     void Awake()
     {
         usedTileDefaultColor = usedTileText.color;

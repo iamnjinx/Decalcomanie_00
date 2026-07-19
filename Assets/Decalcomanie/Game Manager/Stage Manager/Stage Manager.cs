@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using TarodevController;
 
 public class StageManager : MonoBehaviour
 {
@@ -88,6 +89,8 @@ public class StageManager : MonoBehaviour
         currentGameState = newGameState;
         OnGameStateChanged?.Invoke(currentGameState);
 
+        stageUI.mobileControlButtonContainer.SetActive(Application.isMobilePlatform && currentGameState == GameState.Platformer);
+
         switch (currentGameState)
         {
             case GameState.Paint:
@@ -153,6 +156,15 @@ public class StageManager : MonoBehaviour
         else if (currentGameState == GameState.Platformer)
             ChangeGameState(GameState.Paint);
     }
+
+    // 모바일 조작 버튼(leftButton/rightButton/upButton)의 EventTrigger(PointerDown/PointerUp)에서 호출합니다.
+    // 플레이어는 스테이지마다 새로 Instantiate되므로 PlayerControllerT.Current로 현재 플레이어를 찾아갑니다.
+    public void OnMobileLeftDown() { if (PlayerControllerT.Current != null) PlayerControllerT.Current.OnMobileLeftDown(); }
+    public void OnMobileLeftUp() { if (PlayerControllerT.Current != null) PlayerControllerT.Current.OnMobileLeftUp(); }
+    public void OnMobileRightDown() { if (PlayerControllerT.Current != null) PlayerControllerT.Current.OnMobileRightDown(); }
+    public void OnMobileRightUp() { if (PlayerControllerT.Current != null) PlayerControllerT.Current.OnMobileRightUp(); }
+    public void OnMobileJumpDown() { if (PlayerControllerT.Current != null) PlayerControllerT.Current.OnMobileJumpDown(); }
+    public void OnMobileJumpUp() { if (PlayerControllerT.Current != null) PlayerControllerT.Current.OnMobileJumpUp(); }
 
     private void OnPlayerFellIntoHole() => ChangeGameState(GameState.Paint);
 
