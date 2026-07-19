@@ -118,6 +118,7 @@ public class PaintManager : MonoBehaviour
         _isFolding = true;
         if (AudioManager.Instance != null)
             AudioManager.Instance.PlaySFX("fold_paper");
+        paintUI.SetShadow(false);
         await paintUI.SetBasePaintUI(false);
 
         Vector3 start1 = panels.panel1.eulerAngles;
@@ -132,6 +133,7 @@ public class PaintManager : MonoBehaviour
         RotatePanelPair(panels, start1, start2);
         await UniTask.Delay((int)(foldTime * 1000));
 
+        paintUI.SetShadow(true);
         await paintUI.SetBasePaintUI(true);
         _isFolding = false;
     }

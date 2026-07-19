@@ -121,9 +121,9 @@ public class StageManager : MonoBehaviour
     {
         if (currentGameState == GameState.End)
         {
-            if (Input.GetKeyDown(KeyCode.Escape)) GoToStageSelection();
-            if (Input.GetKeyDown(KeyCode.Space))  MoveToNextStage();
-            if (Input.GetKeyDown(KeyCode.R))      RestartStage();
+            if (!isEarlyStage && Input.GetKeyDown(KeyCode.Escape)) GoToStageSelection();
+            if (Input.GetKeyDown(KeyCode.Space))                  MoveToNextStage();
+            if (!isEarlyStage && Input.GetKeyDown(KeyCode.R))     RestartStage();
             return;
         }
         if(tutorialManager != null && tutorialManager.CurTutoID != -1) return;

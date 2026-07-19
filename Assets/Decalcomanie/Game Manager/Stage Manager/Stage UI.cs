@@ -157,6 +157,9 @@ public class StageUI : MonoBehaviour
 
     public async UniTask ShowStageCleared(bool isCleared, bool obtainedStar, bool minMoves, int minMoveNum, bool isEarlyStage)
     {
+        stageClearedStageSelectionButton.gameObject.SetActive(!isEarlyStage);
+        stageClearedRestartStageButton.gameObject.SetActive(!isEarlyStage);
+
         await stageClearedUI.ShowUI(1f);        
 
         await UniTask.Delay(1000);
@@ -177,8 +180,6 @@ public class StageUI : MonoBehaviour
         await postStageUI.ShowUI(.5f);
 
         stageClearedNextStageButton.ShowUI();
-        stageClearedStageSelectionButton.ShowUI();
-        stageClearedRestartStageButton.ShowUI();
     }
 
     public async UniTask ShowAchivementStars(bool isCleared, bool obtainedStar, bool minMoves)
