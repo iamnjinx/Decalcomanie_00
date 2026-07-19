@@ -34,13 +34,15 @@ public class StageUI : MonoBehaviour
     public GameObject objectiveObjParent;
     public TextMeshProUGUI[] objectiveTexts = new TextMeshProUGUI[3];
     public ButtonUI objectiveObj;
-    public float objectiveShowPosX;
+    public float objectiveHidePosX;
+    public float objectiveHoverPosX = float.NaN;
     public float objectiveMoveDuration = 0.3f;
+    public float objectiveHoverMoveDuration = 0.2f;
 
     [SerializeField] private RectTransform objectiveRectTransform;
     private RectTransform objectiveObjRectTransform;
-    private float objectiveHidePosX;
-    private bool isObjectiveShown;
+    private float objectiveShowPosX;
+    private bool isObjectiveShown = true;
 
     public GameObject usedTileObj;
     public TextMeshProUGUI usedTileText;
@@ -76,8 +78,13 @@ public class StageUI : MonoBehaviour
     {
         usedTileDefaultColor = usedTileText.color;
 
-        objectiveHidePosX = objectiveRectTransform.anchoredPosition.x;
+        objectiveShowPosX = objectiveRectTransform.anchoredPosition.x;
         objectiveObjRectTransform = objectiveObj.GetComponent<RectTransform>();
+
+        if (float.IsNaN(objectiveHoverPosX))
+        {
+            objectiveHoverPosX = Mathf.Lerp(objectiveHidePosX, objectiveShowPosX, 0.1f);
+        }
     }
 
     void Start()
@@ -85,14 +92,50 @@ public class StageUI : MonoBehaviour
         menuButton.OnSingleClick += () => SettingManager.Instance.OpenSetting();
 
         objectiveObj.OnSingleClick += ToggleObjectivePosition;
+        objectiveObj.OnHoverEnter += HandleObjectiveHoverEnter;
+        objectiveObj.OnHoverExit += HandleObjectiveHoverExit;
+    }
+
+    private void OnDestroy()
+    {
+        if (objectiveObj == null) return;
+
+        objectiveObj.OnSingleClick -= ToggleObjectivePosition;
+        objectiveObj.OnHoverEnter -= HandleObjectiveHoverEnter;
+        objectiveObj.OnHoverExit -= HandleObjectiveHoverExit;
+    }
+
+    private void HandleObjectiveHoverEnter()
+    {
+        if (isObjectiveShown) return;
+        MoveObjectiveTo(objectiveHoverPosX, objectiveHoverMoveDuration);
+    }
+
+    private void HandleObjectiveHoverExit()
+    {
+        if (isObjectiveShown) return;
+        MoveObjectiveTo(objectiveHidePosX, objectiveHoverMoveDuration);
     }
 
     private void ToggleObjectivePosition()
     {
+        ToggleObjectivePosition(-1f);
+    }
+
+    private void ToggleObjectivePosition(float duration)
+    {
         isObjectiveShown = !isObjectiveShown;
         float targetX = isObjectiveShown ? objectiveShowPosX : objectiveHidePosX;
-        objectiveRectTransform.DOAnchorPosX(targetX, objectiveMoveDuration).SetEase(Ease.OutQuad);
-        objectiveObjRectTransform.DOLocalRotate(new Vector3(0f, 0f, 180f), objectiveMoveDuration, RotateMode.LocalAxisAdd).SetEase(Ease.OutQuad);
+        
+        MoveObjectiveTo(targetX, duration);
+        //objectiveObjRectTransform.DOLocalRotate(new Vector3(0f, 0f, 180f), objectiveMoveDuration, RotateMode.LocalAxisAdd).SetEase(Ease.OutQuad);
+    }
+
+    private void MoveObjectiveTo(float targetX, float duration)
+    {
+        float tweenDuration = duration <= 0f ? objectiveMoveDuration : duration;
+        objectiveRectTransform.DOKill();
+        objectiveRectTransform.DOAnchorPosX(targetX, tweenDuration).SetEase(Ease.InOutQuad);
     }
 
     public async void ShowMainUI(bool isPlatformerOnly = false)
@@ -106,6 +149,7 @@ public class StageUI : MonoBehaviour
                 curtain.ShowUI(.5f).Forget();
             }
         }
+        ToggleObjectivePosition(1f);
         await mainUI.ShowUI(.5f);
     }
 

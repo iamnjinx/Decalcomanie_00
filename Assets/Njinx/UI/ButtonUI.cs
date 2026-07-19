@@ -13,6 +13,8 @@ namespace Njinx.UI
         [Header("ButtonUI")]
         public Action OnSingleClick;
         public Action OnDoubleClick;
+        public Action OnHoverEnter;
+        public Action OnHoverExit;
 
         private float doubleClickThreshold = 0.05f;
         private Coroutine clickRoutine;
@@ -52,6 +54,18 @@ namespace Njinx.UI
         public virtual void OnClick()
         {
             OnSingleClick?.Invoke();
+        }
+
+        public override void OnPointerEnter(PointerEventData eventData)
+        {
+            base.OnPointerEnter(eventData);
+            OnHoverEnter?.Invoke();
+        }
+
+        public override void OnPointerExit(PointerEventData eventData)
+        {
+            base.OnPointerExit(eventData);
+            OnHoverExit?.Invoke();
         }
     }
 }
