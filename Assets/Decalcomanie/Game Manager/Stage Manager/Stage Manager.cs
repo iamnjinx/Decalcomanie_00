@@ -54,7 +54,7 @@ public class StageManager : MonoBehaviour
         {
             boardManager.CreateBoard(GameManager.Instance.GetCurrentStageAsset());
             stageUI.SetStageBackground(GameManager.Instance.CurrentStageIndex);
-            if(GameManager.Instance.CurrentStageIndex < 5)
+            if(GameManager.Instance.CurrentStageIndex < 6)
             {
                 stageUI.guideImage.sprite = GameManager.Instance.GameData.guideSprites[GameManager.Instance.CurrentStageIndex];
                 stageUI.guideImage.gameObject.SetActive(true);

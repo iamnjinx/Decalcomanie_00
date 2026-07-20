@@ -48,8 +48,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 2260d289c25005a41b11fe3a30a12dfb, type: 3}
   - {fileID: 21300000, guid: 4656e16897051a7468e7ae96726cca2d, type: 3}
   guideSprites:
-  - {fileID: 21300000, guid: 01702b73552cb594193ef3d497c2de9b, type: 3}
-  - {fileID: 21300000, guid: 6928b76a003a7ee41a94cc81f27d0976, type: 3}
+  - {fileID: 21300000, guid: c298970794a06f9409ae8ccb6f41ec34, type: 3}
+  - {fileID: 21300000, guid: 8b49883fd735f3c4c88227e35226584b, type: 3}
   - {fileID: 21300000, guid: 7876fe1300405334a861adfb2171e7b0, type: 3}
   - {fileID: 21300000, guid: ab031478e9a4e1b4fa4aeaecf5e6345d, type: 3}
   - {fileID: 21300000, guid: d7532877a753f1046ba52b81adfb7844, type: 3}
+  - {fileID: 21300000, guid: 3bd3989bd12a23846ac251c3ae79bb5d, type: 3}
