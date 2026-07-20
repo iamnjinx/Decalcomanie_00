@@ -17,6 +17,7 @@ public class StageSelection : MonoBehaviour
         stageSelectionUI.LeftButton.OnSingleClick += () => MoveToPreviousChapter();
         stageSelectionUI.RightButton.OnSingleClick += () => MoveToNextChapter();
         stageSelectionUI.OnChapterChanged += () => RefreshStagePanels();
+        stageSelectionUI.OnBookmarkSelected += chapterIndex => MoveToChapter(chapterIndex);
     }
 
     void Start()
@@ -86,6 +87,13 @@ public class StageSelection : MonoBehaviour
         {
             UpdateChapterDisplay(currentChapterIndex+1, true, is_instant);
         }
+    }
+
+    public void MoveToChapter(int chapterIndex, bool is_instant = false)
+    {
+        if (chapterIndex == currentChapterIndex || chapterIndex < 0 || chapterIndex > maxChapterIndex) return;
+
+        UpdateChapterDisplay(chapterIndex, chapterIndex > currentChapterIndex, is_instant);
     }
 
     private void UpdateChapterDisplay(int chapterIndex, bool is_right, bool is_instant = false)

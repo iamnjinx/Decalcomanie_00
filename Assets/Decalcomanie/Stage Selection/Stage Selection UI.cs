@@ -26,7 +26,17 @@ public class StageSelectionUI : MonoBehaviour
 
     public bool is_changingChapter = false;
 
+    public Transform bookmarkParent;
+    public BaseUI[] bookmarks;
+    public ButtonUI[] bookmarkButtons;
+
+    private int currentBookmarkIndex = -1;
+
+
+
+
     public Action OnChapterChanged;
+    public Action<int> OnBookmarkSelected;
 
     [SerializeField] private float nextDuration = 0.3f;
 
@@ -42,6 +52,16 @@ public class StageSelectionUI : MonoBehaviour
         demoButton.OnSingleClick += () => Application.OpenURL(demoLinkUrl);
 
         demoImage.sprite = GameManager.Instance.CurrentLocalizedData.demoSprite;
+
+        if (bookmarkButtons != null)
+        {
+            for (int i = 0; i < bookmarkButtons.Length; i++)
+            {
+                if (bookmarkButtons[i] == null) continue;
+                int chapterIndex = i;
+                bookmarkButtons[i].OnSingleClick += () => OnBookmarkSelected?.Invoke(chapterIndex);
+            }
+        }
     }
 
     public void SetStagePanel()
@@ -63,6 +83,8 @@ public class StageSelectionUI : MonoBehaviour
         {
             chapterIndex = 0;
         }
+
+        UpdateBookmarkOrder(chapterIndex);
 
         if (is_instant)
         {
@@ -106,6 +128,25 @@ public class StageSelectionUI : MonoBehaviour
         ChangeButtonState(chapterIndex, maxChapterIndex);
 
         is_changingChapter = false;
+    }
+
+    private void UpdateBookmarkOrder(int chapterIndex)
+    {
+        if (bookmarks == null) return;
+
+        if (currentBookmarkIndex != chapterIndex
+            && currentBookmarkIndex >= 0 && currentBookmarkIndex < bookmarks.Length
+            && bookmarks[currentBookmarkIndex] != null)
+        {
+            bookmarks[currentBookmarkIndex].HideUI(.5f).Forget();
+        }
+
+        if (chapterIndex >= 0 && chapterIndex < bookmarks.Length && bookmarks[chapterIndex] != null)
+        {
+            bookmarks[chapterIndex].ShowUI(.5f).Forget();
+        }
+
+        currentBookmarkIndex = chapterIndex;
     }
 
     public void UpdateDemoUI(int chapterIndex, int maxChapterIndex)
