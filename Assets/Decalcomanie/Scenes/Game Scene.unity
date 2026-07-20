@@ -18302,7 +18302,9 @@ MonoBehaviour:
   canvasGroup: {fileID: 1819622525}
   is_shown: 0
   yesButton: {fileID: 1839723870}
+  yesButtonText: {fileID: 996555393}
   noButton: {fileID: 93426824}
+  noButtonText: {fileID: 1742963937}
   okButton: {fileID: 1146827945}
   warningTMP: {fileID: 1852191567}
   remainingStarText: {fileID: 1980100532}

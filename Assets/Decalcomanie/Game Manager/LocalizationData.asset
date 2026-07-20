@@ -33,6 +33,8 @@ MonoBehaviour:
     restartStageText: Retry
     hintWarningText: 
     hint3WaitText: 
+    yesText: Yes
+    noText: No
     demoSprite: {fileID: 21300000, guid: 4e9f66cf351e5644497ee15a10d18f9a, type: 3}
     resetWarningText: 'This will erase all your progress.
 
@@ -65,6 +67,8 @@ MonoBehaviour:
       1\uAC1C\uB97C \uC18C\uBAA8\uD569\uB2C8\uB2E4. \uACC4\uC18D \uC9C4\uD589\uD558\uACA0\uC2B5\uB2C8\uAE4C?"
     hint3WaitText: "2\uBC88 \uD78C\uD2B8\uB97C \uBA3C\uC800 \uD574\uAE08\uD574\uC57C
       3\uBC88 \uD78C\uD2B8\uB97C \uD574\uAE08\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+    yesText: "\uB124"
+    noText: "\uC544\uB2C8\uC694"
     demoSprite: {fileID: 21300000, guid: 9bd60eb350bd59c488678491a8156927, type: 3}
     resetWarningText: "\uBAA8\uB4E0 \uC9C4\uD589 \uC0C1\uD669\uC744 \uCD08\uAE30\uD654\uD569\uB2C8\uB2E4.\r\n\uD074\uB9AC\uC5B4
       \uAE30\uB85D, \uBCC4, \uB3C4\uC804\uACFC\uC81C\uAC00 \uC804\uBD80 \uC0AD\uC81C\uB418\uBA70,\r\n<color=red>\uC0AD\uC81C\uB41C
@@ -90,5 +94,7 @@ MonoBehaviour:
     restartStageText: "\u30EA\u30C8\u30E9\u30A4"
     hintWarningText: 
     hint3WaitText: 
+    yesText: 
+    noText: 
     demoSprite: {fileID: 21300000, guid: fbdebcbfba96a9344a5d6319a0f57a30, type: 3}
     resetWarningText: "\u3059\u3079\u3066\u306E\u9032\u884C\u30C7\u30FC\u30BF\u3092\u521D\u671F\u5316\u3057\u307E\u3059\u3002\r\n\u30AF\u30EA\u30A2\u8A18\u9332\u30FB\u661F\u30FB\u30C1\u30E3\u30EC\u30F3\u30B8\u306E\u9054\u6210\u72B6\u6CC1\u304C\u3059\u3079\u3066\u524A\u9664\u3055\u308C\u3001\r\n<color=red>\u524A\u9664\u3055\u308C\u305F\u30C7\u30FC\u30BF\u306F\u5143\u306B\u623B\u305B\u307E\u305B\u3093\u3002</color>\r\n\u672C\u5F53\u306B\u521D\u671F\u5316\u3057\u307E\u3059\u304B\uFF1F"

@@ -14,7 +14,9 @@ public class HintWarningUI : BaseUI
     }
 
     [SerializeField] private ButtonUI yesButton;
+    [SerializeField] private TextMeshProUGUI yesButtonText;
     [SerializeField] private ButtonUI noButton;
+    [SerializeField] private TextMeshProUGUI noButtonText;
     [SerializeField] private ButtonUI okButton;
     [SerializeField] private TextMeshProUGUI warningTMP;
 
@@ -31,6 +33,9 @@ public class HintWarningUI : BaseUI
         yesButton.OnSingleClick += OnYesClicked;
         noButton.OnSingleClick += OnNoClicked;
         okButton.OnSingleClick += OnOkClicked;
+
+        yesButtonText.text = GameManager.Instance.CurrentLocalizedData.yesText;
+        noButtonText.text = GameManager.Instance.CurrentLocalizedData.noText;
     }
 
     private void OnYesClicked()

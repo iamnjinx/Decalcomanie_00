@@ -36,6 +36,9 @@ public class LocalizedData
     [TextArea]
     public string hint3WaitText;
 
+    public string yesText;
+    public string noText;
+
     [Header("Demo")]
     public Sprite demoSprite;
 
