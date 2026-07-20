@@ -32,9 +32,7 @@ public class LocalizedData
 
     [Header("Hint")]
     [TextArea]
-    public string hint2WarningText;
-    [TextArea]
-    public string hint3WarningText;
+    public string hintWarningText;
     [TextArea]
     public string hint3WaitText;
 

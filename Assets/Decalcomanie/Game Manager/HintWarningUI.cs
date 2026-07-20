@@ -15,6 +15,7 @@ public class HintWarningUI : BaseUI
 
     [SerializeField] private ButtonUI yesButton;
     [SerializeField] private ButtonUI noButton;
+    [SerializeField] private ButtonUI okButton;
     [SerializeField] private TextMeshProUGUI warningTMP;
 
     [SerializeField] private TextMeshProUGUI remainingStarText;
@@ -29,6 +30,7 @@ public class HintWarningUI : BaseUI
 
         yesButton.OnSingleClick += OnYesClicked;
         noButton.OnSingleClick += OnNoClicked;
+        okButton.OnSingleClick += OnOkClicked;
     }
 
     private void OnYesClicked()
@@ -42,6 +44,11 @@ public class HintWarningUI : BaseUI
     }
 
     private void OnNoClicked()
+    {
+        HideUI();
+    }
+
+    private void OnOkClicked()
     {
         HideUI();
     }
@@ -67,5 +74,19 @@ public class HintWarningUI : BaseUI
     public void SetUnlockTarget(HintUnlockTarget target)
     {
         currentTarget = target;
+    }
+
+    public void ShowNormalMode()
+    {
+        yesButton.ShowUI();
+        noButton.ShowUI();
+        okButton.HideUI();
+    }
+
+    public void ShowWaitMode()
+    {
+        yesButton.HideUI();
+        noButton.HideUI();
+        okButton.ShowUI();
     }
 }

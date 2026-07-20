@@ -67,6 +67,16 @@ public class HintUI : MonoBehaviour
         lastHintWarningUI.SetRemainingStarText(remainingStarCount);
         lastHintWarningUI.SetYesButtonInteractable(canAffordHint);
         lastHintWarningUI.SetWarningText(warningText);
+        lastHintWarningUI.ShowNormalMode();
+        lastHintWarningUI.ShowUI();
+    }
+
+    public void ShowHintWaitWarning(string waitText)
+    {
+        if (lastHintWarningUI == null) return;
+
+        lastHintWarningUI.SetWarningText(waitText);
+        lastHintWarningUI.ShowWaitMode();
         lastHintWarningUI.ShowUI();
     }
 }
