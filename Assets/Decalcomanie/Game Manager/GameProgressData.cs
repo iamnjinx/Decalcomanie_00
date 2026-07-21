@@ -13,10 +13,11 @@ public class GameProgressData
         return data;
     }
     public int highestUnlockedStage = 0;
-    public int remainingStarCount = 0;
+    public int remainingStampCount = 0;
     public List<StageAchievementData> stageAchievements = new List<StageAchievementData>();
     public List<bool> secondHintUnlockedStages = new List<bool>();
     public List<bool> lastHintUnlockedStages = new List<bool>();
+    public List<bool> chapterStampGroupAwarded = new List<bool>();
 
     public StageAchievementData GetAchievement(int stageIndex)
     {
@@ -27,7 +28,7 @@ public class GameProgressData
 
     public bool IsStageUnlocked(int stageIndex) => stageIndex <= highestUnlockedStage;
 
-    public bool IsStarObtained(int stageIndex) => GetAchievement(stageIndex).starObtained;
+    public bool IsStampObtained(int stageIndex) => GetAchievement(stageIndex).stampObtained;
 
     public bool IsLastHintUnlocked(int stageIndex) =>
         stageIndex < lastHintUnlockedStages.Count && lastHintUnlockedStages[stageIndex];
@@ -51,7 +52,7 @@ public class GameProgressData
         lastHintUnlockedStages[stageIndex] = true;
     }
 
-    public void RecordStageCleared(int stageIndex, bool obtainedStar, bool achievedMinMoves, bool starObtained)
+    public void RecordStageCleared(int stageIndex, bool obtainedStar, bool achievedMinMoves)
     {
         while (stageAchievements.Count <= stageIndex)
             stageAchievements.Add(new StageAchievementData());
@@ -61,12 +62,26 @@ public class GameProgressData
         data.obtainedStar = data.obtainedStar || obtainedStar;
         data.achievedMinMoves = data.achievedMinMoves || achievedMinMoves;
 
-        if (starObtained && !data.starObtained)
-            remainingStarCount++;
-        data.starObtained = data.starObtained || starObtained;
+        bool stampObtained = data.isCleared && data.obtainedStar && data.achievedMinMoves;
+        if (stampObtained && !data.stampObtained)
+            remainingStampCount++;
+        data.stampObtained = data.stampObtained || stampObtained;
 
         if (stageIndex + 1 > highestUnlockedStage)
             highestUnlockedStage = System.Math.Min(stageIndex + 1, GameManager.Instance.TotalStages);
+    }
+
+    // 챕터를 5스테이지 단위(앞/뒤)로 나눈 그룹에서 전부 별 3개를 달성하면 최초 1회만 보너스 도장을 지급합니다.
+    public bool TryAwardChapterStamp(int groupIndex)
+    {
+        while (chapterStampGroupAwarded.Count <= groupIndex)
+            chapterStampGroupAwarded.Add(false);
+
+        if (chapterStampGroupAwarded[groupIndex]) return false;
+
+        chapterStampGroupAwarded[groupIndex] = true;
+        remainingStampCount++;
+        return true;
     }
 }
 
@@ -76,5 +91,5 @@ public class StageAchievementData
     public bool isCleared;
     public bool obtainedStar;
     public bool achievedMinMoves;
-    public bool starObtained;
+    public bool stampObtained;
 }

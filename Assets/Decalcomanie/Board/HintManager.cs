@@ -37,7 +37,7 @@ public class HintManager : MonoBehaviour
 
     void Start()
     {
-        hintUI.SetRemainingStarText(GameProgressData.Load().remainingStarCount);       
+        hintUI.SetRemainingStampText(GameProgressData.Load().remainingStampCount);
     }
 
     private void OnFirstHintPressed()
@@ -84,35 +84,35 @@ public class HintManager : MonoBehaviour
 
     private void ShowHintUnlockWarning(HintWarningUI.HintUnlockTarget unlockTarget)
     {
-        int remainingStarCount = GameProgressData.Load().remainingStarCount;
-        hintUI.ShowHintWarning(unlockTarget, remainingStarCount, remainingStarCount >= lastHintCost, GameManager.Instance.CurrentLocalizedData.hintWarningText);
+        int remainingStampCount = GameProgressData.Load().remainingStampCount;
+        hintUI.ShowHintWarning(unlockTarget, remainingStampCount, remainingStampCount >= lastHintCost, GameManager.Instance.CurrentLocalizedData.hintWarningText);
     }
 
     public void UnlockLastHint()
     {
         var progress = GameProgressData.Load();
-        if (progress.remainingStarCount < lastHintCost) return;
+        if (progress.remainingStampCount < lastHintCost) return;
 
-        progress.remainingStarCount -= lastHintCost;
+        progress.remainingStampCount -= lastHintCost;
         progress.SetLastHintUnlocked(GameManager.Instance.CurrentStageIndex);
         SaveManager.Instance.Save(GameProgressData.SaveKey, progress);
 
         hintUI.hintButtons[2].UnlockHintButton();
 
-        hintUI.SetRemainingStarText(GameProgressData.Load().remainingStarCount);
+        hintUI.SetRemainingStampText(GameProgressData.Load().remainingStampCount);
     }
 
     public void UnlockSecondHint()
     {
         var progress = GameProgressData.Load();
-        if (progress.remainingStarCount < lastHintCost) return;
+        if (progress.remainingStampCount < lastHintCost) return;
 
-        progress.remainingStarCount -= lastHintCost;
+        progress.remainingStampCount -= lastHintCost;
         progress.SetSecondHintUnlocked(GameManager.Instance.CurrentStageIndex);
         SaveManager.Instance.Save(GameProgressData.SaveKey, progress);
 
         hintUI.hintButtons[1].UnlockHintButton();
 
-        hintUI.SetRemainingStarText(GameProgressData.Load().remainingStarCount);
+        hintUI.SetRemainingStampText(GameProgressData.Load().remainingStampCount);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Njinx.UI;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class HintWarningUI : BaseUI
@@ -20,7 +21,8 @@ public class HintWarningUI : BaseUI
     [SerializeField] private ButtonUI okButton;
     [SerializeField] private TextMeshProUGUI warningTMP;
 
-    [SerializeField] private TextMeshProUGUI remainingStarText;
+    [FormerlySerializedAs("remainingStarText")]
+    [SerializeField] private TextMeshProUGUI remainingStampText;
 
     [SerializeField] private HintManager hintManager;
 
@@ -58,9 +60,9 @@ public class HintWarningUI : BaseUI
         HideUI();
     }
 
-    public void SetRemainingStarText(int remainingStarCount)
+    public void SetRemainingStampText(int remainingStampCount)
     {
-        remainingStarText.text = remainingStarCount.ToString();
+        remainingStampText.text = "= " + remainingStampCount.ToString();
     }
 
     public void SetYesButtonInteractable(bool isInteractable)

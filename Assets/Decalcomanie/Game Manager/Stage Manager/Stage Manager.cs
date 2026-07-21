@@ -220,8 +220,7 @@ public class StageManager : MonoBehaviour
         progress.RecordStageCleared(
             GameManager.Instance.CurrentStageIndex,
             achievements.ObtainedStar,
-            achievements.Min_Moves,
-            platformerManager.obtainedStar);
+            achievements.Min_Moves);
         SaveManager.Instance.Save(GameProgressData.SaveKey, progress);
     }
 

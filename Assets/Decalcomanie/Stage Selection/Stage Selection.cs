@@ -61,6 +61,9 @@ public class StageSelection : MonoBehaviour
     public void RefreshStagePanels()
     {
         var progress = GameProgressData.Load();
+        bool firstHalfComplete = true;
+        bool secondHalfComplete = true;
+
         for(int i = 0; i < stageSelectionUI.stagePanels.Length; i++)
         {
             int index = i + currentChapterIndex * 10; // Adjust index based on current chapter
@@ -70,6 +73,23 @@ public class StageSelection : MonoBehaviour
             stageSelectionUI.stagePanels[i].SetStagePanel(index, achievement.isCleared, achievement.obtainedStar, achievement.achievedMinMoves, progress.highestUnlockedStage >= index, stageData?.screenshot);
 
             stageSelectionUI.stagePanels[i].button.OnSingleClick = () => OnStageSelected(index);
+
+            bool is3Star = achievement.isCleared && achievement.obtainedStar && achievement.achievedMinMoves;
+            if (i < 5) firstHalfComplete &= is3Star;
+            else secondHalfComplete &= is3Star;
+        }
+
+        stageSelectionUI.chapterStamp[0].SetUI(firstHalfComplete);
+        stageSelectionUI.chapterStamp[1].SetUI(secondHalfComplete);
+
+        bool awarded = false;
+        if (firstHalfComplete) awarded |= progress.TryAwardChapterStamp(currentChapterIndex * 2);
+        if (secondHalfComplete) awarded |= progress.TryAwardChapterStamp(currentChapterIndex * 2 + 1);
+
+        if (awarded)
+        {
+            SaveManager.Instance.Save(GameProgressData.SaveKey, progress);
+            stageSelectionUI.UpdateStampCountText();
         }
     }
 

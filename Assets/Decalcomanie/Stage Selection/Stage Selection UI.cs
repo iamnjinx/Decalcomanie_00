@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Njinx.UI;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,6 +23,7 @@ public class StageSelectionUI : MonoBehaviour
     public CanvasGroup chapterCG;
     public StagePanel[] stagePanels = new StagePanel[10];
     public Image[] chapterDeco = new Image[2];
+    public BaseUI[] chapterStamp = new BaseUI[2];
     public BaseUI[] chapterFlip = new BaseUI[4];
 
     public bool is_changingChapter = false;
@@ -39,6 +41,8 @@ public class StageSelectionUI : MonoBehaviour
     public Action<int> OnBookmarkSelected;
 
     [SerializeField] private float nextDuration = 0.3f;
+
+    [SerializeField] private TextMeshProUGUI curStampCountText;
 
     [Header("Demo")]
     public GameObject demoUI;
@@ -62,11 +66,19 @@ public class StageSelectionUI : MonoBehaviour
                 bookmarkButtons[i].OnSingleClick += () => OnBookmarkSelected?.Invoke(chapterIndex);
             }
         }
+
+        UpdateStampCountText();
     }
 
     public void SetStagePanel()
     {
-        
+
+    }
+
+    public void UpdateStampCountText()
+    {
+        if (curStampCountText != null)
+            curStampCountText.text = "x " + GameProgressData.Load().remainingStampCount.ToString();
     }
 
     public async void ChangeChapterDisplay(int chapterIndex, int maxChapterIndex, bool is_right, bool is_instant = false)

@@ -14,6 +14,8 @@ public class StagePanel: MonoBehaviour
     public GameObject questionMakrkIcon;
     public Image screenshot;
 
+    public BaseUI stampIcon;
+
     public BaseUI[] starIcons = new BaseUI[3];
 
     public void SetStagePanel(int stageID, bool isCleared, bool obtainedStar, bool achievedMinMoves, bool isOpened = false, Sprite ss = null)
@@ -26,6 +28,13 @@ public class StagePanel: MonoBehaviour
         SetIcon(starIcons[0], isCleared);
         SetIcon(starIcons[1], isCleared && obtainedStar);
         SetIcon(starIcons[2], isCleared && achievedMinMoves);
+
+        // 해당 스테이지 별 3개 시, 도장 이미지 활성화. 아니면 숨김
+        if (stampIcon != null)
+        {
+            bool is3Star = isCleared && obtainedStar && achievedMinMoves;
+            stampIcon.SetUI(is3Star);
+        }
 
         SetOpened(ss, isOpened);
     }

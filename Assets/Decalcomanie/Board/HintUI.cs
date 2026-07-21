@@ -16,7 +16,7 @@ public class HintUI : MonoBehaviour
     [Header("Hint Space 3")]
     [SerializeField] private HintSpace3 hint3Image;
     
-    [SerializeField] private TextMeshProUGUI remainingStarText;
+    //[SerializeField] private TextMeshProUGUI remainingStarText;
 
     [SerializeField] private HintWarningUI lastHintWarningUI;
 
@@ -53,18 +53,17 @@ public class HintUI : MonoBehaviour
         hint3Image.HideUI();
     }
 
-    public void SetRemainingStarText(int remainingStarCount)
+    public void SetRemainingStampText(int remainingStampCount)
     {
-        if (remainingStarText != null)
-            remainingStarText.text = "= " + remainingStarCount.ToString();
+        //if (remainingStampText != null) remainingStampText.text = "= " + remainingStampCount.ToString();
     }
 
-    public void ShowHintWarning(HintWarningUI.HintUnlockTarget unlockTarget, int remainingStarCount, bool canAffordHint, string warningText)
+    public void ShowHintWarning(HintWarningUI.HintUnlockTarget unlockTarget, int remainingStampCount, bool canAffordHint, string warningText)
     {
         if (lastHintWarningUI == null) return;
 
         lastHintWarningUI.SetUnlockTarget(unlockTarget);
-        lastHintWarningUI.SetRemainingStarText(remainingStarCount);
+        lastHintWarningUI.SetRemainingStampText(remainingStampCount);
         lastHintWarningUI.SetYesButtonInteractable(canAffordHint);
         lastHintWarningUI.SetWarningText(warningText);
         lastHintWarningUI.ShowNormalMode();
