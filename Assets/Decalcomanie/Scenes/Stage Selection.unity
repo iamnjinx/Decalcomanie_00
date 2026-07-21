@@ -2991,20 +2991,20 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 782174990}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 451417824}
   - {fileID: 1026521188}
   - {fileID: 1313727672}
-  m_Father: {fileID: 1162354856}
+  m_Father: {fileID: 1809604763}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &807236782
 GameObject:
@@ -3470,7 +3470,7 @@ MonoBehaviour:
   startHidden: 1
   is_blockRaycast: 1
   canvasGroup: {fileID: 888096014}
-  is_shown: 1
+  is_shown: 0
 --- !u!225 &888096014
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -3479,9 +3479,9 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 888096009}
   m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
 --- !u!1 &938723148
 GameObject:
@@ -4618,7 +4618,6 @@ RectTransform:
   - {fileID: 1125683141}
   - {fileID: 1821933331}
   - {fileID: 351518190}
-  - {fileID: 782174991}
   - {fileID: 1383488092}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6414,12 +6413,12 @@ PrefabInstance:
     - target: {fileID: 3782784693276338562, guid: 83fb3751c32e1684391c4e9409c55b4f,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 461
+      value: 411
       objectReference: {fileID: 0}
     - target: {fileID: 4393849591194228398, guid: 83fb3751c32e1684391c4e9409c55b4f,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 461
+      value: 411
       objectReference: {fileID: 0}
     - target: {fileID: 7132680046537554204, guid: 83fb3751c32e1684391c4e9409c55b4f,
         type: 3}
@@ -7303,6 +7302,7 @@ RectTransform:
   - {fileID: 1369383877}
   - {fileID: 1373114080}
   - {fileID: 612749740}
+  - {fileID: 782174991}
   - {fileID: 874102453}
   - {fileID: 1741893276}
   - {fileID: 310869679}
@@ -7845,7 +7845,7 @@ MonoBehaviour:
   startHidden: 1
   is_blockRaycast: 1
   canvasGroup: {fileID: 2041616024}
-  is_shown: 1
+  is_shown: 0
 --- !u!225 &2041616024
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -7854,9 +7854,9 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2041616019}
   m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
 --- !u!114 &2068679297 stripped
 MonoBehaviour:
@@ -8762,6 +8762,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 8889839480670587568, guid: adf8464502288534aa59e8ea17203309,
+        type: 3}
+      propertyPath: isDemo
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
