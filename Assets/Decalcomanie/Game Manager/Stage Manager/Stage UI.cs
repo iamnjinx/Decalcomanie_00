@@ -207,6 +207,17 @@ public class StageUI : MonoBehaviour
         usedTileObj.SetActive(false);
     }
 
+    public void SetEarlyStageUIVisibility(int stageID)
+    {
+        // STAGE 1-1 ~ 1-3(stageID 0~2)까지 접기 버튼 숨김
+        bool showFoldButtons = stageID > 2;
+        flipHorizontalButton.gameObject.SetActive(showFoldButtons);
+        flipVerticalButton.gameObject.SetActive(showFoldButtons);
+
+        // STAGE 1-1 ~ 1-4(stageID 0~3)까지 현재 색칠 수 UI 숨김
+        usedTileObj.SetActive(stageID > 3);
+    }
+
     public async UniTask ShowStageCleared(bool isCleared, bool obtainedStar, bool minMoves, int minMoveNum, bool isEarlyStage)
     {
         stageClearedStageSelectionButton.gameObject.SetActive(!isEarlyStage);

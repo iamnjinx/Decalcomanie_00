@@ -43,9 +43,9 @@ MonoBehaviour:
     Hint2Pos: 1
     Hint2Sprite: {fileID: 21300000, guid: 05f3fcdaa09816242a518798f9e286ce, type: 3}
     Hint3Sprite: {fileID: 21300000, guid: 9d007fd887a2c40498dfb00d319c4316, type: 3}
-  - Hint1Pos: 1
+  - Hint1Pos: 0
     Hint1Num: 2
-    Hint2Pos: 1
+    Hint2Pos: 0
     Hint2Sprite: {fileID: 21300000, guid: 7e46fd9738e805a45a2cec9007cbe2aa, type: 3}
     Hint3Sprite: {fileID: 21300000, guid: 826ac54c89dd2d64cb3ac527942e3a56, type: 3}
   - Hint1Pos: 1

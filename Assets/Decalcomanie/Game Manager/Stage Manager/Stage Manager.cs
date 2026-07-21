@@ -72,6 +72,7 @@ public class StageManager : MonoBehaviour
         }
 
         isEarlyStage = GameManager.Instance != null && GameManager.Instance.CurrentStageIndex <= 3;
+        stageUI.SetEarlyStageUIVisibility(GameManager.Instance != null ? GameManager.Instance.CurrentStageIndex : 0);
         var language = GameManager.Instance != null ? GameManager.Instance.CurrentLanguage : GameLanguage.English;
         stageUI.SetObjectiveTexts(language, isEarlyStage, boardManager.CurrentBoard.BoardData.minMoves);
         stageUI.SetAfterButtonTexts(language);
