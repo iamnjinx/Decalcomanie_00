@@ -9,6 +9,7 @@ public class HintSpace1 : HintSpace
     
     public void SetHintNumText(int hintNum)
     {
-        hintNumText.text = hintNum.ToString();
+        hintNumText.text = string.Format(GameManager.Instance.CurrentLocalizedData.hint1Text, hintNum.ToString());
+        hintNumText.font = GameManager.Instance.CurrentLocalizedData.fontAsset;
     }
 }

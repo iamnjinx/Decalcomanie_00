@@ -174,6 +174,7 @@ public class StageUI : MonoBehaviour
         objectiveTexts[0].text = data.stageClearText;
         objectiveTexts[1].text = data.starEarnedText;
         objectiveTexts[2].text = string.Format(data.starMovesFormat, minMoves);
+        foreach (var text in objectiveTexts) text.font = data.fontAsset;
 
         currentMinMoves = minMoves;
     }
@@ -184,6 +185,7 @@ public class StageUI : MonoBehaviour
         stageClearedAfterButtonTexts[0].text = data.nextStageText;
         stageClearedAfterButtonTexts[1].text = data.stageSelectionText;
         stageClearedAfterButtonTexts[2].text = data.restartStageText;
+        foreach (var text in stageClearedAfterButtonTexts) text.font = data.fontAsset;
     }
 
     public void UpdateUsedTileText(int usedTileCount)
@@ -218,6 +220,7 @@ public class StageUI : MonoBehaviour
             stageClearedTexts[0].text = data.stageClearText;
             stageClearedTexts[1].text = data.starEarnedText;
             stageClearedTexts[2].text = string.Format(data.starMovesFormat, minMoveNum);
+            foreach (var text in stageClearedTexts) text.font = data.fontAsset;
             achivementImage.sprite = data.achievementSprite;
             await stageClearedAchievementUI.ShowUI(1f);
 

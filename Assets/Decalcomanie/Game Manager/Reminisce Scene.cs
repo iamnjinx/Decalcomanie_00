@@ -2,6 +2,7 @@ using System.Collections;
 using Cysharp.Threading.Tasks;
 using Njinx.UI;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ReminisceScene : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class ReminisceScene : MonoBehaviour
     [SerializeField] private float skipHoldDuration = 1f;
 
     private Coroutine playRoutine;
+    [SerializeField] private Image holdImage;
     private float spaceHoldTime;
     private bool skipped;
 
@@ -30,12 +32,14 @@ public class ReminisceScene : MonoBehaviour
         if (Input.GetKey(KeyCode.Space))
         {
             spaceHoldTime += Time.deltaTime;
+            holdImage.fillAmount = spaceHoldTime / skipHoldDuration;
             if (spaceHoldTime >= skipHoldDuration)
                 Skip();
         }
         else
         {
             spaceHoldTime = 0f;
+            holdImage.fillAmount = 0f;
         }
     }
 

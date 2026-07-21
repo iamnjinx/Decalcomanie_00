@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 07c61ae2348d4af44961c94d399cecdf
+guid: 65681611acb4ca24dade0c6f13d8c989
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Potta One
+  - Kiwi Maru
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

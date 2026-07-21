@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
 using Njinx.UI;
 using UnityEngine;
 
@@ -12,8 +11,16 @@ public class CreditManager : MonoBehaviour
 
     [SerializeField] Transform creditUI;
     [SerializeField] float targetYPos;
+    [SerializeField] float moveSpeed = 50f;
+    [SerializeField] float fastMoveSpeed = 200f;
+
+    RectTransform creditRect;
+    bool isMoving;
+
     async void Start()
     {
+        creditRect = creditUI.GetComponent<RectTransform>();
+
         await curtainUI.HideUI(0.5f);
 
         await MoveCreditUI();
@@ -28,12 +35,26 @@ public class CreditManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(0))
         {
             GameManager.Instance.LoadTitleScene();
-        }  
+        }
+
+        if (isMoving)
+        {
+            float speed = Input.GetKey(KeyCode.Space) ? fastMoveSpeed : moveSpeed;
+            Vector2 pos = creditRect.anchoredPosition;
+            pos.y = Mathf.MoveTowards(pos.y, targetYPos, speed * Time.deltaTime);
+            creditRect.anchoredPosition = pos;
+        }
     }
 
     private async UniTask MoveCreditUI()
     {
-        creditUI.GetComponent<RectTransform>().DOAnchorPosY(targetYPos, 20f).SetEase(Ease.Linear);
-        await UniTask.Delay(120000);
+        isMoving = true;
+
+        while (Mathf.Abs(creditRect.anchoredPosition.y - targetYPos) > 0.01f)
+        {
+            await UniTask.Yield();
+        }
+
+        isMoving = false;
     }
 }

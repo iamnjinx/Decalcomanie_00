@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 [System.Serializable]
 public class LocalizedData
 {
     public GameLanguage language;
+    public TMP_FontAsset fontAsset;
 
     [Header("Setting")]
     public string fullScreenText;
@@ -41,6 +43,8 @@ public class LocalizedData
 
     public string yesText;
     public string noText;
+
+    public string hint1Text;
 
     [Header("Demo")]
     public Sprite demoSprite;

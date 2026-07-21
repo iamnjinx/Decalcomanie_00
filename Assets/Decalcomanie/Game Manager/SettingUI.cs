@@ -98,19 +98,29 @@ public class SettingUI : BaseUI
         UpdateDisplayText();
 
         resolutionText.text = data.resolutionText;
+        resolutionText.font = data.fontAsset;
         masterVolumeText.text = data.masterVolumeText;
+        masterVolumeText.font = data.fontAsset;
         effectVolumeText.text = data.sfxVolumeText;
+        effectVolumeText.font = data.fontAsset;
         musicVolumeText.text = data.musicVolumeText;
+        musicVolumeText.font = data.fontAsset;
 
         stageText.text = data.backToStageText;
+        stageText.font = data.fontAsset;
         titleText.text = data.titleText;
+        titleText.font = data.fontAsset;
         resetSaveText.text = data.resetSaveText;
+        resetSaveText.font = data.fontAsset;
 
         resetWarningText.text = data.resetWarningText;
+        resetWarningText.font = data.fontAsset;
     }
 
     public void UpdateDisplayText()
     {
-        displayText.text = GameManager.Instance.IsFullscreen ? GameManager.Instance.CurrentLocalizedData.fullScreenText : GameManager.Instance.CurrentLocalizedData.windowedText;
+        LocalizedData data = GameManager.Instance.CurrentLocalizedData;
+        displayText.text = GameManager.Instance.IsFullscreen ? data.fullScreenText : data.windowedText;
+        displayText.font = data.fontAsset;
     }
 }

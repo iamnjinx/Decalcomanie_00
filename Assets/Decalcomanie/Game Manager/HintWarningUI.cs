@@ -37,7 +37,9 @@ public class HintWarningUI : BaseUI
         okButton.OnSingleClick += OnOkClicked;
 
         yesButtonText.text = GameManager.Instance.CurrentLocalizedData.yesText;
+        yesButtonText.font = GameManager.Instance.CurrentLocalizedData.fontAsset;
         noButtonText.text = GameManager.Instance.CurrentLocalizedData.noText;
+        noButtonText.font = GameManager.Instance.CurrentLocalizedData.fontAsset;
     }
 
     private void OnYesClicked()
@@ -75,6 +77,7 @@ public class HintWarningUI : BaseUI
         if (warningTMP != null)
         {
             warningTMP.text = warningText;
+            warningTMP.font = GameManager.Instance.CurrentLocalizedData.fontAsset;
         }
     }
 

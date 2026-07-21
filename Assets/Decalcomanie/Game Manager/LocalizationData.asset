@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localizedDataList:
   - language: 0
+    fontAsset: {fileID: 11400000, guid: 01713e72c49e7464a802fc206f448af6, type: 2}
     fullScreenText: Full Screen
     windowedText: Windowed
     resolutionText: Resolution
@@ -37,6 +38,7 @@ MonoBehaviour:
     hint3WaitText: You must unlock Hint 2 first to unlock Hint 3.
     yesText: Yes
     noText: No
+    hint1Text: '{0} or less'
     demoSprite: {fileID: 21300000, guid: 4e9f66cf351e5644497ee15a10d18f9a, type: 3}
     resetWarningText: 'This will erase all your progress.
 
@@ -48,6 +50,7 @@ MonoBehaviour:
       Are
       you sure you want to reset?'
   - language: 1
+    fontAsset: {fileID: 11400000, guid: 01713e72c49e7464a802fc206f448af6, type: 2}
     fullScreenText: "\uC804\uCCB4\uD654\uBA74"
     windowedText: "\uCC3D \uBAA8\uB4DC"
     resolutionText: "\uD574\uC0C1\uB3C4"
@@ -60,7 +63,7 @@ MonoBehaviour:
     stageText: "\uC2A4\uD14C\uC774\uC9C0"
     stageClearText: "\uC2A4\uD14C\uC774\uC9C0 \uD074\uB9AC\uC5B4!!"
     starEarnedText: "\uBCC4 \uD68D\uB4DD!!"
-    starMovesFormat: "\uC0C9\uCE60 {0} \uC774\uD558"
+    starMovesFormat: "\uC0C9\uCE60 {0}\uAC1C \uC774\uD558"
     achievementSprite: {fileID: 21300000, guid: e5b90423247b4cc45b7e747567023c23,
       type: 3}
     nextStageText: "\uB2E4\uC74C \uC2A4\uD14C\uC774\uC9C0"
@@ -73,12 +76,14 @@ MonoBehaviour:
       3\uBC88 \uD78C\uD2B8\uB97C \uD574\uAE08\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
     yesText: "\uB124"
     noText: "\uC544\uB2C8\uC694"
+    hint1Text: "{0}\uAC1C \uC774\uD558"
     demoSprite: {fileID: 21300000, guid: 9bd60eb350bd59c488678491a8156927, type: 3}
     resetWarningText: "\uBAA8\uB4E0 \uC9C4\uD589 \uC0C1\uD669\uC744 \uCD08\uAE30\uD654\uD569\uB2C8\uB2E4.\r\n\uD074\uB9AC\uC5B4
       \uAE30\uB85D, \uBCC4, \uB3C4\uC804\uACFC\uC81C\uAC00 \uC804\uBD80 \uC0AD\uC81C\uB418\uBA70,\r\n<color=red>\uC0AD\uC81C\uB41C
       \uB370\uC774\uD130\uB294 \uB418\uB3CC\uB9B4 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.</color>\n\uC815\uB9D0
       \uCD08\uAE30\uD654\uD560\uAE4C\uC694?"
   - language: 2
+    fontAsset: {fileID: 11400000, guid: f8eecc1ddc794c944b4a8d5b659713ed, type: 2}
     fullScreenText: "\u30D5\u30EB\u30B9\u30AF\u30EA\u30FC\u30F3"
     windowedText: "\u30A6\u30A3\u30F3\u30C9\u30A6"
     resolutionText: "\u89E3\u50CF\u5EA6"
@@ -89,9 +94,9 @@ MonoBehaviour:
     titleText: "\u30BF\u30A4\u30C8\u30EB\u3078\u623B\u308B"
     resetSaveText: "\u30C7\u30FC\u30BF\u30EA\u30BB\u30C3\u30C8"
     stageText: "\u30B9\u30C6\u30FC\u30B8"
-    stageClearText: "\u30B9\u30C6\u30FC\u30B8\u30AF\u30EA\u30A2!!"
+    stageClearText: "\u30B9\u30C6\u30FC\u30B8\u7A81\u7834!!"
     starEarnedText: "\u661F\u30B2\u30C3\u30C8!!"
-    starMovesFormat: "\u5857\u308A \u2264 {0}"
+    starMovesFormat: "\u8272\u5857\u308A n\u500B \u4EE5\u4E0B"
     achievementSprite: {fileID: 21300000, guid: 4c85169b9c7f57e4aa811051a300e643,
       type: 3}
     nextStageText: "\u6B21\u306E\u30B9\u30C6\u30FC\u30B8"
@@ -101,5 +106,6 @@ MonoBehaviour:
     hint3WaitText: "3\u3064\u76EE\u306E\u30D2\u30F3\u30C8\u3092\u898B\u308B\u306B\u306F\u30012\u3064\u76EE\u306E\u30D2\u30F3\u30C8\u3092\u958B\u304F\u5FC5\u8981\u304C\u3042\u308A\u307E\u3059\u3002 "
     yesText: "\u306F\u3044"
     noText: "\u3044\u3044\u3048"
+    hint1Text: "n\u500B \u4EE5\u4E0B"
     demoSprite: {fileID: 21300000, guid: fbdebcbfba96a9344a5d6319a0f57a30, type: 3}
     resetWarningText: "\u3059\u3079\u3066\u306E\u9032\u884C\u30C7\u30FC\u30BF\u3092\u521D\u671F\u5316\u3057\u307E\u3059\u3002\r\n\u30AF\u30EA\u30A2\u8A18\u9332\u30FB\u661F\u30FB\u30C1\u30E3\u30EC\u30F3\u30B8\u306E\u9054\u6210\u72B6\u6CC1\u304C\u3059\u3079\u3066\u524A\u9664\u3055\u308C\u3001\r\n<color=red>\u524A\u9664\u3055\u308C\u305F\u30C7\u30FC\u30BF\u306F\u5143\u306B\u623B\u305B\u307E\u305B\u3093\u3002</color>\r\n\u672C\u5F53\u306B\u521D\u671F\u5316\u3057\u307E\u3059\u304B\uFF1F"
