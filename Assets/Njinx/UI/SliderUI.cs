@@ -55,6 +55,9 @@ public class SliderUI : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
     [Tooltip("핸들에 사용할 커스텀 스프라이트 (비워두면 기본 이미지 사용)")]
     [SerializeField] private Sprite handleSprite;
 
+    [Tooltip("핸들이 좌우 끝에 도달했을 때 슬라이더 영역 가장자리로부터 띄울 여백(px). 값이 0/1일 때 핸들이 영역 밖으로 튀어나와 보이는 것을 방지")]
+    [SerializeField] private float handleMargin = 0f;
+
     public UnityEvent<float> onValueChanged { get; private set; } = new UnityEvent<float>();
     public UnityEvent onDragStart { get; private set; } = new UnityEvent();
     public UnityEvent onDragEnd { get; private set; } = new UnityEvent();
@@ -236,8 +239,8 @@ public class SliderUI : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         // 핸들 위치
         if (handleRect != null && sliderRect != null)
         {
-            float xMin = sliderRect.rect.xMin;
-            float xMax = sliderRect.rect.xMax;
+            float xMin = sliderRect.rect.xMin + handleMargin;
+            float xMax = sliderRect.rect.xMax - handleMargin;
             float xPos = Mathf.Lerp(xMin, xMax, normalized);
 
             handleRect.anchoredPosition = new Vector2(

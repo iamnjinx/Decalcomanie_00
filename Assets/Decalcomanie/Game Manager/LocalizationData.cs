@@ -18,6 +18,9 @@ public class LocalizedData
     public string resetSaveText;
 
     [Header("Stage UI - Objective Texts")]
+    public string stageText;
+
+    [Header("Stage UI - Objective Texts")]
     public string stageClearText;
     public string starEarnedText;
     public string starMovesFormat;

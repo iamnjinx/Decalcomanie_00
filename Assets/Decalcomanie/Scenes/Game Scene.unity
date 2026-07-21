@@ -12317,7 +12317,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB124"
+  m_text: "\u306F\u3044"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 01713e72c49e7464a802fc206f448af6, type: 2}
   m_sharedMaterial: {fileID: 4418445267327313437, guid: 01713e72c49e7464a802fc206f448af6,
@@ -15812,7 +15812,8 @@ MonoBehaviour:
   HintButtonSprites:
   - {fileID: 21300000, guid: ca0d263156b8cfe458ea3a88545cfa46, type: 3}
   - {fileID: 21300000, guid: 3d3af0e8dda9a364ba085c90bc709ecb, type: 3}
-  HintButtonUnlockedSprite: {fileID: 0}
+  HintButtonUnlockedSprite: {fileID: 21300000, guid: ca0d263156b8cfe458ea3a88545cfa46,
+    type: 3}
 --- !u!114 &1574494574
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17446,7 +17447,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC544\uB2C8\uC694"
+  m_text: "\u3044\u3044\u3048"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 01713e72c49e7464a802fc206f448af6, type: 2}
   m_sharedMaterial: {fileID: 4418445267327313437, guid: 01713e72c49e7464a802fc206f448af6,
@@ -18405,7 +18406,7 @@ MonoBehaviour:
   noButtonText: {fileID: 1742963937}
   okButton: {fileID: 1146827945}
   warningTMP: {fileID: 1852191567}
-  remainingStarText: {fileID: 946503456}
+  remainingStampText: {fileID: 946503456}
   hintManager: {fileID: 1780840590}
 --- !u!1 &1825227298
 GameObject:
