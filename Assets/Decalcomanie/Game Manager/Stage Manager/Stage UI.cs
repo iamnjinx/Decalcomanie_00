@@ -58,8 +58,11 @@ public class StageUI : MonoBehaviour
     public TextMeshProUGUI[] stageClearedTexts = new TextMeshProUGUI[3]; // 0: Stage Clear, 1: Star Earned, 2: Min Moves
 
     public ButtonUI stageClearedNextStageButton;
+    public BaseUI stageClearedNextStageKeyUI;
     public ButtonUI stageClearedStageSelectionButton;
+    public BaseUI stageClearedStageSelectionKeyUI;
     public ButtonUI stageClearedRestartStageButton;
+    public BaseUI stageClearedRestartStageKeyUI;
     public TextMeshProUGUI[] stageClearedAfterButtonTexts = new TextMeshProUGUI[3]; // 0: Next Stage, 1: Stage Selection, 2: Restart Stage
 
     public Image achivementImage;
@@ -207,7 +210,10 @@ public class StageUI : MonoBehaviour
     public async UniTask ShowStageCleared(bool isCleared, bool obtainedStar, bool minMoves, int minMoveNum, bool isEarlyStage)
     {
         stageClearedStageSelectionButton.gameObject.SetActive(!isEarlyStage);
+        stageClearedStageSelectionKeyUI.gameObject.SetActive(!isEarlyStage);
         stageClearedRestartStageButton.gameObject.SetActive(!isEarlyStage);
+        stageClearedRestartStageKeyUI.gameObject.SetActive(!isEarlyStage);
+
 
         await stageClearedUI.ShowUI(1f);
         stageClearedConfettiObj.SetActive(true);
@@ -231,6 +237,7 @@ public class StageUI : MonoBehaviour
         await postStageUI.ShowUI(.5f);
 
         stageClearedNextStageButton.ShowUI();
+        stageClearedNextStageKeyUI.ShowUI();
     }
 
     public async UniTask ShowAchivementStars(bool isCleared, bool obtainedStar, bool minMoves)
