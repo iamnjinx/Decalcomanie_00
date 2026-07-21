@@ -4651,54 +4651,56 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a971b81200e058e41b0c732650961e97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chapterBackgroundImage: {fileID: 552865221}
-  LeftButton: {fileID: 1821933332}
-  RightButton: {fileID: 1125683142}
-  BackButton: {fileID: 351518193}
-  stageBookImage: {fileID: 180308845}
-  chapterCG: {fileID: 807236784}
-  stagePanels:
-  - {fileID: 1067589223}
-  - {fileID: 2144955520}
-  - {fileID: 2118374965}
-  - {fileID: 1791882648}
-  - {fileID: 2010179661}
-  - {fileID: 1378510397}
-  - {fileID: 1270231896}
-  - {fileID: 2120526235}
-  - {fileID: 2068679297}
-  - {fileID: 1561246286}
-  chapterDeco:
-  - {fileID: 224758341}
-  - {fileID: 177230698}
-  chapterStamp:
-  - {fileID: 888096013}
-  - {fileID: 2041616023}
-  chapterFlip:
-  - {fileID: 1712810064}
-  - {fileID: 483586475}
-  - {fileID: 493935865}
-  - {fileID: 1761344819}
-  is_changingChapter: 0
-  bookmarkParent: {fileID: 1809604763}
-  bookmarks:
-  - {fileID: 1741893279}
-  - {fileID: 310869682}
-  - {fileID: 1303938459}
-  - {fileID: 1924979014}
-  - {fileID: 1681980907}
-  bookmarkButtons:
-  - {fileID: 371875292}
-  - {fileID: 609107674}
-  - {fileID: 1369383880}
-  - {fileID: 1373114083}
-  - {fileID: 612749743}
-  nextDuration: 0.3
-  curStampCountText: {fileID: 1481431382}
-  demoUI: {fileID: 782174990}
-  demoImage: {fileID: 1026521189}
-  demoButton: {fileID: 1313727675}
-  demoLinkUrl: https://store.steampowered.com/app/4372430/Dcalcomanie/
+  navigation:
+    leftButton: {fileID: 1821933332}
+    rightButton: {fileID: 1125683142}
+    backButton: {fileID: 351518193}
+  book:
+    chapterBackgroundImage: {fileID: 552865221}
+    stageBookImage: {fileID: 180308845}
+    chapterCanvasGroup: {fileID: 807236784}
+    stagePanels:
+    - {fileID: 1067589223}
+    - {fileID: 2144955520}
+    - {fileID: 2118374965}
+    - {fileID: 1791882648}
+    - {fileID: 2010179661}
+    - {fileID: 1378510397}
+    - {fileID: 1270231896}
+    - {fileID: 2120526235}
+    - {fileID: 2068679297}
+    - {fileID: 1561246286}
+    chapterDeco:
+    - {fileID: 224758341}
+    - {fileID: 177230698}
+    chapterStamps:
+    - {fileID: 888096013}
+    - {fileID: 2041616023}
+    chapterFlip:
+    - {fileID: 1712810064}
+    - {fileID: 483586475}
+    - {fileID: 493935865}
+    - {fileID: 1761344819}
+    bookmarkParent: {fileID: 1809604763}
+    bookmarks:
+    - {fileID: 1741893279}
+    - {fileID: 310869682}
+    - {fileID: 1303938459}
+    - {fileID: 1924979014}
+    - {fileID: 1681980907}
+    bookmarkButtons:
+    - {fileID: 371875292}
+    - {fileID: 609107674}
+    - {fileID: 1369383880}
+    - {fileID: 1373114083}
+    - {fileID: 612749743}
+    stampCountText: {fileID: 1481431382}
+    chapterChangeDuration: 0.3
+  demo:
+    demoRoot: {fileID: 782174990}
+    demoImage: {fileID: 1026521189}
+    demoButton: {fileID: 1313727675}
+    demoLinkUrl: https://store.steampowered.com/app/4372430/Dcalcomanie/
 --- !u!1 &1215290694
 GameObject:
   m_ObjectHideFlags: 0

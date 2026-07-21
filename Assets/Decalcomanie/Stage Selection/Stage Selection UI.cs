@@ -1,202 +1,68 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
-using Njinx.UI;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
+/// <summary>
+/// 스테이지 선택 화면의 UI 파사드. Header 그룹별로 분리된 세 뷰
+/// (내비게이션 버튼 / 스테이지 책 / 데모)를 조합하고, 그룹을 가로지르는
+/// 챕터 전환 흐름만 여기서 조율한다.
+/// </summary>
 public class StageSelectionUI : MonoBehaviour
 {
-    public Image chapterBackgroundImage;
-
     [Header("Buttons")]
-    public ButtonUI LeftButton;
-    public ButtonUI RightButton;
-    public ButtonUI BackButton;
-
+    [SerializeField] private StageNavigation navigation;
 
     [Header("Stage Book")]
-    public Image stageBookImage;
-    public CanvasGroup chapterCG;
-    public StagePanel[] stagePanels = new StagePanel[10];
-    public Image[] chapterDeco = new Image[2];
-    public BaseUI[] chapterStamp = new BaseUI[2];
-    public BaseUI[] chapterFlip = new BaseUI[4];
-
-    public bool is_changingChapter = false;
-
-    public Transform bookmarkParent;
-    public BaseUI[] bookmarks;
-    public ButtonUI[] bookmarkButtons;
-
-    private int currentBookmarkIndex = -1;
-
-
-
-
-    public Action OnChapterChanged;
-    public Action<int> OnBookmarkSelected;
-
-    [SerializeField] private float nextDuration = 0.3f;
-
-    [SerializeField] private TextMeshProUGUI curStampCountText;
+    [SerializeField] private StageBookView book;
 
     [Header("Demo")]
-    public GameObject demoUI;
-    public Image demoImage;
-    public ButtonUI demoButton;
-    [SerializeField] private string demoLinkUrl;
+    [SerializeField] private StageDemoView demo;
+
+    public StageNavigation Navigation => navigation;
+    public StageBookView Book => book;
+    public StageDemoView Demo => demo;
+
+    public bool IsChangingChapter { get; private set; }
+
+    public event Action OnChapterChanged;
+    public event Action<int> OnBookmarkSelected;
 
     void Start()
     {
-        BackButton.OnSingleClick += () => GameManager.Instance.LoadTitleScene();
-        demoButton.OnSingleClick += () => Application.OpenURL(demoLinkUrl);
-
-        demoImage.sprite = GameManager.Instance.CurrentLocalizedData.demoSprite;
-
-        if (bookmarkButtons != null)
-        {
-            for (int i = 0; i < bookmarkButtons.Length; i++)
-            {
-                if (bookmarkButtons[i] == null) continue;
-                int chapterIndex = i;
-                bookmarkButtons[i].OnSingleClick += () => OnBookmarkSelected?.Invoke(chapterIndex);
-            }
-        }
-
-        UpdateStampCountText();
+        demo.Initialize();
+        book.WireBookmarks(index => OnBookmarkSelected?.Invoke(index));
+        book.RefreshStampCountText();
     }
 
-    public void SetStagePanel()
-    {
-
-    }
-
-    public void UpdateStampCountText()
-    {
-        if (curStampCountText != null)
-            curStampCountText.text = "x " + GameProgressData.Load().remainingStampCount.ToString();
-    }
-
+    /// <summary>
+    /// 챕터를 전환한다. 즉시 전환이면 스프라이트만 바꾸고, 아니면 배경 페이드와
+    /// 페이지 넘김 애니메이션을 동시에 재생한다.
+    /// </summary>
     public async void ChangeChapterDisplay(int chapterIndex, int maxChapterIndex, bool is_right, bool is_instant = false)
     {
-        is_changingChapter = true;
-        LeftButton.HideUI();
-        RightButton.HideUI();
+        IsChangingChapter = true;
+        navigation.HideChapterButtons();
 
-        if(chapterIndex > maxChapterIndex)
-        {
-            chapterIndex = maxChapterIndex;
-        }
-        else if(chapterIndex < 0)
-        {
-            chapterIndex = 0;
-        }
+        chapterIndex = Mathf.Clamp(chapterIndex, 0, maxChapterIndex);
 
-        UpdateBookmarkOrder(chapterIndex);
+        book.MoveBookmark(chapterIndex);
 
         if (is_instant)
         {
-            chapterBackgroundImage.sprite = GameManager.Instance.GameData.chapterBackgroundSprites[chapterIndex];
-            chapterDeco[0].sprite = GameManager.Instance.GameData.chapterDecoL[chapterIndex];
-            chapterDeco[1].sprite = GameManager.Instance.GameData.chapterDecoR[chapterIndex];
+            book.ApplyChapterInstant(chapterIndex);
             OnChapterChanged?.Invoke();
         }
         else
         {
-            StartCoroutine(WaitforChangeChapter(chapterIndex));
+            book.FadeToChapterAsync(chapterIndex, () => OnChapterChanged?.Invoke()).Forget();
 
             if (AudioManager.Instance != null)
-            AudioManager.Instance.PlaySFX("fold_paper");
+                AudioManager.Instance.PlaySFX("fold_paper");
 
-            if(is_right) chapterFlip[3].ShowUI();
-            else chapterFlip[0].ShowUI();
-
-            await UniTask.Delay(TimeSpan.FromSeconds(nextDuration/2));
-
-            if(is_right) {chapterFlip[3].HideUI(); chapterFlip[2].ShowUI(); }
-            else {chapterFlip[0].HideUI(); chapterFlip[1].ShowUI(); }
-
-            await UniTask.Delay(TimeSpan.FromSeconds(nextDuration/2));
-
-            if(is_right) {chapterFlip[2].HideUI(); chapterFlip[1].ShowUI(); }
-            else {chapterFlip[1].HideUI(); chapterFlip[2].ShowUI(); }
-            UpdateDemoUI(chapterIndex, maxChapterIndex);
-
-            await UniTask.Delay(TimeSpan.FromSeconds(nextDuration/2));
-
-            if(is_right) {chapterFlip[1].HideUI(); chapterFlip[0].ShowUI(); }
-            else {chapterFlip[2].HideUI(); chapterFlip[3].ShowUI(); }
-
-            await UniTask.Delay(TimeSpan.FromSeconds(nextDuration/2));
-
-            if(is_right) {chapterFlip[0].HideUI(); }
-            else {chapterFlip[3].HideUI(); }
+            await book.PlayFlipAsync(is_right, () => demo.UpdateVisibility(chapterIndex, maxChapterIndex));
         }
 
-        ChangeButtonState(chapterIndex, maxChapterIndex);
-
-        is_changingChapter = false;
-    }
-
-    private void UpdateBookmarkOrder(int chapterIndex)
-    {
-        if (bookmarks == null) return;
-
-        if (currentBookmarkIndex != chapterIndex
-            && currentBookmarkIndex >= 0 && currentBookmarkIndex < bookmarks.Length
-            && bookmarks[currentBookmarkIndex] != null)
-        {
-            bookmarks[currentBookmarkIndex].HideUI(.5f).Forget();
-        }
-
-        if (chapterIndex >= 0 && chapterIndex < bookmarks.Length && bookmarks[chapterIndex] != null)
-        {
-            bookmarks[chapterIndex].ShowUI(.5f).Forget();
-        }
-
-        currentBookmarkIndex = chapterIndex;
-    }
-
-    public void UpdateDemoUI(int chapterIndex, int maxChapterIndex)
-    {
-        if (demoUI == null) return;
-        demoUI.SetActive(GameManager.Instance.IsDemo && chapterIndex == maxChapterIndex);
-    }
-
-    private void ChangeButtonState(int chapterIndex, int maxChapterIndex)
-    {
-        if (chapterIndex == 0)
-        {
-            LeftButton.SetUI(false);
-        }
-        else
-        {
-            LeftButton.SetUI(true);
-        }
-
-        if (chapterIndex == maxChapterIndex)
-        {
-            RightButton.SetUI(false);
-        }
-        else
-        {
-            RightButton.SetUI(true);
-        }
-    }
-
-    IEnumerator WaitforChangeChapter(int chapterIndex)
-    {
-        chapterBackgroundImage.DOFade(0.7f, nextDuration).SetEase(Ease.InQuad);
-        yield return new WaitForSeconds(nextDuration);
-        chapterBackgroundImage.sprite = GameManager.Instance.GameData.chapterBackgroundSprites[chapterIndex];
-        chapterBackgroundImage.DOFade(1f, nextDuration).SetEase(Ease.InQuad);
-
-        chapterDeco[0].sprite = GameManager.Instance.GameData.chapterDecoL[chapterIndex];
-        chapterDeco[1].sprite = GameManager.Instance.GameData.chapterDecoR[chapterIndex];
-        OnChapterChanged?.Invoke();
+        navigation.RefreshChapterButtons(chapterIndex, maxChapterIndex);
+        IsChangingChapter = false;
     }
 }

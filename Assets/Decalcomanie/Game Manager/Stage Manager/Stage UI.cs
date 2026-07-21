@@ -21,8 +21,16 @@ public class StageUI : MonoBehaviour
     public ButtonUI resetButton;
     public ButtonUI undoButton;
 
+    public BaseUI undoInstruction;
+    public TextMeshProUGUI undoInstructionText;
+
     public ButtonUI flipHorizontalButton;
     public ButtonUI flipVerticalButton;
+
+    public BaseUI flipHorizontalInstruction;
+    public TextMeshProUGUI flipHorizontalInstructionText;
+    public BaseUI flipVerticalInstruction;
+    public TextMeshProUGUI flipVerticalInstructionText;
 
     [Header("Stage Main UI")]
     public List<Sprite> stageBackgroundSprites;
@@ -97,15 +105,79 @@ public class StageUI : MonoBehaviour
         objectiveObj.OnSingleClick += ToggleObjectivePosition;
         objectiveObj.OnHoverEnter += HandleObjectiveHoverEnter;
         objectiveObj.OnHoverExit += HandleObjectiveHoverExit;
+
+        undoButton.OnHoverEnter += HandleUndoHoverEnter;
+        undoButton.OnHoverExit += HandleUndoHoverExit;
+
+        flipHorizontalButton.OnHoverEnter += HandleFlipHorizontalHoverEnter;
+        flipHorizontalButton.OnHoverExit += HandleFlipHorizontalHoverExit;
+        flipVerticalButton.OnHoverEnter += HandleFlipVerticalHoverEnter;
+        flipVerticalButton.OnHoverExit += HandleFlipVerticalHoverExit;
+
+        LocalizedData undoData = GameManager.Instance.CurrentLocalizedData;
+        undoInstructionText.text = undoData.undoText;
+        undoInstructionText.font = undoData.fontAsset;
+        flipHorizontalInstructionText.text = undoData.flipHorizontalText;
+        flipHorizontalInstructionText.font = undoData.fontAsset;
+        flipVerticalInstructionText.text = undoData.flipVerticalText;
+        flipVerticalInstructionText.font = undoData.fontAsset;
     }
 
     private void OnDestroy()
     {
+        if (undoButton != null)
+        {
+            undoButton.OnHoverEnter -= HandleUndoHoverEnter;
+            undoButton.OnHoverExit -= HandleUndoHoverExit;
+        }
+
+        if (flipHorizontalButton != null)
+        {
+            flipHorizontalButton.OnHoverEnter -= HandleFlipHorizontalHoverEnter;
+            flipHorizontalButton.OnHoverExit -= HandleFlipHorizontalHoverExit;
+        }
+
+        if (flipVerticalButton != null)
+        {
+            flipVerticalButton.OnHoverEnter -= HandleFlipVerticalHoverEnter;
+            flipVerticalButton.OnHoverExit -= HandleFlipVerticalHoverExit;
+        }
+
         if (objectiveObj == null) return;
 
         objectiveObj.OnSingleClick -= ToggleObjectivePosition;
         objectiveObj.OnHoverEnter -= HandleObjectiveHoverEnter;
         objectiveObj.OnHoverExit -= HandleObjectiveHoverExit;
+    }
+
+    private void HandleUndoHoverEnter()
+    {
+        undoInstruction.ShowUI();
+    }
+
+    private void HandleUndoHoverExit()
+    {
+        undoInstruction.HideUI();
+    }
+
+    private void HandleFlipHorizontalHoverEnter()
+    {
+        flipHorizontalInstruction.ShowUI();
+    }
+
+    private void HandleFlipHorizontalHoverExit()
+    {
+        flipHorizontalInstruction.HideUI();
+    }
+
+    private void HandleFlipVerticalHoverEnter()
+    {
+        flipVerticalInstruction.ShowUI();
+    }
+
+    private void HandleFlipVerticalHoverExit()
+    {
+        flipVerticalInstruction.HideUI();
     }
 
     private void HandleObjectiveHoverEnter()

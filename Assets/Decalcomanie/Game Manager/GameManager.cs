@@ -148,9 +148,6 @@ public class GameManager : MonoBehaviour
 
     public void LoadTutorialScene()
     {
-        // if (currentScene == SceneType.Tutorial) return;
-        // currentScene = SceneType.Tutorial;
-        // SceneManager.MoveSceneTo(SceneNames.Tutorial);
         LoadStage(0);
     }
 
@@ -159,7 +156,6 @@ public class GameManager : MonoBehaviour
         if (stageIndex >= TotalStages)
         {
             CurrentStageIndex = TotalStages;
-            Debug.Log(CurrentStageIndex);
             LoadOutroScene();
             return;
         }
@@ -188,7 +184,6 @@ public static class SceneNames
     public const string Title = "Title Scene";
     public const string StageSelection = "Stage Selection";
     public const string Game = "Game Scene";
-    public const string Tutorial = "Tutorial Scene";
     public const string Credit = "Credit Scene";
 }
 

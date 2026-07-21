@@ -35,6 +35,13 @@ public class LocalizedData
     public string stageSelectionText;
     public string restartStageText;
 
+    [Header("Stage UI - Undo")]
+    public string undoText;
+
+    [Header("Stage UI - Flip")]
+    public string flipHorizontalText;
+    public string flipVerticalText;
+
     [Header("Hint")]
     [TextArea]
     public string hintWarningText;

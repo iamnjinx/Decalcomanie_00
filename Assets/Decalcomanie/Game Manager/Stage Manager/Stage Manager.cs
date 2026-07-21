@@ -4,6 +4,11 @@ using TarodevController;
 
 public class StageManager : MonoBehaviour
 {
+    // 스테이지 인덱스 기준 초반부 특수 규칙(디자인상 고정값).
+    private const int PlatformerOnlyBelowStage = 2; // 이 인덱스 미만은 페인트 없이 플랫포머만
+    private const int EarlyStageMaxIndex = 3;       // 이 인덱스 이하는 별/최소이동 자동 달성
+    private const int GuideStageCount = 6;          // 이 인덱스 미만은 가이드 이미지 노출
+
     private GameState currentGameState = GameState.Paint;
 
     [SerializeField] BoardManager boardManager;
@@ -16,7 +21,7 @@ public class StageManager : MonoBehaviour
 
     private Achievements achievements = new Achievements(false, false, false);
 
-    private bool is_ready_for_next_stage = false;
+    private bool isReadyForNextStage = false;
     private bool isPlatformerOnly = false;
     private bool isEarlyStage = false;
 
@@ -24,8 +29,6 @@ public class StageManager : MonoBehaviour
 
     void Awake()
     {
-        //stageUI.nextStageButton.OnSingleClick += () => MoveToNextStage();
-
         stageUI.stageClearedNextStageButton.OnSingleClick += () => MoveToNextStage();
         stageUI.stageClearedStageSelectionButton.OnSingleClick += () => GoToStageSelection();
         stageUI.stageClearedRestartStageButton.OnSingleClick += () => RestartStage();
@@ -42,47 +45,45 @@ public class StageManager : MonoBehaviour
 
     void Start()
     {
+        var gm = GameManager.Instance;
+        int stageIndex = gm != null ? gm.CurrentStageIndex : 0;
+
         if (EditorManager.SavedBoard != null)
         {
             boardManager.CreateBoard(ConvertEditorBoardToBoardData(EditorManager.SavedBoard));
         }
-        else if(GameManager.Instance == null || GameManager.Instance.GetCurrentStageAsset() == null)
+        else if (gm == null || gm.GetCurrentStageAsset() == null)
         {
             boardManager.CreateBoard(testBoardDataTextAsset);
         }
         else
         {
-            boardManager.CreateBoard(GameManager.Instance.GetCurrentStageAsset());
-            stageUI.SetStageBackground(GameManager.Instance.CurrentStageIndex);
-            if(GameManager.Instance.CurrentStageIndex < 6)
-            {
-                stageUI.guideImage.sprite = GameManager.Instance.GameData.guideSprites[GameManager.Instance.CurrentStageIndex];
-                stageUI.guideImage.gameObject.SetActive(true);
-            }
-            else
-            {
-                stageUI.guideImage.gameObject.SetActive(false);
-            }
+            boardManager.CreateBoard(gm.GetCurrentStageAsset());
+            stageUI.SetStageBackground(stageIndex);
+
+            bool hasGuide = stageIndex < GuideStageCount;
+            if (hasGuide)
+                stageUI.guideImage.sprite = gm.GameData.guideSprites[stageIndex];
+            stageUI.guideImage.gameObject.SetActive(hasGuide);
         }
-        isPlatformerOnly = GameManager.Instance != null && GameManager.Instance.CurrentStageIndex < 2;
+
+        isPlatformerOnly = gm != null && stageIndex < PlatformerOnlyBelowStage;
         if (isPlatformerOnly)
         {
             stageUI.SetPlatformerOnlyMode();
             ChangeGameState(GameState.Platformer);
         }
 
-        isEarlyStage = GameManager.Instance != null && GameManager.Instance.CurrentStageIndex <= 3;
-        stageUI.SetEarlyStageUIVisibility(GameManager.Instance != null ? GameManager.Instance.CurrentStageIndex : 0);
-        var language = GameManager.Instance != null ? GameManager.Instance.CurrentLanguage : GameLanguage.English;
+        isEarlyStage = gm != null && stageIndex <= EarlyStageMaxIndex;
+        var language = gm != null ? gm.CurrentLanguage : GameLanguage.English;
+
+        stageUI.SetEarlyStageUIVisibility(stageIndex);
         stageUI.SetObjectiveTexts(language, isEarlyStage, boardManager.CurrentBoard.BoardData.minMoves);
         stageUI.SetAfterButtonTexts(language);
         stageUI.UpdateUsedTileText(paintManager.paintCount);
-        stageUI.SetCurStageText(GameManager.Instance != null ? GameManager.Instance.CurrentStageIndex : 0);
+        stageUI.SetCurStageText(stageIndex);
         stageUI.ShowMainUI(isPlatformerOnly);
         paintManager.CreateTileControllers();
-
-        // if (GameManager.Instance != null && GameManager.Instance.CurrentStageIndex == 0)
-        //     tutorialManager.StartTutorial();
     }
 
     public void ChangeGameState(GameState newGameState)
@@ -209,8 +210,8 @@ public class StageManager : MonoBehaviour
         SaveProgress();
 
         // 화면 어두워지고 클리어 UI.
-        await stageUI.ShowStageCleared(achievements.Is_Cleared, achievements.ObtainedStar, achievements.Min_Moves, boardManager.CurrentBoard.BoardData.minMoves, isEarlyStage);
-        is_ready_for_next_stage = true;
+        await stageUI.ShowStageCleared(achievements.IsCleared, achievements.ObtainedStar, achievements.MinMoves, boardManager.CurrentBoard.BoardData.minMoves, isEarlyStage);
+        isReadyForNextStage = true;
     }
 
     private void SaveProgress()
@@ -221,7 +222,7 @@ public class StageManager : MonoBehaviour
         progress.RecordStageCleared(
             GameManager.Instance.CurrentStageIndex,
             achievements.ObtainedStar,
-            achievements.Min_Moves);
+            achievements.MinMoves);
         SaveManager.Instance.Save(GameProgressData.SaveKey, progress);
     }
 
@@ -246,35 +247,30 @@ public class StageManager : MonoBehaviour
         return new BoardData(size, ToVec(startIdx), ToVec(endIdx), ToVec(starIdx), ToVec(keyIdx), fixedPoints, holePoints);
     }
 
+    // 클리어 UI가 뜬 뒤에만 한 번 입력을 받도록 하는 가드. 소비되면 true.
+    private bool ConsumeStageEndInput()
+    {
+        if (!isReadyForNextStage) return false;
+        isReadyForNextStage = false;
+        return true;
+    }
+
     public void MoveToNextStage()
     {
-        if (is_ready_for_next_stage)
-        {
-            is_ready_for_next_stage = false;
-            // 다음 스테이지로 이동.
-            Debug.Log($"Move To Next Stage!");
-            GameManager.Instance.LoadStage(GameManager.Instance.CurrentStageIndex + 1);
-        }
+        if (!ConsumeStageEndInput()) return;
+        GameManager.Instance.LoadStage(GameManager.Instance.CurrentStageIndex + 1);
     }
 
     public void RestartStage()
     {
-        if (is_ready_for_next_stage)
-        {
-            is_ready_for_next_stage = false;
-            // 현재 스테이지 다시 시작.
-            GameManager.Instance.LoadStage(GameManager.Instance.CurrentStageIndex);
-        }
+        if (!ConsumeStageEndInput()) return;
+        GameManager.Instance.LoadStage(GameManager.Instance.CurrentStageIndex);
     }
 
     public void GoToStageSelection()
     {
-        if (is_ready_for_next_stage)
-        {
-            is_ready_for_next_stage = false;
-            // 스테이지 선택 화면으로 이동.
-            GameManager.Instance.LoadSelectScene();
-        }
+        if (!ConsumeStageEndInput()) return;
+        GameManager.Instance.LoadSelectScene();
     }
 }
 
@@ -285,15 +281,15 @@ public enum GameState
 
     public class Achievements
     {
-        public bool Is_Cleared { get; private set; }
+        public bool IsCleared { get; private set; }
         public bool ObtainedStar { get; private set; }
-        public bool Min_Moves { get; private set; }
+        public bool MinMoves { get; private set; }
 
         public Achievements(bool isCleared, bool obtainedStar, bool minMoves)
         {
-            Is_Cleared = isCleared;
+            IsCleared = isCleared;
             ObtainedStar = obtainedStar;
-            Min_Moves = minMoves;
+            MinMoves = minMoves;
         }
     }
 

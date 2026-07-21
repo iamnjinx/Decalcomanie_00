@@ -10,25 +10,29 @@ public class StageSelection : MonoBehaviour
     private int maxChapterIndex;
     private int currentChapterIndex = 0;
 
+    private const int StagesPerChapter = 10;
     private const string ChapterIndexKey = "LastChapterIndex";
 
     void Awake()
     {
-        stageSelectionUI.LeftButton.OnSingleClick += () => MoveToPreviousChapter();
-        stageSelectionUI.RightButton.OnSingleClick += () => MoveToNextChapter();
+        stageSelectionUI.Navigation.LeftButton.OnSingleClick += () => MoveToPreviousChapter();
+        stageSelectionUI.Navigation.RightButton.OnSingleClick += () => MoveToNextChapter();
+        stageSelectionUI.Navigation.BackButton.OnSingleClick += () => GameManager.Instance.LoadTitleScene();
         stageSelectionUI.OnChapterChanged += () => RefreshStagePanels();
         stageSelectionUI.OnBookmarkSelected += chapterIndex => MoveToChapter(chapterIndex);
     }
 
     void Start()
     {
-        maxChapterIndex = (GameManager.Instance.TotalStages - 1) / 10;
+        maxChapterIndex = (GameManager.Instance.TotalStages - 1) / StagesPerChapter;
+
+        stageSelectionUI.Book.SetBookmarksActive(maxChapterIndex);
 
         currentChapterIndex = Mathf.Clamp(SaveManager.Instance.Load(ChapterIndexKey, 0), 0, maxChapterIndex);
-        int d = GameManager.Instance.CurrentStageIndex / 10;
-        UpdateChapterDisplay(d, true, true);
+        int startChapter = GameManager.Instance.CurrentStageIndex / StagesPerChapter;
+        UpdateChapterDisplay(startChapter, true, true);
 
-        stageSelectionUI.UpdateDemoUI(currentChapterIndex, maxChapterIndex);
+        stageSelectionUI.Demo.UpdateVisibility(currentChapterIndex, maxChapterIndex);
 
         StartCoroutine(InitializePanels());
 
@@ -61,26 +65,26 @@ public class StageSelection : MonoBehaviour
     public void RefreshStagePanels()
     {
         var progress = GameProgressData.Load();
+        var panels = stageSelectionUI.Book.StagePanels;
         bool firstHalfComplete = true;
         bool secondHalfComplete = true;
 
-        for(int i = 0; i < stageSelectionUI.stagePanels.Length; i++)
+        for(int i = 0; i < panels.Length; i++)
         {
-            int index = i + currentChapterIndex * 10; // Adjust index based on current chapter
+            int index = i + currentChapterIndex * StagesPerChapter; // Adjust index based on current chapter
 
             var achievement = progress.GetAchievement(index);
             var stageData = GameManager.Instance.GetStageData(index);
-            stageSelectionUI.stagePanels[i].SetStagePanel(index, achievement.isCleared, achievement.obtainedStar, achievement.achievedMinMoves, progress.highestUnlockedStage >= index, stageData?.screenshot);
+            panels[i].SetStagePanel(index, achievement.isCleared, achievement.obtainedStar, achievement.achievedMinMoves, progress.highestUnlockedStage >= index, stageData?.screenshot);
 
-            stageSelectionUI.stagePanels[i].button.OnSingleClick = () => OnStageSelected(index);
+            panels[i].button.OnSingleClick = () => OnStageSelected(index);
 
             bool is3Star = achievement.isCleared && achievement.obtainedStar && achievement.achievedMinMoves;
-            if (i < 5) firstHalfComplete &= is3Star;
+            if (i < StagesPerChapter / 2) firstHalfComplete &= is3Star;
             else secondHalfComplete &= is3Star;
         }
 
-        stageSelectionUI.chapterStamp[0].SetUI(firstHalfComplete);
-        stageSelectionUI.chapterStamp[1].SetUI(secondHalfComplete);
+        stageSelectionUI.Book.SetChapterStamps(firstHalfComplete, secondHalfComplete);
 
         bool awarded = false;
         if (firstHalfComplete) awarded |= progress.TryAwardChapterStamp(currentChapterIndex * 2);
@@ -89,7 +93,7 @@ public class StageSelection : MonoBehaviour
         if (awarded)
         {
             SaveManager.Instance.Save(GameProgressData.SaveKey, progress);
-            stageSelectionUI.UpdateStampCountText();
+            stageSelectionUI.Book.RefreshStampCountText();
         }
     }
 
@@ -118,7 +122,7 @@ public class StageSelection : MonoBehaviour
 
     private void UpdateChapterDisplay(int chapterIndex, bool is_right, bool is_instant = false)
     {
-        if(stageSelectionUI.is_changingChapter) return;
+        if(stageSelectionUI.IsChangingChapter) return;
         currentChapterIndex = Mathf.Clamp(chapterIndex, 0, maxChapterIndex);
         SaveManager.Instance.Save(ChapterIndexKey, currentChapterIndex);
         stageSelectionUI.ChangeChapterDisplay(chapterIndex, maxChapterIndex, is_right, is_instant);
