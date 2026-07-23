@@ -71,6 +71,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 883bc5a5cdc84934e806e27e9db7e1df, type: 2}
   - {fileID: 11400000, guid: d9674b05c2b7c354fb23639059cf6263, type: 2}
   - {fileID: 11400000, guid: ac65164b89858374bbd8d89c619448ba, type: 2}
+  - {fileID: 11400000, guid: 6e067964b5cbbb343838597fab753712, type: 2}
+  - {fileID: 11400000, guid: d311cd6578dfea649b6b360f8494f93c, type: 2}
+  - {fileID: 11400000, guid: c20f48c99c6a42e4fbdc0df22fd937fb, type: 2}
   crossfadeDuration: 1.5
   initialPoolSize: 16
   maxPoolSize: 32

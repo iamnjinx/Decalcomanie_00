@@ -74,7 +74,7 @@ public class PlayerControllerD : MonoBehaviour
         spriteRenderer.sprite = playerSprites[2];
 
         if (AudioManager.Instance != null)
-            AudioManager.Instance.PlaySFX("fall_in_hole");
+            AudioManager.Instance.PlaySFX(UnityEngine.Random.value < 0.05f ? "fall_in_hole_2" : "fall_in_hole");
 
         Vector3 startPos = transform.position;
         Vector3 startScale = transform.localScale;

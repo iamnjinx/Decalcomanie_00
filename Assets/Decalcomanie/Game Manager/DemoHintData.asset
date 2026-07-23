@@ -91,11 +91,6 @@ MonoBehaviour:
   - Hint1Pos: 1
     Hint1Num: 2
     Hint2Pos: 1
-    Hint2Sprite: {fileID: 21300000, guid: e237512c72230af4bb15a46ba6cd8782, type: 3}
-    Hint3Sprite: {fileID: 21300000, guid: 4ebdbde74b158f3458d07f470005acef, type: 3}
-  - Hint1Pos: 1
-    Hint1Num: 2
-    Hint2Pos: 1
     Hint2Sprite: {fileID: 21300000, guid: bf675eed01b89f54798aafd864abba3c, type: 3}
     Hint3Sprite: {fileID: 21300000, guid: 6c55dd801c939684d9ec10e04df72d0a, type: 3}
   - Hint1Pos: 1
@@ -103,6 +98,11 @@ MonoBehaviour:
     Hint2Pos: 1
     Hint2Sprite: {fileID: 21300000, guid: b94d8cee57e1e3a4099b4c63c48b2bf8, type: 3}
     Hint3Sprite: {fileID: 21300000, guid: 187c1d586cdc78543825ac6d3fec2bac, type: 3}
+  - Hint1Pos: 1
+    Hint1Num: 2
+    Hint2Pos: 1
+    Hint2Sprite: {fileID: 21300000, guid: e237512c72230af4bb15a46ba6cd8782, type: 3}
+    Hint3Sprite: {fileID: 21300000, guid: 4ebdbde74b158f3458d07f470005acef, type: 3}
   - Hint1Pos: 1
     Hint1Num: 2
     Hint2Pos: 1

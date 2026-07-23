@@ -36,7 +36,10 @@ public class TitleManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            SettingManager.Instance.CloseSetting();
+            if (SettingManager.Instance.IsSettingOpen)
+                SettingManager.Instance.CloseSetting();
+            else
+                OpenSetting();
         }
     }
 

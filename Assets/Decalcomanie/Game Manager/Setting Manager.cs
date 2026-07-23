@@ -6,6 +6,8 @@ public class SettingManager : MonoBehaviour
 
     [SerializeField] private SettingUI settingUI;
 
+    public bool IsSettingOpen => settingUI.is_shown;
+
     (int, int)[] resolutions = new (int, int)[]
     {
         (3840, 2160),

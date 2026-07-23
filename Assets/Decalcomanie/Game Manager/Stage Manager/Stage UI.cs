@@ -61,6 +61,7 @@ public class StageUI : MonoBehaviour
 
     [Header("Stage Cleared UI")]
     public BaseUI stageClearedUI;
+    public BaseUI stageClearTextUI;
     public GameObject stageClearedConfettiObj;
     public BaseUI stageClearedAchievementUI;
     public TextMeshProUGUI[] stageClearedTexts = new TextMeshProUGUI[3]; // 0: Stage Clear, 1: Star Earned, 2: Min Moves
@@ -299,9 +300,10 @@ public class StageUI : MonoBehaviour
 
 
         await stageClearedUI.ShowUI(1f);
+        AudioManager.Instance.PlaySFX("Confetti");
         stageClearedConfettiObj.SetActive(true);
 
-        await UniTask.Delay(1000);
+        await UniTask.Delay(500);
 
         if (!isEarlyStage)
         {
@@ -311,6 +313,7 @@ public class StageUI : MonoBehaviour
             stageClearedTexts[2].text = string.Format(data.starMovesFormat, minMoveNum);
             foreach (var text in stageClearedTexts) text.font = data.fontAsset;
             achivementImage.sprite = data.achievementSprite;
+            stageClearTextUI.HideUI(1f).Forget();
             await stageClearedAchievementUI.ShowUI(1f);
 
             await ShowAchivementStars(isCleared, obtainedStar, minMoves);   

@@ -22,6 +22,7 @@ public class HintWarningUI : BaseUI
     [SerializeField] private TextMeshProUGUI warningTMP;
 
     [FormerlySerializedAs("remainingStarText")]
+    [SerializeField] private GameObject remainingStampObj;
     [SerializeField] private TextMeshProUGUI remainingStampText;
 
     [SerializeField] private HintManager hintManager;
@@ -91,6 +92,8 @@ public class HintWarningUI : BaseUI
         yesButton.ShowUI();
         noButton.ShowUI();
         okButton.HideUI();
+
+        remainingStampObj.SetActive(true);
     }
 
     public void ShowWaitMode()
@@ -98,5 +101,7 @@ public class HintWarningUI : BaseUI
         yesButton.HideUI();
         noButton.HideUI();
         okButton.ShowUI();
+
+        remainingStampObj.SetActive(false);
     }
 }

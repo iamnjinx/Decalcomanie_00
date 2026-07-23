@@ -34,8 +34,8 @@ MonoBehaviour:
     stageSelectionText: Stage Select
     restartStageText: Retry
     undoText: Undo
-    flipHorizontalText: Flip Horizontal
-    flipVerticalText: Flip Vertical
+    flipHorizontalText: Fold Horizontal
+    flipVerticalText: Fold Vertical
     hintWarningText: Unlocking a hint consumes one <color=red>stamp</color>. Do you
       wish to proceed?
     hint3WaitText: You must unlock Hint 2 first to unlock Hint 3.
@@ -57,7 +57,7 @@ MonoBehaviour:
     fullScreenText: "\uC804\uCCB4\uD654\uBA74"
     windowedText: "\uCC3D \uBAA8\uB4DC"
     resolutionText: "\uD574\uC0C1\uB3C4"
-    masterVolumeText: "\uB9C8\uC2A4\uD130 \uBCFC\uB968"
+    masterVolumeText: "\uC804\uCCB4"
     musicVolumeText: "\uBC30\uACBD\uC74C\uC545"
     sfxVolumeText: "\uD6A8\uACFC\uC74C"
     backToStageText: "\uC2A4\uD14C\uC774\uC9C0 \uC120\uD0DD\uC73C\uB85C"
@@ -73,13 +73,12 @@ MonoBehaviour:
     stageSelectionText: "\uC2A4\uD14C\uC774\uC9C0 \uC120\uD0DD"
     restartStageText: "\uB2E4\uC2DC\uD558\uAE30"
     undoText: "\uB418\uB3CC\uB9AC\uAE30"
-    flipHorizontalText: "\uC88C\uC6B0 \uB4A4\uC9D1\uAE30"
-    flipVerticalText: "\uC0C1\uD558 \uB4A4\uC9D1\uAE30"
+    flipHorizontalText: "\uC88C\uC6B0 \uC811\uAE30"
+    flipVerticalText: "\uC0C1\uD558 \uC811\uAE30"
     hintWarningText: "\uD78C\uD2B8\uB97C \uD574\uAE08\uD558\uBA74 <color=red>\uB3C4\uC7A5</color>
-      <color=blue>1\uAC1C</color>\uB97C \uC18C\uBAA8\uD569\uB2C8\uB2E4. \uACC4\uC18D
-      \uC9C4\uD589\uD558\uACA0\uC2B5\uB2C8\uAE4C?"
+      1\uAC1C\uB97C \n\uC18C\uBAA8\uD569\uB2C8\uB2E4. \uACC4\uC18D \uC9C4\uD589\uD558\uACA0\uC2B5\uB2C8\uAE4C?"
     hint3WaitText: "2\uBC88 \uD78C\uD2B8\uB97C \uBA3C\uC800 \uD574\uAE08\uD574\uC57C
-      3\uBC88 \uD78C\uD2B8\uB97C \uD574\uAE08\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+      3\uBC88 \n\uD78C\uD2B8\uB97C \uD574\uAE08\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
     yesText: "\uB124"
     noText: "\uC544\uB2C8\uC694"
     hint1Text: "{0}\uAC1C \uC774\uD558"

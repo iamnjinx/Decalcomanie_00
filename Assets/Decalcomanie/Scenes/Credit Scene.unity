@@ -1189,6 +1189,8 @@ MonoBehaviour:
   curtainUI: {fileID: 1264213376}
   creditUI: {fileID: 958626024}
   targetYPos: 2730
+  moveSpeed: 200
+  fastMoveSpeed: 400
 --- !u!4 &1405173295
 Transform:
   m_ObjectHideFlags: 0

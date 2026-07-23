@@ -134,7 +134,7 @@ public class StageManager : MonoBehaviour
         if(tutorialManager != null && tutorialManager.CurTutoID != -1) return;
 
         if (Input.GetKeyDown(KeyCode.R))   { if (!isPlatformerOnly) ResetButton(); }
-        if (Input.GetKeyDown(KeyCode.Tab)) { if (!isPlatformerOnly) SwitchState(); }
+        if (Input.GetKeyDown(KeyCode.LeftShift)) { if (!isPlatformerOnly) SwitchState(); }
 
         if (currentGameState == GameState.Paint)
         {

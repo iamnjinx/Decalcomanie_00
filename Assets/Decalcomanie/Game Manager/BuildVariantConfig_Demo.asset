@@ -43,12 +43,12 @@ MonoBehaviour:
     screenshot: {fileID: 21300000, guid: 403c4a07078684e699a2df055032355b, type: 3}
   - stageJson: {fileID: 4900000, guid: d3c5b935941b0864c8165f30961a4b32, type: 3}
     screenshot: {fileID: 21300000, guid: 4d2fd144cdd4a42e397723bc6f70b52d, type: 3}
-  - stageJson: {fileID: 4900000, guid: df3bcb2e8e22d01488cd5eb376396551, type: 3}
-    screenshot: {fileID: 21300000, guid: e574e31531092440a8c8fe1f371ffaaa, type: 3}
   - stageJson: {fileID: 4900000, guid: f5d6a2603d5a9dc4cb2c265aa2b0d67d, type: 3}
     screenshot: {fileID: 21300000, guid: 074552304c6e68540968a193a2a41aa6, type: 3}
   - stageJson: {fileID: 4900000, guid: 9ab743496a357894b974e7a9b6bcfdf8, type: 3}
     screenshot: {fileID: 21300000, guid: 5655b05f171855c41a7be47a61e5809d, type: 3}
+  - stageJson: {fileID: 4900000, guid: df3bcb2e8e22d01488cd5eb376396551, type: 3}
+    screenshot: {fileID: 21300000, guid: e574e31531092440a8c8fe1f371ffaaa, type: 3}
   - stageJson: {fileID: 4900000, guid: 5d65d6223c243094ea9e82fbb80d21c8, type: 3}
     screenshot: {fileID: 21300000, guid: c2aa297cebec548a38d078dc23814344, type: 3}
   - stageJson: {fileID: 4900000, guid: 11ab81adc6291b441b946d0165e036c4, type: 3}
