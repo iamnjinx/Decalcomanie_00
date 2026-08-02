@@ -134,6 +134,12 @@ public class Board
         return new Vector3(index % size, index / size, 0) * tileSpacing;
     }
 
+    // 스테이지 JSON과 동일한 1-based (x, y) 좌표계를 flat tile index로 변환합니다.
+    public static int CoordToIndex(int x, int y, int size)
+    {
+        return (x - 1) + size * (y - 1);
+    }
+
     public (bool flipX, bool flipY) GetFlips(int index)
     {
         return (

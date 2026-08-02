@@ -17,15 +17,15 @@ public class StageUI : MonoBehaviour
     [Header("Stage UI Buttons")]
     public ButtonUI menuButton;
 
-    public ButtonUI switchButton;
-    public ButtonUI resetButton;
+    public FunctionButton switchButton;
+    public FunctionButton resetButton;
     public ButtonUI undoButton;
 
     public BaseUI undoInstruction;
     public TextMeshProUGUI undoInstructionText;
 
-    public ButtonUI flipHorizontalButton;
-    public ButtonUI flipVerticalButton;
+    public FunctionButton flipHorizontalButton;
+    public FunctionButton flipVerticalButton;
 
     public BaseUI flipHorizontalInstruction;
     public TextMeshProUGUI flipHorizontalInstructionText;
@@ -282,13 +282,45 @@ public class StageUI : MonoBehaviour
 
     public void SetEarlyStageUIVisibility(int stageID)
     {
-        // STAGE 1-1 ~ 1-3(stageID 0~2)까지 접기 버튼 숨김
-        bool showFoldButtons = stageID > 2;
+        // STAGE 1-1 ~ 1-3(stageID 0~2)까지 Switch 버튼 숨김
+        switchButton.gameObject.SetActive(stageID > 2);
+
+        // STAGE 1-1 ~ 1-4(stageID 0~3)까지 Reset, 접기 버튼 숨김
+        resetButton.gameObject.SetActive(stageID > 3);
+
+        bool showFoldButtons = stageID > 3;
         flipHorizontalButton.gameObject.SetActive(showFoldButtons);
         flipVerticalButton.gameObject.SetActive(showFoldButtons);
 
         // STAGE 1-1 ~ 1-4(stageID 0~3)까지 현재 색칠 수 UI 숨김
         usedTileObj.SetActive(stageID > 3);
+    }
+
+    // 튜토리얼(타일 클릭/접기)로 조기 활성화될 때 호출됩니다.
+    public void SetSwitchButtonActive(bool active) => switchButton.gameObject.SetActive(active);
+    public void SetResetButtonActive(bool active) => resetButton.gameObject.SetActive(active);
+    public void SetFoldButtonsActive(bool active)
+    {
+        flipHorizontalButton.gameObject.SetActive(active);
+        flipVerticalButton.gameObject.SetActive(active);
+    }
+
+    // 튜토리얼 조건으로 조기 활성화됐음을 강조합니다.
+    public void HighlightSwitchButton() => switchButton.OnHighlighted();
+    public void HighlightResetButton() => resetButton.OnHighlighted();
+    public void HighlightFoldButtons()
+    {
+        flipHorizontalButton.OnHighlighted();
+        flipVerticalButton.OnHighlighted();
+    }
+
+    // 강조된 버튼을 한 번이라도 클릭하면 강조를 해제합니다.
+    public void UnhighlightSwitchButton() => switchButton.OnUnhighlighted();
+    public void UnhighlightResetButton() => resetButton.OnUnhighlighted();
+    public void UnhighlightFoldButtons()
+    {
+        flipHorizontalButton.OnUnhighlighted();
+        flipVerticalButton.OnUnhighlighted();
     }
 
     public async UniTask ShowStageCleared(bool isCleared, bool obtainedStar, bool minMoves, int minMoveNum, bool isEarlyStage)

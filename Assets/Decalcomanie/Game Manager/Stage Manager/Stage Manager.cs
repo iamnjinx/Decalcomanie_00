@@ -9,6 +9,14 @@ public class StageManager : MonoBehaviour
     private const int EarlyStageMaxIndex = 3;       // 이 인덱스 이하는 별/최소이동 자동 달성
     private const int GuideStageCount = 6;          // 이 인덱스 미만은 가이드 이미지 노출
 
+    private const int SwitchUnlockStage = 3; // 1-4부터 Switch 버튼 등장
+    private const int ResetUnlockStage = 4;  // 1-5부터 Reset 버튼 등장
+    private const int FoldUnlockStage = 4;   // 1-5부터 접기 버튼 등장
+
+    private const int SwitchTutorialStageIndex = 2; // 1-3: 특정 타일 클릭 시 Switch 조기 활성화
+    private const int FoldTutorialStageIndex = 3;   // 1-4: 타일 클릭 시 접기 조기 활성화, 접기 시 Reset 조기 활성화
+    private static readonly Vector2Int SwitchTutorialTileCoord = new Vector2Int(4, 1);
+
     private GameState currentGameState = GameState.Paint;
 
     [SerializeField] BoardManager boardManager;
@@ -25,6 +33,10 @@ public class StageManager : MonoBehaviour
     private bool isPlatformerOnly = false;
     private bool isEarlyStage = false;
 
+    private bool isSwitchUnlocked = false;
+    private bool isResetUnlocked = false;
+    private bool isFoldUnlocked = false;
+
     public event System.Action<GameState> OnGameStateChanged;
 
     void Awake()
@@ -33,12 +45,12 @@ public class StageManager : MonoBehaviour
         stageUI.stageClearedStageSelectionButton.OnSingleClick += () => GoToStageSelection();
         stageUI.stageClearedRestartStageButton.OnSingleClick += () => RestartStage();
 
-        stageUI.switchButton.OnSingleClick += () => SwitchState();
-        stageUI.resetButton.OnSingleClick += () => ResetButton();
+        stageUI.switchButton.OnSingleClick += () => { SwitchState(); stageUI.UnhighlightSwitchButton(); };
+        stageUI.resetButton.OnSingleClick += () => { ResetButton(); stageUI.UnhighlightResetButton(); };
         stageUI.undoButton.OnSingleClick += () => paintManager.UndoPaintAction();
 
-        stageUI.flipHorizontalButton.OnSingleClick += () => paintManager.FoldHorizontal();
-        stageUI.flipVerticalButton.OnSingleClick += () => paintManager.FoldVertical();
+        stageUI.flipHorizontalButton.OnSingleClick += () => { paintManager.FoldHorizontal(); stageUI.UnhighlightFoldButtons(); };
+        stageUI.flipVerticalButton.OnSingleClick += () => { paintManager.FoldVertical(); stageUI.UnhighlightFoldButtons(); };
 
         paintManager.OnPaintCountChanged += stageUI.UpdateUsedTileText;
     }
@@ -75,15 +87,62 @@ public class StageManager : MonoBehaviour
         }
 
         isEarlyStage = gm != null && stageIndex <= EarlyStageMaxIndex;
+        isSwitchUnlocked = stageIndex >= SwitchUnlockStage;
+        isResetUnlocked = stageIndex >= ResetUnlockStage;
+        isFoldUnlocked = stageIndex >= FoldUnlockStage;
         var language = gm != null ? gm.CurrentLanguage : GameLanguage.English;
 
         stageUI.SetEarlyStageUIVisibility(stageIndex);
+        SetupPaintButtonTutorials(stageIndex);
         stageUI.SetObjectiveTexts(language, isEarlyStage, boardManager.CurrentBoard.BoardData.minMoves);
         stageUI.SetAfterButtonTexts(language);
         stageUI.UpdateUsedTileText(paintManager.paintCount);
         stageUI.SetCurStageText(stageIndex);
         stageUI.ShowMainUI(isPlatformerOnly);
         paintManager.CreateTileControllers();
+    }
+
+    // 1-3, 1-4의 튜토리얼성 조기 버튼 활성화 이벤트를 등록합니다.
+    private void SetupPaintButtonTutorials(int stageIndex)
+    {
+        if (stageIndex == SwitchTutorialStageIndex)
+        {
+            paintManager.OnTilePainted += HandleSwitchTutorialTilePainted;
+        }
+
+        if (stageIndex == FoldTutorialStageIndex)
+        {
+            paintManager.OnTilePainted += HandleFoldTutorialTilePainted;
+            paintManager.OnFolded += HandleFoldTutorialFolded;
+        }
+    }
+
+    private void HandleSwitchTutorialTilePainted(int tileID)
+    {
+        int size = boardManager.CurrentBoard.size;
+        int targetTileID = Board.CoordToIndex(SwitchTutorialTileCoord.x, SwitchTutorialTileCoord.y, size);
+        if (tileID != targetTileID) return;
+
+        isSwitchUnlocked = true;
+        stageUI.SetSwitchButtonActive(true);
+        stageUI.HighlightSwitchButton();
+        paintManager.OnTilePainted -= HandleSwitchTutorialTilePainted;
+    }
+
+    private void HandleFoldTutorialTilePainted(int tileID)
+    {
+        isFoldUnlocked = true;
+        stageUI.SetFoldButtonsActive(true);
+        stageUI.HighlightFoldButtons();
+        paintManager.OnTilePainted -= HandleFoldTutorialTilePainted;
+    }
+
+    private void HandleFoldTutorialFolded()
+    {
+        isResetUnlocked = true;
+        stageUI.SetResetButtonActive(true);
+        stageUI.HighlightResetButton();
+        paintManager.OnFolded -= HandleFoldTutorialFolded;
     }
 
     public void ChangeGameState(GameState newGameState)
@@ -101,7 +160,7 @@ public class StageManager : MonoBehaviour
                 if (!isPlatformerOnly)
                 {
                     stageUI.undoButton.gameObject.SetActive(true);
-                    stageUI.resetButton.gameObject.SetActive(true);
+                    stageUI.SetResetButtonActive(isResetUnlocked);
                 }
                 break;
             case GameState.Platformer:
@@ -114,7 +173,7 @@ public class StageManager : MonoBehaviour
                 if (!isPlatformerOnly)
                 {
                     stageUI.undoButton.gameObject.SetActive(false);
-                    stageUI.resetButton.gameObject.SetActive(false);
+                    stageUI.SetResetButtonActive(false);
                 }
                 break;
             case GameState.End:
@@ -138,8 +197,8 @@ public class StageManager : MonoBehaviour
 
         if (currentGameState == GameState.Paint)
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1)) paintManager.FoldVertical();
-            if (Input.GetKeyDown(KeyCode.Alpha2)) paintManager.FoldHorizontal();
+            if (isFoldUnlocked && Input.GetKeyDown(KeyCode.Alpha1)) paintManager.FoldVertical();
+            if (isFoldUnlocked && Input.GetKeyDown(KeyCode.Alpha2)) paintManager.FoldHorizontal();
             if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Z)) paintManager.UndoPaintAction();
         }
 
@@ -151,7 +210,7 @@ public class StageManager : MonoBehaviour
 
     public void SwitchState()
     {
-        if (isPlatformerOnly) return;
+        if (isPlatformerOnly || !isSwitchUnlocked) return;
         if (paintManager.IsFolding) return;
         if (currentGameState == GameState.Paint)
             ChangeGameState(GameState.Platformer);
@@ -182,7 +241,7 @@ public class StageManager : MonoBehaviour
 
     public void ResetButton()
     {
-        if (isPlatformerOnly) return;
+        if (isPlatformerOnly || !isResetUnlocked) return;
         if (paintManager.IsFolding) return;
         if (currentGameState == GameState.Platformer)
         {

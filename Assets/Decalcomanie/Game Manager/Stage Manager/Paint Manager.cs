@@ -34,6 +34,8 @@ public class PaintManager : MonoBehaviour
     public int paintCount = 0;
 
     public event System.Action<int> OnPaintCountChanged;
+    public event System.Action<int> OnTilePainted;
+    public event System.Action OnFolded;
 
     public void CreateTileControllers()
     {
@@ -58,6 +60,7 @@ public class PaintManager : MonoBehaviour
         allTileControllers[id].PaintTile();
         paintCount++;
         OnPaintCountChanged?.Invoke(paintCount);
+        OnTilePainted?.Invoke(id);
         if(AudioManager.Instance != null)
             AudioManager.Instance.PlayRandomSFX(new[] { "paint_1", "paint_2" });
     }
@@ -128,6 +131,7 @@ public class PaintManager : MonoBehaviour
         await UniTask.Delay((int)(foldTime * 1000));
 
         AddPaintAction(performFold(), false);
+        OnFolded?.Invoke();
         await UniTask.Delay(100);
 
         RotatePanelPair(panels, start1, start2);
