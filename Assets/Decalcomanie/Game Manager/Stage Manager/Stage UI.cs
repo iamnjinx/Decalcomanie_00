@@ -225,6 +225,8 @@ public class StageUI : MonoBehaviour
         {
             await UniTask.Delay(1000);
             paintUI.ShowUI(.5f).Forget();
+            flipHorizontalButton.ShowUI(.5f).Forget();
+            flipVerticalButton.ShowUI(.5f).Forget();
             foreach (var curtain in curtainUI)
             {
                 curtain.ShowUI(.5f).Forget();

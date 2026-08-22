@@ -181,6 +181,8 @@ public class StageManager : MonoBehaviour
                 {
                     stageUI.undoButton.gameObject.SetActive(true);
                     stageUI.SetResetButtonActive(isResetUnlocked);
+                    stageUI.flipHorizontalButton.ShowUI();
+                    stageUI.flipVerticalButton.ShowUI();
                 }
                 break;
             case GameState.Platformer:
@@ -194,6 +196,8 @@ public class StageManager : MonoBehaviour
                 {
                     stageUI.undoButton.gameObject.SetActive(false);
                     stageUI.SetResetButtonActive(false);
+                    stageUI.flipHorizontalButton.HideUI();
+                    stageUI.flipVerticalButton.HideUI();
                 }
                 break;
             case GameState.End:
@@ -207,12 +211,10 @@ public class StageManager : MonoBehaviour
         {
             if (!isEarlyStage && Input.GetKeyDown(KeyCode.Escape)) GoToStageSelection();
             if (Input.GetKeyDown(KeyCode.Space))                  MoveToNextStage();
-            if (!isEarlyStage && Input.GetKeyDown(KeyCode.R))     RestartStage();
             return;
         }
         if(tutorialManager != null && tutorialManager.CurTutoID != -1) return;
 
-        if (Input.GetKeyDown(KeyCode.R))   { if (!isPlatformerOnly) HandleResetButtonTriggered(); }
         if (Input.GetKeyDown(KeyCode.Tab)) { if (!isPlatformerOnly) HandleSwitchButtonTriggered(); }
 
         if (currentGameState == GameState.Paint)
@@ -220,6 +222,7 @@ public class StageManager : MonoBehaviour
             if (isFoldUnlocked && Input.GetKeyDown(KeyCode.Alpha1)) HandleFlipHorizontalTriggered();
             if (isFoldUnlocked && Input.GetKeyDown(KeyCode.Alpha2)) HandleFlipVerticalTriggered();
             if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Z)) paintManager.UndoPaintAction();
+            if (Input.GetKeyDown(KeyCode.R))   { if (!isPlatformerOnly) HandleResetButtonTriggered(); }
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
