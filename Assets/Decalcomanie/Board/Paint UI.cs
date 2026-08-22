@@ -11,12 +11,12 @@ public class PaintUI : MonoBehaviour
     [SerializeField] private BaseUI shadow;
     [SerializeField] private List<BaseUI> curtains;
 
-    public void SetPaintButtons(int count, System.Action<int> onPaintButtonClicked)
+    public void SetPaintButtons(List<int> tileIndices, System.Action<int> onPaintButtonClicked)
     {
-        for (int i = 0; i < count; i++)
+        foreach (int tileIndex in tileIndices)
         {
             PaintButton newButton = Instantiate(paintButtonPrefab, paintButtonParent);
-            newButton.SetPaintButtonID(i);
+            newButton.SetPaintButtonID(tileIndex);
             newButton.onPaintButtonClicked = onPaintButtonClicked;
         }
     }

@@ -7,14 +7,35 @@ public class BoardManager : MonoBehaviour
 {
     public Board CurrentBoard;
 
+    [SerializeField] private Camera boardCamera;
+    [SerializeField] private float cameraPaddingRatio = 0.174f; // 보드 절반 크기 대비 여백 비율. 에디터에서 눈으로 맞추는 값.
+
     public void CreateBoard(BoardData boardData)
     {
         CurrentBoard = new Board(boardData);
+        FitCameraToBoard();
     }
 
     public void CreateBoard(TextAsset boardDataTextAsset)
     {
         CreateBoard(BoardData.FromJson(boardDataTextAsset));
+    }
+
+    private void FitCameraToBoard()
+    {
+        if (boardCamera == null) return;
+
+        int half = CurrentBoard.playableSize / 2;
+        float boardHalfExtent = half * CurrentBoard.tileSpacing;
+        float halfExtent = boardHalfExtent * (1f + cameraPaddingRatio);
+
+        float halfFovRad = boardCamera.fieldOfView * Mathf.Deg2Rad * 0.5f;
+        float distanceForHeight = halfExtent / Mathf.Tan(halfFovRad);
+        float distanceForWidth = halfExtent / (boardCamera.aspect * Mathf.Tan(halfFovRad));
+        float distance = Mathf.Max(distanceForHeight, distanceForWidth);
+
+        Vector3 pos = boardCamera.transform.position;
+        boardCamera.transform.position = new Vector3(0f, pos.y, -distance);
     }
 }
 
@@ -22,6 +43,8 @@ public class BoardManager : MonoBehaviour
 public class Board
 {
     public int size;
+    public int playableSize; // 테두리 벽을 뺀, 실제로 플레이 가능한 영역 크기 (카메라 프레이밍 기준)
+    public float tileSpacing = 2.5f;
     public List<int> Quadrant1;
     public List<int> Quadrant2;
     public List<int> Quadrant3;
@@ -35,6 +58,7 @@ public class Board
     {
         BoardData = boardData;
         size = boardData.Size;
+        playableSize = boardData.PlayableSize > 0 ? boardData.PlayableSize : boardData.Size;
 
         if(size % 2 != 0)
         {
@@ -79,6 +103,11 @@ public class Board
         foreach (int holePoint in boardData.HolePoints)
         {
             allTiles[holePoint].ChangeTileType(TileType.Hole);
+        }
+
+        foreach (int wallPoint in boardData.WallPoints)
+        {
+            allTiles[wallPoint].ChangeTileType(TileType.Wall);
         }
     }
 
@@ -129,9 +158,27 @@ public class Board
         return paintedTiles;
     }
 
-    public Vector3 GetWorldPosition(int index, float tileSpacing = 2.5f)
+    public Vector3 GetWorldPosition(int index)
     {
-        return new Vector3(index % size, index / size, 0) * tileSpacing;
+        int half = size / 2;
+        float x = (index % size - half + 0.5f) * tileSpacing;
+        float y = (index / size - half + 0.5f) * tileSpacing;
+        return new Vector3(x, y, 0);
+    }
+
+    // 테두리 벽을 제외한, 실제로 플레이 가능한 영역의 타일 인덱스를 반환합니다.
+    public List<int> GetPlayableTileIndices()
+    {
+        int margin = (size - playableSize) / 2;
+        List<int> indices = new List<int>(playableSize * playableSize);
+        for (int y = margin; y < size - margin; y++)
+        {
+            for (int x = margin; x < size - margin; x++)
+            {
+                indices.Add(x + size * y);
+            }
+        }
+        return indices;
     }
 
     // 스테이지 JSON과 동일한 1-based (x, y) 좌표계를 flat tile index로 변환합니다.
@@ -167,6 +214,7 @@ public class Board
 public class BoardData
 {
     public int Size;
+    public int PlayableSize; // 테두리 벽을 뺀 원래 크기. 0이면 Size와 동일하게 취급.
 
     [Header("Init Points")]
     public int StartPoint = -1;
@@ -176,36 +224,62 @@ public class BoardData
 
     public List<int> FixedPoints = new List<int>();
     public List<int> HolePoints = new List<int>();
+    public List<int> WallPoints = new List<int>(); // 테두리 벽 전용 (TileType.Wall)
 
     [Header("Achivements")]
     public int minMoves = 99;
 
-    public BoardData(int size, Vector2 startPointV, Vector2 endPointV, Vector2 starPointV, Vector2 keyPointV, List<Vector2> fixedPointVs, List<Vector2> holePointVs)
+    public BoardData(int size, Vector2 startPointV, Vector2 endPointV, Vector2 starPointV, Vector2 keyPointV, List<Vector2> fixedPointVs, List<Vector2> holePointVs, List<Vector2> wallPointVs = null)
     {
         Size = size;
+        PlayableSize = size;
         StartPoint = GetIndex(startPointV, size);
         EndPoint = GetIndex(endPointV, size);
         StarPoint = GetIndex(starPointV, size);
         KeyPoint = GetIndex(keyPointV, size);
         FixedPoints = fixedPointVs.Select(v => GetIndex(v, size)).ToList();
         HolePoints = holePointVs.Select(v => GetIndex(v, size)).ToList();
+        WallPoints = (wallPointVs ?? new List<Vector2>()).Select(v => GetIndex(v, size)).ToList();
     }
 
     // Deserializes a stage JSON TextAsset (e.g. stage_01.json) into a BoardData.
     // Assign the TextAsset in the Inspector or load it via Resources.Load<TextAsset>("Stage/stage_01").
+    // 원본 보드를 그대로 쓰지 않고, 사방 1칸을 Wall로 둘러싼 형태로 로드합니다.
+    // 카메라 프레이밍은 벽을 뺀 원래 크기(PlayableSize) 기준으로 유지됩니다.
     public static BoardData FromJson(TextAsset jsonAsset)
     {
         StageJson stageJson = JsonUtility.FromJson<StageJson>(jsonAsset.text);
+
+        int playableSize = stageJson.Size;
+        int paddedSize = playableSize + 2;
+
+        // x==0 또는 y==0은 "설정 안 됨" 의미이므로 그대로 유지합니다.
+        Vector2 Shift(Vector2 p) => (p.x == 0 || p.y == 0) ? p : new Vector2(p.x + 1, p.y + 1);
+
+        List<Vector2> fixedPoints = stageJson.FixedPoints.Select(Shift).ToList();
+        List<Vector2> holePoints = stageJson.HolePoints.Select(Shift).ToList();
+        List<Vector2> wallPoints = new List<Vector2>();
+
+        for (int i = 1; i <= paddedSize; i++)
+        {
+            wallPoints.Add(new Vector2(1, i));
+            wallPoints.Add(new Vector2(paddedSize, i));
+            wallPoints.Add(new Vector2(i, 1));
+            wallPoints.Add(new Vector2(i, paddedSize));
+        }
+
         BoardData boardData = new BoardData(
-            stageJson.Size,
-            stageJson.StartPoint,
-            stageJson.EndPoint,
-            stageJson.StarPoint,
-            stageJson.KeyPoint,
-            stageJson.FixedPoints,
-            stageJson.HolePoints
+            paddedSize,
+            Shift(stageJson.StartPoint),
+            Shift(stageJson.EndPoint),
+            Shift(stageJson.StarPoint),
+            Shift(stageJson.KeyPoint),
+            fixedPoints,
+            holePoints,
+            wallPoints
         );
         boardData.minMoves = stageJson.MinMoves;
+        boardData.PlayableSize = playableSize;
         return boardData;
     }
 
@@ -273,5 +347,5 @@ public class Tile
 
 public enum TileType
 {
-    Empty, Paint, Paint_Dec, Fixed, Hole, Start, End, Star, Key
+    Empty, Paint, Paint_Dec, Fixed, Hole, Start, End, Star, Key, Wall
 }

@@ -113,4 +113,6 @@ MonoBehaviour:
     screenshot: {fileID: 21300000, guid: 47af56d8d9bbce249b0f9c1e2df1ccbd, type: 3}
   - stageJson: {fileID: 4900000, guid: c972b589bf3c2114ba723743ba5a9aee, type: 3}
     screenshot: {fileID: 21300000, guid: 6daa03147e488864bb3cb990b5abf218, type: 3}
+  - stageJson: {fileID: 4900000, guid: 637e2f69b64297947b2e9c122609f8eb, type: 3}
+    screenshot: {fileID: 21300000, guid: 6daa03147e488864bb3cb990b5abf218, type: 3}
   hintData: {fileID: 11400000, guid: f67569f6d004cc04292d0a026f4086e3, type: 2}

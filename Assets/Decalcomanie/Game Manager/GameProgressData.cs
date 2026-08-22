@@ -16,7 +16,6 @@ public class GameProgressData
     public int remainingStampCount = 0;
     public List<StageAchievementData> stageAchievements = new List<StageAchievementData>();
     public List<bool> secondHintUnlockedStages = new List<bool>();
-    public List<bool> lastHintUnlockedStages = new List<bool>();
     public List<bool> chapterStampGroupAwarded = new List<bool>();
 
     public StageAchievementData GetAchievement(int stageIndex)
@@ -30,9 +29,6 @@ public class GameProgressData
 
     public bool IsStampObtained(int stageIndex) => GetAchievement(stageIndex).stampObtained;
 
-    public bool IsLastHintUnlocked(int stageIndex) =>
-        stageIndex < lastHintUnlockedStages.Count && lastHintUnlockedStages[stageIndex];
-
     public bool IsSecondHintUnlocked(int stageIndex) =>
         stageIndex < secondHintUnlockedStages.Count && secondHintUnlockedStages[stageIndex];
 
@@ -42,14 +38,6 @@ public class GameProgressData
             secondHintUnlockedStages.Add(false);
 
         secondHintUnlockedStages[stageIndex] = true;
-    }
-
-    public void SetLastHintUnlocked(int stageIndex)
-    {
-        while (lastHintUnlockedStages.Count <= stageIndex)
-            lastHintUnlockedStages.Add(false);
-
-        lastHintUnlockedStages[stageIndex] = true;
     }
 
     public void RecordStageCleared(int stageIndex, bool obtainedStar, bool achievedMinMoves)

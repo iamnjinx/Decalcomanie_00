@@ -84,6 +84,11 @@ public class StageUI : MonoBehaviour
     [Header("Guide UI")]
     public SpriteRenderer guideImage;
 
+    [Header("Tutorial")]
+    public BaseUI clickTutorialUI;
+    public BaseUI resetTutorialUI;
+    public BaseUI switchTutorialUI;
+
     public GameObject mobileControlButtonContainer;
 
     void Awake()
@@ -267,7 +272,7 @@ public class StageUI : MonoBehaviour
     public void UpdateUsedTileText(int usedTileCount)
     {
         usedTileText.text = usedTileCount.ToString() + "/" + currentMinMoves.ToString();
-        Debug.Log(currentMinMoves);
+        //Debug.Log(currentMinMoves);
         if(currentMinMoves > 0)
             usedTileText.color = usedTileCount > currentMinMoves ? usedTileOverMinColor : usedTileDefaultColor;
     }

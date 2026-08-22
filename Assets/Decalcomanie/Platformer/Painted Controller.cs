@@ -6,6 +6,7 @@ public class PaintedController : MonoBehaviour
     [SerializeField] List<Sprite> paintSprites;
     [SerializeField] private List<Sprite> decPaintSprites;
     [SerializeField] private Sprite fixedTileSprite;
+    [SerializeField] private Sprite wallTileSprite;
 
     public void SetPaintSprite(Tile tile, Board board, int tileIndex)
     {
@@ -14,6 +15,12 @@ public class PaintedController : MonoBehaviour
         if(tile.type == TileType.Fixed)
         {
             sr.sprite = fixedTileSprite;
+            return;
+        }
+
+        if(tile.type == TileType.Wall)
+        {
+            sr.sprite = wallTileSprite;
             return;
         }
 

@@ -20,6 +20,9 @@ public class PaintManager : MonoBehaviour
     public Transform LowerRight;
     public Transform UpperRight;
 
+    public Transform HorizontalFoldAxis;
+    public Transform VerticalFoldAxis;
+
     [SerializeField] GameObject PaintPaperObj;
 
     [SerializeField] Ease flipEase = Ease.InCirc;
@@ -36,6 +39,8 @@ public class PaintManager : MonoBehaviour
     public event System.Action<int> OnPaintCountChanged;
     public event System.Action<int> OnTilePainted;
     public event System.Action OnFolded;
+    public event System.Action OnFoldStarted;
+    public event System.Action OnFoldReturning;
 
     public void CreateTileControllers()
     {
@@ -51,7 +56,7 @@ public class PaintManager : MonoBehaviour
             allTileControllers.Add(tc);
         }
 
-        paintUI.SetPaintButtons(board.allTiles.Length, Paint);
+        paintUI.SetPaintButtons(board.GetPlayableTileIndices(), Paint);
     }
 
     public void Paint(int id)
@@ -95,12 +100,17 @@ public class PaintManager : MonoBehaviour
         }
     }
 
+    private static Vector3 GetVerticalAxisFoldRotation(Vector3 start) => new Vector3(-179f, start.y, start.z);
+    private static Vector3 GetHorizontalAxisFoldRotation(Vector3 start) => new Vector3(start.x, -179f, start.z);
+
     public async void FoldVertical()
     {
         if (_isFolding) return;
         await ExecuteFold(
             (UpperLeft, UpperRight),
-            start => new Vector3(-179f, start.y, start.z),
+            GetVerticalAxisFoldRotation,
+            VerticalFoldAxis,
+            GetVerticalAxisFoldRotation,
             () => boardManager.CurrentBoard.FoldVertical());
     }
 
@@ -109,13 +119,17 @@ public class PaintManager : MonoBehaviour
         if (_isFolding) return;
         await ExecuteFold(
             (LowerLeft, UpperLeft),
-            start => new Vector3(start.x, -179f, start.z),
+            GetHorizontalAxisFoldRotation,
+            HorizontalFoldAxis,
+            GetHorizontalAxisFoldRotation,
             () => boardManager.CurrentBoard.FoldHorizontal());
     }
 
     private async UniTask ExecuteFold(
         (Transform panel1, Transform panel2) panels,
         System.Func<Vector3, Vector3> getFoldRotation,
+        Transform foldAxis,
+        System.Func<Vector3, Vector3> getAxisFoldRotation,
         System.Func<List<int>> performFold)
     {
         _isFolding = true;
@@ -126,15 +140,20 @@ public class PaintManager : MonoBehaviour
 
         Vector3 start1 = panels.panel1.eulerAngles;
         Vector3 start2 = panels.panel2.eulerAngles;
+        Vector3 axisStart = foldAxis != null ? foldAxis.eulerAngles : default;
 
+        OnFoldStarted?.Invoke();
         RotatePanelPair(panels, getFoldRotation(start1), getFoldRotation(start2));
+        RotateAxis(foldAxis, getAxisFoldRotation(axisStart));
         await UniTask.Delay((int)(foldTime * 1000));
 
         AddPaintAction(performFold(), false);
         OnFolded?.Invoke();
         await UniTask.Delay(100);
 
+        OnFoldReturning?.Invoke();
         RotatePanelPair(panels, start1, start2);
+        RotateAxis(foldAxis, axisStart);
         await UniTask.Delay((int)(foldTime * 1000));
 
         paintUI.SetShadow(true);
@@ -148,6 +167,12 @@ public class PaintManager : MonoBehaviour
     {
         panels.panel1.DORotate(rotation1, foldTime).SetEase(flipEase);
         panels.panel2.DORotate(rotation2, foldTime).SetEase(flipEase);
+    }
+
+    private void RotateAxis(Transform axis, Vector3 rotation)
+    {
+        if (axis == null) return;
+        axis.DORotate(rotation, foldTime).SetEase(flipEase);
     }
 
     public void ResetPaint()

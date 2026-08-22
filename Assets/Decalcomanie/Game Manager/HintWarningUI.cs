@@ -8,17 +8,10 @@ using UnityEngine.UI;
 
 public class HintWarningUI : BaseUI
 {
-    public enum HintUnlockTarget
-    {
-        Second,
-        Last
-    }
-
     [SerializeField] private ButtonUI yesButton;
     [SerializeField] private TextMeshProUGUI yesButtonText;
     [SerializeField] private ButtonUI noButton;
     [SerializeField] private TextMeshProUGUI noButtonText;
-    [SerializeField] private ButtonUI okButton;
     [SerializeField] private TextMeshProUGUI warningTMP;
 
     [FormerlySerializedAs("remainingStarText")]
@@ -27,15 +20,12 @@ public class HintWarningUI : BaseUI
 
     [SerializeField] private HintManager hintManager;
 
-    private HintUnlockTarget currentTarget = HintUnlockTarget.Last;
-
     protected override void Awake()
     {
         base.Awake();
 
         yesButton.OnSingleClick += OnYesClicked;
         noButton.OnSingleClick += OnNoClicked;
-        okButton.OnSingleClick += OnOkClicked;
 
         yesButtonText.text = GameManager.Instance.CurrentLocalizedData.yesText;
         yesButtonText.font = GameManager.Instance.CurrentLocalizedData.fontAsset;
@@ -45,20 +35,11 @@ public class HintWarningUI : BaseUI
 
     private void OnYesClicked()
     {
-        if (currentTarget == HintUnlockTarget.Second)
-            hintManager.UnlockSecondHint();
-        else
-            hintManager.UnlockLastHint();
-
+        hintManager.UnlockHint();
         HideUI();
     }
 
     private void OnNoClicked()
-    {
-        HideUI();
-    }
-
-    private void OnOkClicked()
     {
         HideUI();
     }
@@ -82,26 +63,11 @@ public class HintWarningUI : BaseUI
         }
     }
 
-    public void SetUnlockTarget(HintUnlockTarget target)
-    {
-        currentTarget = target;
-    }
-
     public void ShowNormalMode()
     {
         yesButton.ShowUI();
         noButton.ShowUI();
-        okButton.HideUI();
 
         remainingStampObj.SetActive(true);
-    }
-
-    public void ShowWaitMode()
-    {
-        yesButton.HideUI();
-        noButton.HideUI();
-        okButton.ShowUI();
-
-        remainingStampObj.SetActive(false);
     }
 }

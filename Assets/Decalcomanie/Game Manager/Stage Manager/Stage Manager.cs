@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TarodevController;
+using Cysharp.Threading.Tasks;
 
 public class StageManager : MonoBehaviour
 {
@@ -15,7 +16,8 @@ public class StageManager : MonoBehaviour
 
     private const int SwitchTutorialStageIndex = 2; // 1-3: 특정 타일 클릭 시 Switch 조기 활성화
     private const int FoldTutorialStageIndex = 3;   // 1-4: 타일 클릭 시 접기 조기 활성화, 접기 시 Reset 조기 활성화
-    private static readonly Vector2Int SwitchTutorialTileCoord = new Vector2Int(4, 1);
+    // BoardData.FromJson이 사방 1칸을 벽으로 두르기 때문에, 원본 스테이지 JSON 좌표(4,1)에서 (+1,+1) 밀린 값입니다.
+    private static readonly Vector2Int SwitchTutorialTileCoord = new Vector2Int(5, 2);
 
     private GameState currentGameState = GameState.Paint;
 
@@ -26,6 +28,8 @@ public class StageManager : MonoBehaviour
 
     [SerializeField] private StageUI stageUI;
     [SerializeField] private TutorialManager tutorialManager;
+
+    [SerializeField] private float foldButtonFadeTime = 0.2f; // 접기 회전(foldTime)보다 빠르게 버튼을 숨기고 보여주기 위한 시간
 
     private Achievements achievements = new Achievements(false, false, false);
 
@@ -45,12 +49,24 @@ public class StageManager : MonoBehaviour
         stageUI.stageClearedStageSelectionButton.OnSingleClick += () => GoToStageSelection();
         stageUI.stageClearedRestartStageButton.OnSingleClick += () => RestartStage();
 
-        stageUI.switchButton.OnSingleClick += () => { SwitchState(); stageUI.UnhighlightSwitchButton(); };
-        stageUI.resetButton.OnSingleClick += () => { ResetButton(); stageUI.UnhighlightResetButton(); };
+        stageUI.switchButton.OnSingleClick += HandleSwitchButtonTriggered;
+        stageUI.resetButton.OnSingleClick += HandleResetButtonTriggered;
         stageUI.undoButton.OnSingleClick += () => paintManager.UndoPaintAction();
 
-        stageUI.flipHorizontalButton.OnSingleClick += () => { paintManager.FoldHorizontal(); stageUI.UnhighlightFoldButtons(); };
-        stageUI.flipVerticalButton.OnSingleClick += () => { paintManager.FoldVertical(); stageUI.UnhighlightFoldButtons(); };
+        stageUI.flipHorizontalButton.OnSingleClick += HandleFlipHorizontalTriggered;
+        stageUI.flipVerticalButton.OnSingleClick += HandleFlipVerticalTriggered;
+
+        // 접기 회전 중에는 두 버튼을 서서히 숨기고, 되돌아올 때 서서히 다시 보여줍니다.
+        paintManager.OnFoldStarted += () =>
+        {
+            stageUI.flipHorizontalButton.HideUI(foldButtonFadeTime).Forget();
+            stageUI.flipVerticalButton.HideUI(foldButtonFadeTime).Forget();
+        };
+        paintManager.OnFoldReturning += () =>
+        {
+            stageUI.flipHorizontalButton.ShowUI(foldButtonFadeTime).Forget();
+            stageUI.flipVerticalButton.ShowUI(foldButtonFadeTime).Forget();
+        };
 
         paintManager.OnPaintCountChanged += stageUI.UpdateUsedTileText;
     }
@@ -107,6 +123,7 @@ public class StageManager : MonoBehaviour
     {
         if (stageIndex == SwitchTutorialStageIndex)
         {
+            stageUI.clickTutorialUI.ShowUI();
             paintManager.OnTilePainted += HandleSwitchTutorialTilePainted;
         }
 
@@ -124,8 +141,10 @@ public class StageManager : MonoBehaviour
         if (tileID != targetTileID) return;
 
         isSwitchUnlocked = true;
+        stageUI.clickTutorialUI.HideUI(.3f).Forget();
         stageUI.SetSwitchButtonActive(true);
         stageUI.HighlightSwitchButton();
+        stageUI.switchTutorialUI.ShowUI();
         paintManager.OnTilePainted -= HandleSwitchTutorialTilePainted;
     }
 
@@ -142,6 +161,7 @@ public class StageManager : MonoBehaviour
         isResetUnlocked = true;
         stageUI.SetResetButtonActive(true);
         stageUI.HighlightResetButton();
+        stageUI.resetTutorialUI.ShowUI();
         paintManager.OnFolded -= HandleFoldTutorialFolded;
     }
 
@@ -192,13 +212,13 @@ public class StageManager : MonoBehaviour
         }
         if(tutorialManager != null && tutorialManager.CurTutoID != -1) return;
 
-        if (Input.GetKeyDown(KeyCode.R))   { if (!isPlatformerOnly) ResetButton(); }
-        if (Input.GetKeyDown(KeyCode.LeftShift)) { if (!isPlatformerOnly) SwitchState(); }
+        if (Input.GetKeyDown(KeyCode.R))   { if (!isPlatformerOnly) HandleResetButtonTriggered(); }
+        if (Input.GetKeyDown(KeyCode.Tab)) { if (!isPlatformerOnly) HandleSwitchButtonTriggered(); }
 
         if (currentGameState == GameState.Paint)
         {
-            if (isFoldUnlocked && Input.GetKeyDown(KeyCode.Alpha1)) paintManager.FoldVertical();
-            if (isFoldUnlocked && Input.GetKeyDown(KeyCode.Alpha2)) paintManager.FoldHorizontal();
+            if (isFoldUnlocked && Input.GetKeyDown(KeyCode.Alpha1)) HandleFlipHorizontalTriggered();
+            if (isFoldUnlocked && Input.GetKeyDown(KeyCode.Alpha2)) HandleFlipVerticalTriggered();
             if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Z)) paintManager.UndoPaintAction();
         }
 
@@ -206,6 +226,33 @@ public class StageManager : MonoBehaviour
         {
             SettingManager.Instance.SetSettingUI();
         }
+    }
+
+    // 버튼 클릭 또는 해당 단축키 입력 시 공통으로 호출됩니다. 강조(깜빡임) 연출을 멈춥니다.
+    private void HandleSwitchButtonTriggered()
+    {
+        SwitchState();
+        stageUI.UnhighlightSwitchButton();
+        stageUI.switchTutorialUI.HideUI(.3f).Forget();
+    }
+
+    private void HandleResetButtonTriggered()
+    {
+        ResetButton();
+        stageUI.UnhighlightResetButton();
+        stageUI.resetTutorialUI.HideUI(.3f).Forget();
+    }
+
+    private void HandleFlipHorizontalTriggered()
+    {
+        paintManager.FoldHorizontal();
+        stageUI.UnhighlightFoldButtons();
+    }
+
+    private void HandleFlipVerticalTriggered()
+    {
+        paintManager.FoldVertical();
+        stageUI.UnhighlightFoldButtons();
     }
 
     public void SwitchState()

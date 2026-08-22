@@ -50,7 +50,7 @@ MonoBehaviour:
   guideSprites:
   - {fileID: 21300000, guid: c298970794a06f9409ae8ccb6f41ec34, type: 3}
   - {fileID: 21300000, guid: 8b49883fd735f3c4c88227e35226584b, type: 3}
-  - {fileID: 21300000, guid: 7876fe1300405334a861adfb2171e7b0, type: 3}
-  - {fileID: 21300000, guid: ab031478e9a4e1b4fa4aeaecf5e6345d, type: 3}
-  - {fileID: 21300000, guid: d7532877a753f1046ba52b81adfb7844, type: 3}
+  - {fileID: 21300000, guid: 74f56c857448de544a172432def8dd02, type: 3}
+  - {fileID: 21300000, guid: 86999f2040979b44fb2d4fca711392f5, type: 3}
+  - {fileID: 21300000, guid: 86999f2040979b44fb2d4fca711392f5, type: 3}
   - {fileID: 21300000, guid: 86999f2040979b44fb2d4fca711392f5, type: 3}

@@ -1232,6 +1232,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3949007917732128569, guid: adf8464502288534aa59e8ea17203309,
         type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3949007917732128569, guid: adf8464502288534aa59e8ea17203309,
+        type: 3}
       propertyPath: m_RaycastTarget
       value: 0
       objectReference: {fileID: 0}
@@ -1257,13 +1262,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8602186337580667765, guid: adf8464502288534aa59e8ea17203309,
         type: 3}
+      propertyPath: m_Name
+      value: version txt
+      objectReference: {fileID: 0}
+    - target: {fileID: 8602186337580667765, guid: adf8464502288534aa59e8ea17203309,
+        type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8889839480670587568, guid: adf8464502288534aa59e8ea17203309,
         type: 3}
       propertyPath: isDemo
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9019423139799532215, guid: adf8464502288534aa59e8ea17203309,
         type: 3}

@@ -38,7 +38,7 @@ public class PlatformerManager : MonoBehaviour
             Tile tile = board.allTiles[i];
             Vector3 pos = board.GetWorldPosition(i);
 
-            if(tile.IsPainted || tile.type == TileType.Fixed)
+            if(tile.IsPainted || tile.type == TileType.Fixed || tile.type == TileType.Wall)
             {
                 PaintedController pc = Instantiate(tilePrefab, PlatformerObjectParent);
                 pc.transform.position = pos;
