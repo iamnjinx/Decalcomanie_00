@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4525543521224202447}
   - component: {fileID: 62524175583894661}
   - component: {fileID: 3690275249829584664}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: Painted
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -156,3 +156,5 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 7861783fec0c5b64a86e35df9008fcc5, type: 3}
   - {fileID: 21300000, guid: dcd923d337619bd4f949e3450aa5ba3a, type: 3}
   fixedTileSprite: {fileID: 21300000, guid: da9a0b63dacdbb9488d0f47590a9daac, type: 3}
+  wallTileSprite: {fileID: 21300000, guid: 8a6b4e229032b184899aeb3ee9f58f88, type: 3}
+  holeSprite: {fileID: 21300000, guid: 8a6b4e229032b184899aeb3ee9f58f88, type: 3}

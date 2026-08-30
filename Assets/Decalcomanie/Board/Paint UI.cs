@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Njinx.UI;
 using UnityEngine;
@@ -9,15 +8,20 @@ public class PaintUI : MonoBehaviour
     [SerializeField] private PaintButton paintButtonPrefab;
     [SerializeField] private BaseUI basePaintUI;
     [SerializeField] private BaseUI shadow;
-    [SerializeField] private List<BaseUI> curtains;
+    //[SerializeField] private List<BaseUI> curtains;
 
-    public void SetPaintButtons(List<int> tileIndices, System.Action<int> onPaintButtonClicked)
+    public void SetPaintButtons(Board board, System.Action<int> onPaintButtonClicked)
     {
-        foreach (int tileIndex in tileIndices)
+        foreach (int tileIndex in board.GetPlayableTileIndices())
         {
             PaintButton newButton = Instantiate(paintButtonPrefab, paintButtonParent);
             newButton.SetPaintButtonID(tileIndex);
             newButton.onPaintButtonClicked = onPaintButtonClicked;
+
+            // 화면 좌우가 board의 Quadrant 좌표계와 반전되어 있어(상하는 동일),
+            // 화면상 Upper Left/Lower Right에 해당하는 실제 좌표는 Quadrant1/Quadrant3.
+            bool isUpperLeftOrLowerRight = board.Quadrant1.Contains(tileIndex) || board.Quadrant3.Contains(tileIndex);
+            newButton.SetBlocked(!isUpperLeftOrLowerRight);
         }
     }
 
@@ -37,14 +41,5 @@ public class PaintUI : MonoBehaviour
     {
         if (is_active) shadow.ShowUI(.1f).Forget();
         else shadow.HideUI(.1f).Forget();
-    }
-
-    public void SetCurtains(bool is_active)
-    {
-        foreach (var curtain in curtains)
-        {
-            if (is_active) curtain.ShowUI(.1f).Forget();
-            else curtain.HideUI(.1f).Forget();
-        }
     }
 }

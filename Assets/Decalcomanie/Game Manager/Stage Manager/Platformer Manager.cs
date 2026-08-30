@@ -5,9 +5,9 @@ using UnityEngine;
 public class PlatformerManager : MonoBehaviour
 {
     [SerializeField] BoardManager boardManager;
+    [SerializeField] private PaintManager paintManager;
 
     [SerializeField] Transform PlatformerObjectParent;
-    [SerializeField] GameObject OrgamiObj;
 
     [SerializeField] private Obtainables starPrefab;
     [SerializeField] private Obtainables keyPrefab;
@@ -15,42 +15,64 @@ public class PlatformerManager : MonoBehaviour
     [SerializeField] private HoleController longHolePrefab; // 2칸짜리(가로 기본, 세로는 90도 회전해서 사용)
     [SerializeField] private DoorController doorPrefab;
     [SerializeField] private PlayerControllerD playerPrefab;
-    [SerializeField] private PaintedController tilePrefab;
 
 
     private Obtainables star;
     private Obtainables key;
     private DoorController door;
     private PlayerControllerD player;
+    private List<HoleController> holes = new List<HoleController>();
 
     public bool obtainedStar = false;
 
     public Action OnCleared;
     public Action OnFellIntoHole;
 
-    public void SetPlatformerObjects(Board board)
-    {   
-        OrgamiObj.SetActive(true);
-        InstantiateObjects();
+    // 스테이지 로드 시 1회만 호출. Door/Key/Star/Player는 Platformer 모드에서만 보여야 하므로
+    // 모드 전환마다 새로 만들지 않고 여기서 한 번만 만들어 유지하되, 생성 직후에는 숨겨 둔다.
+    // Hole은 Paint 모드에서는 PaintManager가 만든 타일 스프라이트로 대신 보여주고,
+    // 실제 HoleController는 Platformer 모드에 진입할 때만 만든다.
+    public void CreateBoardObjects(Board board)
+    {
+        star = Instantiate(starPrefab, PlatformerObjectParent);
+        key = Instantiate(keyPrefab, PlatformerObjectParent);
+        door = Instantiate(doorPrefab, PlatformerObjectParent);
+        player = Instantiate(playerPrefab, PlatformerObjectParent);
+
+        player.OnKeyObtained += () => OnKeyObtained();
+        player.OnStarObtained += () => OnStarObtained();
+        player.OnCleared += () => OnCleared?.Invoke();
+        player.OnFellIntoHole += () => OnFellIntoHole?.Invoke();
 
         for(int i = 0; i < board.allTiles.Length; i++)
         {
             Tile tile = board.allTiles[i];
             Vector3 pos = board.GetWorldPosition(i);
 
-            if(tile.IsPainted || tile.type == TileType.Fixed || tile.type == TileType.Wall)
-            {
-                PaintedController pc = Instantiate(tilePrefab, PlatformerObjectParent);
-                pc.transform.position = pos;
-                pc.SetPaintSprite(tile, board, i);
-            }
-            else if(tile.type == TileType.Star)  star.transform.position = pos;
+            if(tile.type == TileType.Star)       star.transform.position = pos;
             else if(tile.type == TileType.Key)   key.transform.position = pos;
             else if(tile.type == TileType.End)   door.transform.position = pos;
             else if(tile.type == TileType.Start) player.transform.position = pos;
         }
 
-        SpawnHoles(board);
+        player.Init(); // 위치가 확정된 뒤에 호출해야 리스폰 위치가 올바르게 잡힌다.
+
+        star.gameObject.SetActive(false);
+        key.gameObject.SetActive(false);
+        door.gameObject.SetActive(false);
+    }
+
+    // Platformer 모드에 진입할 때마다 호출. Paint 모드용 Hole 타일을 지우고 실제 HoleController로 교체한 뒤,
+    // Door/Star/Key를 보이게 하고 Player 조작을 활성화한다.
+    public void SetPlatformerObjects()
+    {
+        paintManager.DestroyHoleTiles();
+        SpawnHoles(boardManager.CurrentBoard);
+
+        star.gameObject.SetActive(true);
+        key.gameObject.SetActive(true);
+        door.gameObject.SetActive(true);
+        player.Activate();
     }
 
     private void SpawnHoles(Board board)
@@ -77,6 +99,7 @@ public class PlatformerManager : MonoBehaviour
                 HoleController hole = Instantiate(holePrefab, PlatformerObjectParent);
                 hole.transform.position = board.GetWorldPosition(i) + new Vector3(1.25f, 1.25f, 0f);
                 hole.transform.localScale *= 2f;
+                holes.Add(hole);
             }
         }
 
@@ -97,6 +120,7 @@ public class PlatformerManager : MonoBehaviour
                 consumed.Add(i); consumed.Add(right);
                 HoleController hole = Instantiate(longHolePrefab, PlatformerObjectParent);
                 hole.transform.position = board.GetWorldPosition(i) + new Vector3(1.25f, 0f, 0f);
+                holes.Add(hole);
             }
         }
 
@@ -118,6 +142,7 @@ public class PlatformerManager : MonoBehaviour
                 HoleController hole = Instantiate(longHolePrefab, PlatformerObjectParent);
                 hole.transform.position = board.GetWorldPosition(i) + new Vector3(0f, 1.25f, 0f);
                 hole.transform.Rotate(0f, 0f, 90f);
+                holes.Add(hole);
             }
         }
 
@@ -126,39 +151,31 @@ public class PlatformerManager : MonoBehaviour
             if (consumed.Contains(i) || board.allTiles[i].type != TileType.Hole) continue;
             HoleController hole = Instantiate(holePrefab, PlatformerObjectParent);
             hole.transform.position = board.GetWorldPosition(i);
+            holes.Add(hole);
         }
     }
 
-    private void InstantiateObjects()
-    {
-        star = Instantiate(starPrefab, PlatformerObjectParent);
-        key = Instantiate(keyPrefab, PlatformerObjectParent);
-        door = Instantiate(doorPrefab, PlatformerObjectParent);
-        player = Instantiate(playerPrefab, PlatformerObjectParent);
-
-        player.OnKeyObtained += () => OnKeyObtained();
-        player.OnStarObtained += () => OnStarObtained();
-        player.OnCleared += () => OnCleared?.Invoke();
-        player.OnFellIntoHole += () => OnFellIntoHole?.Invoke();
-    }
-
+    // Paint 모드로 돌아올 때 호출. Door/Star/Key/Player는 문이 열렸든 뭔가 획득했든
+    // 플레이어가 어디까지 갔든 상관없이 처음 상태로 되돌리고 화면에서 숨기며, 실제 HoleController는 지운 뒤
+    // Paint 모드용 Hole 타일 오브젝트를 다시 만든다.
     public void ResetObjects()
     {
-        foreach(Transform child in PlatformerObjectParent)
-        {
-            Destroy(child.gameObject);
-        }
+        door.ResetDoor();
+        star.ResetObtainable();
+        key.ResetObtainable();
+        player.Freeze();
 
-        star = null;
-        key = null;
-        door = null;
-        player = null;
+        star.gameObject.SetActive(false);
+        key.gameObject.SetActive(false);
+        door.gameObject.SetActive(false);
+
+        foreach (HoleController hole in holes) Destroy(hole.gameObject);
+        holes.Clear();
+        paintManager.RecreateHoleTiles();
 
         obtainedStar = false;
         OnCleared = null;
         OnFellIntoHole = null;
-
-        OrgamiObj.SetActive(false);
     }
 
     private void OnKeyObtained()

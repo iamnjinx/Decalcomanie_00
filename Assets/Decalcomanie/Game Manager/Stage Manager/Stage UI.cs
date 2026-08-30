@@ -227,10 +227,10 @@ public class StageUI : MonoBehaviour
             paintUI.ShowUI(.5f).Forget();
             flipHorizontalButton.ShowUI(.5f).Forget();
             flipVerticalButton.ShowUI(.5f).Forget();
-            foreach (var curtain in curtainUI)
-            {
-                curtain.ShowUI(.5f).Forget();
-            }
+            // foreach (var curtain in curtainUI)
+            // {
+            //     curtain.ShowUI(.5f).Forget();
+            // }
         }
         ToggleObjectivePosition(1f);
         await mainUI.ShowUI(.5f);

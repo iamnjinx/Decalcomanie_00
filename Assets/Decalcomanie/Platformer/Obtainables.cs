@@ -18,4 +18,9 @@ public class Obtainables : MonoBehaviour, IObtainable
             AudioManager.Instance.PlaySFX(obtainSFX);
         gameObject.SetActive(false);
     }
+
+    public void ResetObtainable()
+    {
+        gameObject.SetActive(true);
+    }
 }

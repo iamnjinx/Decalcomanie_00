@@ -24,6 +24,7 @@ public class PlayerControllerD : MonoBehaviour
     private static readonly WaitForSeconds WaitForControllerEnable = new(0.1f);
 
     private Vector3 _respawnPosition;
+    private Vector3 _initialScale;
     private bool _isFalling;
 
     void Awake()
@@ -32,9 +33,42 @@ public class PlayerControllerD : MonoBehaviour
         OnCleared += () => tarodevController.enabled = false;
     }
 
-    void Start()
+    // PlatformerManager가 보드 생성 시 위치를 잡아준 직후 1회 호출한다.
+    public void Init()
     {
         _respawnPosition = transform.position;
+        _initialScale = transform.localScale;
+        Freeze();
+    }
+
+    // Paint 모드로 돌아올 때 호출. 위치/모습을 처음 상태로 되돌리고, 조작을 멈춘 채 화면에서 숨긴다.
+    // Paint 모드에서는 플레이어 스프라이트를 그대로 보여줄 수 없어서(다른 표현이 필요) 일단 안 보이게 처리한다.
+    public void Freeze()
+    {
+        StopAllCoroutines();
+        _isFalling = false;
+
+        transform.position = _respawnPosition;
+        transform.localScale = _initialScale;
+        transform.localRotation = Quaternion.identity;
+
+        spriteRenderer.sprite = playerSprites[0];
+        findKey.SetActive(false);
+        playerAnimator.enabled = true;
+
+        tarodevController.ForceStop();
+        tarodevController.InputEnabled = false;
+        tarodevController.enabled = false;
+
+        gameObject.SetActive(false);
+    }
+
+    // Platformer 모드에 진입할 때 호출. 다시 보이게 하고, 잠깐의 딜레이 후 조작이 가능해진다.
+    public void Activate()
+    {
+        gameObject.SetActive(true);
+
+        tarodevController.enabled = true;
         tarodevController.InputEnabled = false;
         StartCoroutine(EnableControllerDelayed());
     }

@@ -9,21 +9,24 @@ public class PaintManager : MonoBehaviour
 
     [SerializeField] Transform TileParent;
 
-    public List<TileController> allTileControllers;
+    public List<PaintedController> allTileControllers;
 
-    [SerializeField] private TileController tileControllerPrefab;
+    [SerializeField] private PaintedController tileControllerPrefab;
+
+    [SerializeField] private Transform curtainBlockPrefab;
+    private List<Transform> curtainBlocks = new List<Transform>();
 
     public Stack<TilePaintAction> paintActions = new Stack<TilePaintAction>();
 
-    public Transform LowerLeft;
-    public Transform UpperLeft;
-    public Transform LowerRight;
-    public Transform UpperRight;
+    [SerializeField] private PaperBoard paperBoard;
+
+    [SerializeField] private PaintObjectMarkers objectMarkersPrefab;
+    private PaintObjectMarkers objectMarkers;
 
     public Transform HorizontalFoldAxis;
     public Transform VerticalFoldAxis;
 
-    [SerializeField] GameObject PaintPaperObj;
+    //[SerializeField] GameObject PaintPaperObj;
 
     [SerializeField] Ease flipEase = Ease.InCirc;
     [SerializeField] float foldTime = 0.5f;
@@ -42,27 +45,90 @@ public class PaintManager : MonoBehaviour
     public event System.Action OnFoldStarted;
     public event System.Action OnFoldReturning;
 
+    // 스테이지 로드 시 1회만 호출. Fixed/Wall처럼 처음부터 고정된 타일만 미리 만들어 두고,
+    // 나머지(Empty) 타일은 실제로 칠해지는 순간 GetOrCreateTile을 통해 그때그때 생성한다.
     public void CreateTileControllers()
     {
         Board board = boardManager.CurrentBoard;
+        allTileControllers = new List<PaintedController>();
+
         for (int i = 0; i < board.allTiles.Length; i++)
         {
-            TileController tc = Instantiate(tileControllerPrefab, TileParent);
-            tc.SetTile(board.allTiles[i], i);
-            tc.OnTilePainted += AddPaintAction;
-            tc.transform.position = board.GetWorldPosition(i);
-            var (flipX, flipY) = board.GetFlips(i);
-            tc.SetPaintFlip(flipX, flipY);
-            allTileControllers.Add(tc);
+            allTileControllers.Add(null);
+
+            TileType type = board.allTiles[i].type;
+            if (type == TileType.Fixed || type == TileType.Wall || type == TileType.Hole)
+                GetOrCreateTile(i);
         }
 
-        paintUI.SetPaintButtons(board.GetPlayableTileIndices(), Paint);
+        paintUI.SetPaintButtons(board, Paint);
+        PlaceCurtainBlocks(board);
+
+        objectMarkers = Instantiate(objectMarkersPrefab, TileParent);
+        objectMarkers.Init(board);
+    }
+
+    // 칠할 수 없는(Quadrant1/Quadrant3에 속하지 않는) 타일 위치에 curtainBlock을 배치한다.
+    private void PlaceCurtainBlocks(Board board)
+    {
+        foreach (int tileIndex in board.GetPlayableTileIndices())
+        {
+            bool isPaintable = board.Quadrant1.Contains(tileIndex) || board.Quadrant3.Contains(tileIndex);
+            if (isPaintable) continue;
+
+            Transform curtainBlock = Instantiate(curtainBlockPrefab, TileParent);
+            curtainBlock.position = board.GetWorldPosition(tileIndex);
+            curtainBlocks.Add(curtainBlock);
+        }
+    }
+
+    private void SetCurtainBlocksActive(bool is_active)
+    {
+        foreach (Transform curtainBlock in curtainBlocks)
+            curtainBlock.gameObject.SetActive(is_active);
+    }
+
+    // Platformer 모드로 넘어갈 때 호출. Hole은 실제 HoleController가 대신 보여줘야 하므로
+    // Paint 모드용 타일 오브젝트는 지운다.
+    public void DestroyHoleTiles()
+    {
+        Board board = boardManager.CurrentBoard;
+        for (int i = 0; i < allTileControllers.Count; i++)
+        {
+            if (allTileControllers[i] == null || board.allTiles[i].type != TileType.Hole) continue;
+            Destroy(allTileControllers[i].gameObject);
+            allTileControllers[i] = null;
+        }
+    }
+
+    // Paint 모드로 돌아올 때 호출. 지워졌던 Hole 타일 오브젝트를 다시 만든다.
+    public void RecreateHoleTiles()
+    {
+        Board board = boardManager.CurrentBoard;
+        for (int i = 0; i < board.allTiles.Length; i++)
+            if (board.allTiles[i].type == TileType.Hole)
+                GetOrCreateTile(i);
+    }
+
+    private PaintedController GetOrCreateTile(int id)
+    {
+        if (allTileControllers[id] != null) return allTileControllers[id];
+
+        Board board = boardManager.CurrentBoard;
+        PaintedController tc = Instantiate(tileControllerPrefab, TileParent);
+        tc.transform.position = board.GetWorldPosition(id);
+        tc.Init(board.allTiles[id], id, board);
+        tc.OnTilePainted += AddPaintAction;
+        allTileControllers[id] = tc;
+        return tc;
     }
 
     public void Paint(int id)
     {
-        if (allTileControllers[id].Tile.type != TileType.Empty) return;
-        allTileControllers[id].PaintTile();
+        if (boardManager.CurrentBoard.allTiles[id].type != TileType.Empty) return;
+
+        PaintedController tc = GetOrCreateTile(id);
+        tc.PaintTile();
         paintCount++;
         OnPaintCountChanged?.Invoke(paintCount);
         OnTilePainted?.Invoke(id);
@@ -86,11 +152,11 @@ public class PaintManager : MonoBehaviour
 
         foreach (int tile in lastAction.PaintedTiles)
         {
-            TileController tc = allTileControllers[tile];
+            PaintedController tc = allTileControllers[tile];
             if (tc.Tile.IsPainted)
                 tc.ChangeTileType(0);
             else
-                tc.UpdateTile();
+                tc.Refresh();
         }
 
         if (lastAction.is_paint)
@@ -100,14 +166,14 @@ public class PaintManager : MonoBehaviour
         }
     }
 
-    private static Vector3 GetVerticalAxisFoldRotation(Vector3 start) => new Vector3(-179f, start.y, start.z);
-    private static Vector3 GetHorizontalAxisFoldRotation(Vector3 start) => new Vector3(start.x, -179f, start.z);
+    private static Vector3 GetVerticalAxisFoldRotation(Vector3 start) => new Vector3(170f, start.y, start.z);
+    private static Vector3 GetHorizontalAxisFoldRotation(Vector3 start) => new Vector3(start.x, -170f, start.z);
 
     public async void FoldVertical()
     {
         if (_isFolding) return;
         await ExecuteFold(
-            (UpperLeft, UpperRight),
+            (paperBoard.UpperLeft, paperBoard.UpperRight),
             GetVerticalAxisFoldRotation,
             VerticalFoldAxis,
             GetVerticalAxisFoldRotation,
@@ -118,7 +184,7 @@ public class PaintManager : MonoBehaviour
     {
         if (_isFolding) return;
         await ExecuteFold(
-            (LowerLeft, UpperLeft),
+            (paperBoard.LowerLeft, paperBoard.UpperLeft),
             GetHorizontalAxisFoldRotation,
             HorizontalFoldAxis,
             GetHorizontalAxisFoldRotation,
@@ -138,8 +204,8 @@ public class PaintManager : MonoBehaviour
         paintUI.SetShadow(false);
         await paintUI.SetBasePaintUI(false);
 
-        Vector3 start1 = panels.panel1.eulerAngles;
-        Vector3 start2 = panels.panel2.eulerAngles;
+        Vector3 start1 = panels.panel1.localEulerAngles;
+        Vector3 start2 = panels.panel2.localEulerAngles;
         Vector3 axisStart = foldAxis != null ? foldAxis.eulerAngles : default;
 
         OnFoldStarted?.Invoke();
@@ -147,7 +213,9 @@ public class PaintManager : MonoBehaviour
         RotateAxis(foldAxis, getAxisFoldRotation(axisStart));
         await UniTask.Delay((int)(foldTime * 1000));
 
-        AddPaintAction(performFold(), false);
+        List<int> foldedTiles = performFold();
+        foreach (int tileID in foldedTiles) GetOrCreateTile(tileID);
+        AddPaintAction(foldedTiles, false);
         OnFolded?.Invoke();
         await UniTask.Delay(100);
 
@@ -165,8 +233,8 @@ public class PaintManager : MonoBehaviour
         (Transform panel1, Transform panel2) panels,
         Vector3 rotation1, Vector3 rotation2)
     {
-        panels.panel1.DORotate(rotation1, foldTime).SetEase(flipEase);
-        panels.panel2.DORotate(rotation2, foldTime).SetEase(flipEase);
+        panels.panel1.DOLocalRotate(rotation1, foldTime).SetEase(flipEase);
+        panels.panel2.DOLocalRotate(rotation2, foldTime).SetEase(flipEase);
     }
 
     private void RotateAxis(Transform axis, Vector3 rotation)
@@ -179,8 +247,11 @@ public class PaintManager : MonoBehaviour
     {
         paintCount = 0;
         OnPaintCountChanged?.Invoke(paintCount);
-        foreach (TileController tc in allTileControllers)
+        foreach (PaintedController tc in allTileControllers)
+        {
+            if (tc == null) continue;
             tc.ChangeTileType(tc.Tile.IsPainted ? 0 : (int)tc.Tile.type);
+        }
 
         ResumePaint();
         paintActions.Clear();
@@ -188,26 +259,16 @@ public class PaintManager : MonoBehaviour
 
     public void ResumePaint()
     {
-        foreach (TileController tc in allTileControllers)
-            tc.ShowTile();
-
         paintUI.SetBasePaintUI(true).Forget();
-        paintUI.SetCurtains(true);
-        PaintPaperObj.SetActive(true);
+        SetCurtainBlocksActive(true);
+        objectMarkers.gameObject.SetActive(true);
     }
 
     public void PausePaint()
     {
-        HideTiles();
         paintUI.SetBasePaintUI(false).Forget();
-    }
-
-    private void HideTiles()
-    {
-        PaintPaperObj.SetActive(false);
-        paintUI.SetCurtains(false);
-        foreach (TileController tc in allTileControllers)
-            tc.HideTile();
+        SetCurtainBlocksActive(false);
+        objectMarkers.gameObject.SetActive(false);
     }
 }
 

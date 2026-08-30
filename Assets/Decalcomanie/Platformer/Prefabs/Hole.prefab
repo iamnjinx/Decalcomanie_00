@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3393467391048532015}
   - component: {fileID: 6131382359784460907}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: decalcomanie_origami_hole_base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 3902412596283371399}
   - component: {fileID: 4103243170792457045}
   - component: {fileID: 5601738529726405295}
-  m_Layer: 7
+  m_Layer: 8
   m_Name: Hole
   m_TagString: Hole
   m_Icon: {fileID: 0}

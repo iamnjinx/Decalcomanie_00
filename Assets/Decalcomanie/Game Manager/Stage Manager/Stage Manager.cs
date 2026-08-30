@@ -95,6 +95,11 @@ public class StageManager : MonoBehaviour
             stageUI.guideImage.gameObject.SetActive(hasGuide);
         }
 
+        // Door/Star/Key/Player는 스테이지 전체에서 재사용되므로,
+        // 아래 isPlatformerOnly 초기 모드 전환보다 먼저 한 번만 만들어 둔다. (Paint 모드에서는 숨겨진다)
+        paintManager.CreateTileControllers();
+        platformerManager.CreateBoardObjects(boardManager.CurrentBoard);
+
         isPlatformerOnly = gm != null && stageIndex < PlatformerOnlyBelowStage;
         if (isPlatformerOnly)
         {
@@ -115,7 +120,6 @@ public class StageManager : MonoBehaviour
         stageUI.UpdateUsedTileText(paintManager.paintCount);
         stageUI.SetCurStageText(stageIndex);
         stageUI.ShowMainUI(isPlatformerOnly);
-        paintManager.CreateTileControllers();
     }
 
     // 1-3, 1-4의 튜토리얼성 조기 버튼 활성화 이벤트를 등록합니다.
@@ -188,7 +192,7 @@ public class StageManager : MonoBehaviour
             case GameState.Platformer:
                 stageUI.guideImage.gameObject.layer = LayerMask.NameToLayer("GuideTile");
                 paintManager.PausePaint();
-                platformerManager.SetPlatformerObjects(boardManager.CurrentBoard);
+                platformerManager.SetPlatformerObjects();
 
                 platformerManager.OnCleared += GameCleared;
                 platformerManager.OnFellIntoHole += OnPlayerFellIntoHole;

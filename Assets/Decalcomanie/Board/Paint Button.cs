@@ -10,15 +10,24 @@ public class PaintButton : ButtonUI
 
     public Action<int> onPaintButtonClicked;
 
+    private MouseBlockUI mouseBlockUI;
+
     protected override void Awake()
     {
         base.Awake();
         OnSingleClick += () => OnPaintButtonClicked();
+        mouseBlockUI = GetComponent<MouseBlockUI>();
     }
 
     public void SetPaintButtonID(int id)
     {
         paintButtonID = id;
+    }
+
+    public void SetBlocked(bool is_blocked)
+    {
+        if (mouseBlockUI != null) mouseBlockUI.enabled = is_blocked;
+        SetInteractable(!is_blocked);
     }
 
     public void OnPaintButtonClicked()
