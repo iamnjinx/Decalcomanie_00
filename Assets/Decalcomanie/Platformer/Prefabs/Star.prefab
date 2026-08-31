@@ -74,7 +74,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 153223e841f5aed4f879b33aa1de1d4c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -99,6 +99,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _obtainSFX: star_get
+  _obtainParticlePrefab: {fileID: 7690720088532349006, guid: 7eb377b554b8c1c4885298f00bc9328f,
+    type: 3}
 --- !u!58 &8918340229620967121
 CircleCollider2D:
   m_ObjectHideFlags: 0

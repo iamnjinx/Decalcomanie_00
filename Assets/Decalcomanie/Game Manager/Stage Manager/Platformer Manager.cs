@@ -27,6 +27,7 @@ public class PlatformerManager : MonoBehaviour
 
     public Action OnCleared;
     public Action OnFellIntoHole;
+    public Action OnStarObtained;
 
     // 스테이지 로드 시 1회만 호출. Door/Key/Star/Player는 Platformer 모드에서만 보여야 하므로
     // 모드 전환마다 새로 만들지 않고 여기서 한 번만 만들어 유지하되, 생성 직후에는 숨겨 둔다.
@@ -40,7 +41,7 @@ public class PlatformerManager : MonoBehaviour
         player = Instantiate(playerPrefab, PlatformerObjectParent);
 
         player.OnKeyObtained += () => OnKeyObtained();
-        player.OnStarObtained += () => OnStarObtained();
+        player.OnStarObtained += HandleStarObtained;
         player.OnCleared += () => OnCleared?.Invoke();
         player.OnFellIntoHole += () => OnFellIntoHole?.Invoke();
 
@@ -183,8 +184,9 @@ public class PlatformerManager : MonoBehaviour
         door.OpenDoor();
     }
 
-    private void OnStarObtained()
+    private void HandleStarObtained()
     {
         obtainedStar = true;
+        OnStarObtained?.Invoke();
     }
 }

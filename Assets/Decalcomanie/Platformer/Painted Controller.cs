@@ -35,6 +35,11 @@ public class PaintedController : MonoBehaviour
         Refresh();
     }
 
+    private void OnDestroy()
+    {
+        if (Tile != null) Tile.OnTileTypeChanged -= Refresh;
+    }
+
     public void PaintTile()
     {
         if (Tile.type != TileType.Empty) return;

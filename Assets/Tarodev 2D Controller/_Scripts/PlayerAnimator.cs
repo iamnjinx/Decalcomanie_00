@@ -32,6 +32,7 @@ namespace TarodevController
         private IPlayerController _player;
         private bool _grounded;
         private ParticleSystem.MinMaxGradient _currentGradient;
+        private float _facingSign = 1f;
 
         private void Awake()
         {
@@ -61,16 +62,28 @@ namespace TarodevController
 
             DetectGroundColor();
 
-            HandleSpriteFlip();
-
             HandleIdleSpeed();
 
             HandleCharacterTilt();
         }
 
+        // Idle.anim이 같은 오브젝트의 m_LocalScale을 애니메이션하고 있어서(Write Defaults 포함),
+        // Animator 평가가 끝난 뒤(LateUpdate)에 부호를 덮어써야 매 프레임 스케일이 원래대로 되돌아가지 않는다.
+        private void LateUpdate()
+        {
+            if (_player == null) return;
+
+            HandleSpriteFlip();
+        }
+
         private void HandleSpriteFlip()
         {
-            if (_player.FrameInput.x != 0) _sprite.flipX = _player.FrameInput.x < 0;
+            if (_player.FrameInput.x != 0) _facingSign = _player.FrameInput.x < 0 ? -1f : 1f;
+
+            var scale = _sprite.transform.localScale;
+            var absX = Mathf.Abs(scale.x);
+            scale.x = _facingSign * absX;
+            _sprite.transform.localScale = scale;
         }
 
         private void HandleIdleSpeed()

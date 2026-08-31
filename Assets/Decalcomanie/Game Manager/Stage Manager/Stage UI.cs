@@ -41,16 +41,21 @@ public class StageUI : MonoBehaviour
     // 0: Stage Clear (early stage only), 1: Star Earned, 2: Star & Min Moves
     public GameObject objectiveObjParent;
     public TextMeshProUGUI[] objectiveTexts = new TextMeshProUGUI[3];
+    public Image[] objectiveStrikeThroughImages = new Image[3];
     public ButtonUI objectiveObj;
     public float objectiveHidePosX;
     public float objectiveHoverPosX = float.NaN;
     public float objectiveMoveDuration = 0.3f;
     public float objectiveHoverMoveDuration = 0.2f;
+    public float objectiveStrikeFillDuration = 0.3f;
 
     [SerializeField] private RectTransform objectiveRectTransform;
     private RectTransform objectiveObjRectTransform;
     private float objectiveShowPosX;
     private bool isObjectiveShown = true;
+
+    private bool objectiveStarAchieved = false;
+    private int lastUsedTileCount = 0;
 
     public GameObject usedTileObj;
     public TextMeshProUGUI usedTileText;
@@ -76,6 +81,8 @@ public class StageUI : MonoBehaviour
 
     public Image achivementImage;
     public List<BaseUI> stars;
+    public BaseUI Stamp;
+    
     public ButtonUI nextStageButton;
     public TextMeshProUGUI minMovesText;
 
@@ -219,6 +226,20 @@ public class StageUI : MonoBehaviour
         objectiveRectTransform.DOAnchorPosX(targetX, tweenDuration).SetEase(Ease.InOutQuad);
     }
 
+    // 플랫포머 모드로 전환될 때, 접혀 있던 목표(Objective)를 펼쳐줍니다.
+    public void ShowObjectiveIfHidden()
+    {
+        if (isObjectiveShown) return;
+        ToggleObjectivePosition(-1f);
+    }
+
+    // 색칠 모드로 전환될 때, 펼쳐져 있던 목표(Objective)를 접어줍니다.
+    public void HideObjectiveIfShown()
+    {
+        if (!isObjectiveShown) return;
+        ToggleObjectivePosition(-1f);
+    }
+
     public async void ShowMainUI(bool isPlatformerOnly = false)
     {
         if (!isPlatformerOnly)
@@ -246,7 +267,7 @@ public class StageUI : MonoBehaviour
     public void SetStageBackground(int stageID)
     {
         if (stageID < 0 || stageID >= stageBackgroundSprites.Count * 10) return; // stageID가 유효한 경우에만 배경을 설정
-        stageMainBackgroundImage.sprite = stageBackgroundSprites[stageID / 10];
+        //stageMainBackgroundImage.sprite = stageBackgroundSprites[stageID / 10];
     }
 
     public void SetObjectiveTexts(GameLanguage language, bool isEarlyStage, int minMoves)
@@ -260,6 +281,49 @@ public class StageUI : MonoBehaviour
         foreach (var text in objectiveTexts) text.font = data.fontAsset;
 
         currentMinMoves = minMoves;
+
+        objectiveStarAchieved = false;
+        lastUsedTileCount = 0;
+        ApplyObjectiveStrike(0, false, true);
+        ApplyObjectiveStrike(1, false, true);
+        ApplyObjectiveStrike(2, false, true);
+    }
+
+    // 스테이지 클리어(문 통과) 시 0번 목표를 채워줍니다.
+    public void SetObjectiveCleared(bool cleared)
+    {
+        ApplyObjectiveStrike(0, cleared);
+    }
+
+    // 별 획득 시 1번 목표를 채워주고, 2번 목표(별 + 최소 이동) 달성 여부를 다시 계산합니다.
+    public void SetObjectiveStarObtained(bool obtained)
+    {
+        objectiveStarAchieved = obtained;
+        ApplyObjectiveStrike(1, obtained);
+        UpdateMinMovesObjectiveStrike();
+    }
+
+    private void UpdateMinMovesObjectiveStrike()
+    {
+        bool achieved = objectiveStarAchieved && currentMinMoves > 0 && lastUsedTileCount <= currentMinMoves;
+        ApplyObjectiveStrike(2, achieved);
+    }
+
+    private void ApplyObjectiveStrike(int index, bool achieved, bool instant = false)
+    {
+        Image image = objectiveStrikeThroughImages[index];
+        if (image == null) return;
+
+        image.DOKill();
+        float target = achieved ? 1f : 0f;
+        if (instant)
+        {
+            image.fillAmount = target;
+        }
+        else
+        {
+            image.DOFillAmount(target, objectiveStrikeFillDuration);
+        }
     }
 
     public void SetAfterButtonTexts(GameLanguage language)
@@ -273,10 +337,14 @@ public class StageUI : MonoBehaviour
 
     public void UpdateUsedTileText(int usedTileCount)
     {
+        lastUsedTileCount = usedTileCount;
+
         usedTileText.text = usedTileCount.ToString() + "/" + currentMinMoves.ToString();
         //Debug.Log(currentMinMoves);
         if(currentMinMoves > 0)
             usedTileText.color = usedTileCount > currentMinMoves ? usedTileOverMinColor : usedTileDefaultColor;
+
+        UpdateMinMovesObjectiveStrike();
     }
 
     public void SetPlatformerOnlyMode()
@@ -387,6 +455,14 @@ public class StageUI : MonoBehaviour
         if(isCleared || obtainedStar || minMoves)
         {
             await UniTask.Delay(1500); // Simulate delay for showing stars
+        }
+
+        // 스탬프 찍고 1.5초 대기.
+        if (isCleared && obtainedStar && minMoves)
+        {
+            Stamp.ShowUI(.1f).Forget();
+            Stamp.transform.DOPunchScale(Vector3.one * 0.3f, 0.3f, 6, 0.5f);
+            await UniTask.Delay(1500);
         }
     }
 }

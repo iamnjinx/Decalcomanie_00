@@ -28,6 +28,11 @@ public class HintManager : MonoBehaviour
 
     void Start()
     {
+        RefreshStampText();
+    }
+
+    public void RefreshStampText()
+    {
         hintUI.SetRemainingStampText(GameProgressData.Load().remainingStampCount);
     }
 
@@ -68,6 +73,6 @@ public class HintManager : MonoBehaviour
 
         hintUI.hintButton.UnlockHintButton();
 
-        hintUI.SetRemainingStampText(GameProgressData.Load().remainingStampCount);
+        RefreshStampText();
     }
 }

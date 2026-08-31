@@ -8,7 +8,8 @@ public class BoardManager : MonoBehaviour
     public Board CurrentBoard;
 
     [SerializeField] private Camera boardCamera;
-    [SerializeField] private float cameraPaddingRatio = 0.174f; // 보드 절반 크기 대비 여백 비율. 에디터에서 눈으로 맞추는 값.
+    [SerializeField] private float cameraPaddingRatio = 0f; // 보드 절반 크기 대비 여백 비율. 에디터에서 눈으로 맞추는 값.
+    [SerializeField] private float cameraDistanceOffset = 15f; // 보드 크기와 무관하게 더해지는 고정 여유 거리.
 
     public void CreateBoard(BoardData boardData)
     {
@@ -32,7 +33,7 @@ public class BoardManager : MonoBehaviour
         float halfFovRad = boardCamera.fieldOfView * Mathf.Deg2Rad * 0.5f;
         float distanceForHeight = halfExtent / Mathf.Tan(halfFovRad);
         float distanceForWidth = halfExtent / (boardCamera.aspect * Mathf.Tan(halfFovRad));
-        float distance = Mathf.Max(distanceForHeight, distanceForWidth);
+        float distance = Mathf.Max(distanceForHeight, distanceForWidth) + cameraDistanceOffset;
 
         Vector3 pos = boardCamera.transform.position;
         boardCamera.transform.position = new Vector3(0f, pos.y, -distance);

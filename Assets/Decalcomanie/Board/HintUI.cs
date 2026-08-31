@@ -12,7 +12,7 @@ public class HintUI : MonoBehaviour
     [Header("Hint Space 2")]
     [SerializeField] private HintSpace2[] hint2Images = new HintSpace2[2];
 
-    //[SerializeField] private TextMeshProUGUI remainingStarText;
+    [SerializeField] private TextMeshProUGUI remainingStampText;
 
     [SerializeField] private HintWarningUI lastHintWarningUI;
 
@@ -29,7 +29,7 @@ public class HintUI : MonoBehaviour
 
     public void SetRemainingStampText(int remainingStampCount)
     {
-        //if (remainingStampText != null) remainingStampText.text = "= " + remainingStampCount.ToString();
+        if (remainingStampText != null) remainingStampText.text = remainingStampCount.ToString();
     }
 
     public void ShowHintWarning(int remainingStampCount, bool canAffordHint, string warningText)

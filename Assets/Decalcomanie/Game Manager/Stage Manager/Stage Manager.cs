@@ -28,6 +28,7 @@ public class StageManager : MonoBehaviour
 
     [SerializeField] private StageUI stageUI;
     [SerializeField] private TutorialManager tutorialManager;
+    [SerializeField] private HintManager hintManager;
 
     [SerializeField] private float foldButtonFadeTime = 0.2f; // 접기 회전(foldTime)보다 빠르게 버튼을 숨기고 보여주기 위한 시간
 
@@ -69,6 +70,7 @@ public class StageManager : MonoBehaviour
         };
 
         paintManager.OnPaintCountChanged += stageUI.UpdateUsedTileText;
+        platformerManager.OnStarObtained += () => stageUI.SetObjectiveStarObtained(true);
     }
 
     void Start()
@@ -180,6 +182,8 @@ public class StageManager : MonoBehaviour
         {
             case GameState.Paint:
                 stageUI.guideImage.gameObject.layer = LayerMask.NameToLayer("Guide");
+                stageUI.HideObjectiveIfShown();
+                paintManager.SetPaperBoardSurfaceTransparent(false);
                 ResetState();
                 if (!isPlatformerOnly)
                 {
@@ -191,6 +195,8 @@ public class StageManager : MonoBehaviour
                 break;
             case GameState.Platformer:
                 stageUI.guideImage.gameObject.layer = LayerMask.NameToLayer("GuideTile");
+                stageUI.ShowObjectiveIfHidden();
+                paintManager.SetPaperBoardSurfaceTransparent(true);
                 paintManager.PausePaint();
                 platformerManager.SetPlatformerObjects();
 
@@ -289,6 +295,7 @@ public class StageManager : MonoBehaviour
         platformerManager.OnFellIntoHole -= OnPlayerFellIntoHole;
         paintManager.ResumePaint();
         platformerManager.ResetObjects();
+        stageUI.SetObjectiveStarObtained(false);
 
         achievements = new Achievements(false, false, false);
     }
@@ -314,6 +321,7 @@ public class StageManager : MonoBehaviour
         if (AudioManager.Instance != null)
             AudioManager.Instance.PlaySFX("stage_clear");
         ChangeGameState(GameState.End);
+        stageUI.SetObjectiveCleared(true);
 
         achievements = new Achievements(
             true,
@@ -337,6 +345,8 @@ public class StageManager : MonoBehaviour
             achievements.ObtainedStar,
             achievements.MinMoves);
         SaveManager.Instance.Save(GameProgressData.SaveKey, progress);
+
+        if (hintManager != null) hintManager.RefreshStampText();
     }
 
     private static BoardData ConvertEditorBoardToBoardData(TileType[] board)

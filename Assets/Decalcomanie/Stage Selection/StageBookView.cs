@@ -126,6 +126,7 @@ public class StageBookView
     private void SetChapterSprites(int chapterIndex)
     {
         var data = GameManager.Instance.GameData;
+        if (data == null || chapterIndex < 0 || chapterIndex >= data.chapterBackgroundSprites.Count) return;
         chapterBackgroundImage.sprite = data.chapterBackgroundSprites[chapterIndex];
         chapterDeco[0].sprite = data.chapterDecoL[chapterIndex];
         chapterDeco[1].sprite = data.chapterDecoR[chapterIndex];

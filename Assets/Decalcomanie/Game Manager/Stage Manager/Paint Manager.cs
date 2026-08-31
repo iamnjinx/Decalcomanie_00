@@ -19,6 +19,7 @@ public class PaintManager : MonoBehaviour
     public Stack<TilePaintAction> paintActions = new Stack<TilePaintAction>();
 
     [SerializeField] private PaperBoard paperBoard;
+    public void SetPaperBoardSurfaceTransparent(bool transparent) => paperBoard.SetSurfaceTransparent(transparent);
 
     [SerializeField] private PaintObjectMarkers objectMarkersPrefab;
     private PaintObjectMarkers objectMarkers;
@@ -154,7 +155,11 @@ public class PaintManager : MonoBehaviour
         {
             PaintedController tc = allTileControllers[tile];
             if (tc.Tile.IsPainted)
+            {
                 tc.ChangeTileType(0);
+                Destroy(tc.gameObject);
+                allTileControllers[tile] = null;
+            }
             else
                 tc.Refresh();
         }
@@ -166,8 +171,14 @@ public class PaintManager : MonoBehaviour
         }
     }
 
+    [SerializeField] private float verticalAxisCreaseAngle = -170f;
+    [SerializeField] private float horizontalAxisCreaseAngle = -170f;
+
     private static Vector3 GetVerticalAxisFoldRotation(Vector3 start) => new Vector3(170f, start.y, start.z);
     private static Vector3 GetHorizontalAxisFoldRotation(Vector3 start) => new Vector3(start.x, -170f, start.z);
+
+    private Vector3 GetVerticalAxisCreaseRotation(Vector3 start) => new Vector3(verticalAxisCreaseAngle, start.y, start.z);
+    private Vector3 GetHorizontalAxisCreaseRotation(Vector3 start) => new Vector3(start.x, horizontalAxisCreaseAngle, start.z);
 
     public async void FoldVertical()
     {
@@ -176,7 +187,7 @@ public class PaintManager : MonoBehaviour
             (paperBoard.UpperLeft, paperBoard.UpperRight),
             GetVerticalAxisFoldRotation,
             VerticalFoldAxis,
-            GetVerticalAxisFoldRotation,
+            GetVerticalAxisCreaseRotation,
             () => boardManager.CurrentBoard.FoldVertical());
     }
 
@@ -187,7 +198,7 @@ public class PaintManager : MonoBehaviour
             (paperBoard.LowerLeft, paperBoard.UpperLeft),
             GetHorizontalAxisFoldRotation,
             HorizontalFoldAxis,
-            GetHorizontalAxisFoldRotation,
+            GetHorizontalAxisCreaseRotation,
             () => boardManager.CurrentBoard.FoldHorizontal());
     }
 
@@ -201,7 +212,6 @@ public class PaintManager : MonoBehaviour
         _isFolding = true;
         if (AudioManager.Instance != null)
             AudioManager.Instance.PlaySFX("fold_paper");
-        paintUI.SetShadow(false);
         await paintUI.SetBasePaintUI(false);
 
         Vector3 start1 = panels.panel1.localEulerAngles;
@@ -224,7 +234,6 @@ public class PaintManager : MonoBehaviour
         RotateAxis(foldAxis, axisStart);
         await UniTask.Delay((int)(foldTime * 1000));
 
-        paintUI.SetShadow(true);
         await paintUI.SetBasePaintUI(true);
         _isFolding = false;
     }
@@ -247,10 +256,19 @@ public class PaintManager : MonoBehaviour
     {
         paintCount = 0;
         OnPaintCountChanged?.Invoke(paintCount);
-        foreach (PaintedController tc in allTileControllers)
+        for (int i = 0; i < allTileControllers.Count; i++)
         {
+            PaintedController tc = allTileControllers[i];
             if (tc == null) continue;
-            tc.ChangeTileType(tc.Tile.IsPainted ? 0 : (int)tc.Tile.type);
+
+            if (tc.Tile.IsPainted)
+            {
+                tc.ChangeTileType(0);
+                Destroy(tc.gameObject);
+                allTileControllers[i] = null;
+            }
+            else
+                tc.ChangeTileType((int)tc.Tile.type);
         }
 
         ResumePaint();

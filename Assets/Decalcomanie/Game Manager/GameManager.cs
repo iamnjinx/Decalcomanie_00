@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
     }
 
     public SceneType currentScene;
-    public int CurrentStageIndex { get; private set; } = 12;
+    public int CurrentStageIndex { get; private set; } = 2;
     public GameLanguage CurrentLanguage { get; private set; } = GameLanguage.English;
     public bool IsFullscreen { get; private set; } = true;
 

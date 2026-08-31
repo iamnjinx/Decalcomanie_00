@@ -7,7 +7,6 @@ namespace TarodevController
     public class PlayerControllerT : MonoBehaviour, IPlayerController
     {
         [SerializeField] private ScriptableStats _stats;
-        [SerializeField] private bool _debugCornerCorrection = true;
         private Rigidbody2D _rb;
         private Collider2D _col;                  // ← Collider2D로 변경
         private FrameInput _frameInput;
@@ -190,12 +189,8 @@ namespace TarodevController
             bool stillBlockedIfRight = ColliderCastFrom(center + Vector2.right * tolerance, Vector2.up, dist, mask);
             bool stillBlockedIfLeft  = ColliderCastFrom(center + Vector2.left  * tolerance, Vector2.up, dist, mask);
 
-            if (_debugCornerCorrection)
-                Debug.Log($"[CornerCorrection] stillBlockedIfRight={stillBlockedIfRight}, stillBlockedIfLeft={stillBlockedIfLeft}, tolerance={tolerance:F3}");
-
             if (stillBlockedIfRight == stillBlockedIfLeft)
             {
-                if (_debugCornerCorrection) Debug.Log("[CornerCorrection] 취소: 양쪽 다 tolerance로 안 뚫리거나(진짜 천장/벽), 양쪽 다 뚫림(판단 불가)");
                 return false;
             }
 
@@ -204,7 +199,6 @@ namespace TarodevController
 
             if (ColliderCast(Vector2.right * pushDir, frameDistance, mask))
             {
-                if (_debugCornerCorrection) Debug.Log($"[CornerCorrection] 취소: 미는 방향(pushDir={pushDir})에 벽이 있음");
                 return false; // 미는 방향에 벽이 있으면 취소
             }
 
@@ -212,7 +206,6 @@ namespace TarodevController
             // 코너를 완전히 벗어날 때까지(ceilingHit이 false가 될 때까지) 매 프레임 재판단되어 계속 적용됩니다.
             _cornerPushDir = pushDir;
 
-            if (_debugCornerCorrection) Debug.Log($"[CornerCorrection] 적용됨: pushDir={pushDir}");
             return true;
         }
 
@@ -227,7 +220,6 @@ namespace TarodevController
 
             if (ceilingHit)
             {
-                if (_debugCornerCorrection) Debug.Log("[CornerCorrection] 천장 충돌 감지됨 (ceilingHit=true), 코너 보정 시도");
                 if (TryCornerCorrection(mask))
                     _frameVelocity.y = Mathf.Max(_frameVelocity.y, _stats.CornerCorrectionUpwardBoost); // 정점 부근이라도 위로 살짝 밀어줌
                 else
