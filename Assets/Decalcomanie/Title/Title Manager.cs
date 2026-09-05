@@ -22,6 +22,7 @@ public class TitleManager : MonoBehaviour
         }
 
         titleUI.creditButton.OnSingleClick += ShowCredit;
+        titleUI.skinShopButton.OnSingleClick += MoveToSkinShop;
 
         StartCoroutine(InitLanguageNextFrame());
     }
@@ -70,5 +71,10 @@ public class TitleManager : MonoBehaviour
     public void ShowCredit()
     {
         GameManager.Instance.LoadCreditScene();
+    }
+
+    public void MoveToSkinShop()
+    {
+        GameManager.Instance.LoadSkinScene();
     }
 }

@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
     }
 
     public SceneType currentScene;
-    public int CurrentStageIndex { get; private set; } = 2;
+    public int CurrentStageIndex { get; private set; } = 19;
     public GameLanguage CurrentLanguage { get; private set; } = GameLanguage.English;
     public bool IsFullscreen { get; private set; } = true;
 
@@ -151,6 +151,13 @@ public class GameManager : MonoBehaviour
         LoadStage(0);
     }
 
+    public void LoadSkinScene()
+    {
+        if (currentScene == SceneType.Skin) return;
+        currentScene = SceneType.Skin;
+        SceneManager.MoveSceneTo(SceneNames.Skin);
+    }
+
     public void LoadStage(int stageIndex)
     {
         if (stageIndex >= TotalStages)
@@ -185,9 +192,10 @@ public static class SceneNames
     public const string StageSelection = "Stage Selection";
     public const string Game = "Game Scene";
     public const string Credit = "Credit Scene";
+    public const string Skin = "Skin Scene";
 }
 
 public enum SceneType
 {
-    Title, StageSelection, Game, Tutorial, Credit
+    Title, StageSelection, Game, Tutorial, Credit, Skin
 }

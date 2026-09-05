@@ -82,6 +82,9 @@ public class StageUI : MonoBehaviour
     public Image achivementImage;
     public List<BaseUI> stars;
     public BaseUI Stamp;
+
+    // 별 3개 달성으로 도장이 찍히는 순간 호출.
+    public event System.Action OnStampStamped;
     
     public ButtonUI nextStageButton;
     public TextMeshProUGUI minMovesText;
@@ -462,6 +465,7 @@ public class StageUI : MonoBehaviour
         {
             Stamp.ShowUI(.1f).Forget();
             Stamp.transform.DOPunchScale(Vector3.one * 0.3f, 0.3f, 6, 0.5f);
+            OnStampStamped?.Invoke();
             await UniTask.Delay(1500);
         }
     }

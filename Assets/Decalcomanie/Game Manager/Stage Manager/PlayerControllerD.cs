@@ -16,6 +16,9 @@ public class PlayerControllerD : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     public Sprite[] playerSprites; // 0: normal, 1: hmm, 2: x, 3: happy
 
+    public DinoSkinSO dinoSkinSO;
+    public SpriteRenderer dinoSkinRenderer;
+
     [SerializeField] private GameObject findKey;
     [SerializeField] private PlayerAnimator playerAnimator;
     [SerializeField] private float fallDuration = 0.4f;
@@ -67,6 +70,8 @@ public class PlayerControllerD : MonoBehaviour
     public void Activate()
     {
         gameObject.SetActive(true);
+
+        SetDinoSkin(GameProgressData.Load().skinID);
 
         tarodevController.enabled = true;
         tarodevController.InputEnabled = false;
@@ -142,6 +147,21 @@ public class PlayerControllerD : MonoBehaviour
         {
             findKey.SetActive(false);
             spriteRenderer.sprite = playerSprites[0];
+        }
+    }
+
+    public void SetDinoSkin(int skinID)
+    {
+        if (skinID == -1)
+        {
+            dinoSkinRenderer.enabled = false;
+            return;
+        }
+
+        if (dinoSkinSO != null && dinoSkinSO.dinoSkins != null && skinID >= 0 && skinID < dinoSkinSO.dinoSkins.Length)
+        {
+            dinoSkinRenderer.sprite = dinoSkinSO.dinoSkins[skinID];
+            dinoSkinRenderer.enabled = true;
         }
     }
 }

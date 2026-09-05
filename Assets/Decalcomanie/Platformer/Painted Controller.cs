@@ -9,6 +9,7 @@ public class PaintedController : MonoBehaviour
     [SerializeField] private Sprite fixedTileSprite;
     [SerializeField] private Sprite wallTileSprite;
     [SerializeField] private Sprite holeSprite;
+    [SerializeField] private float wallColliderSizeX = 3f;
 
     public int TileID { get; private set; }
     public Tile Tile { get; private set; }
@@ -16,12 +17,16 @@ public class PaintedController : MonoBehaviour
     public event Action<int> OnTilePainted;
 
     private SpriteRenderer sr;
+    private BoxCollider2D boxCollider;
+    private Vector2 defaultColliderSize;
     private bool flipX;
     private bool flipY;
 
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
+        boxCollider = GetComponent<BoxCollider2D>();
+        if (boxCollider != null) defaultColliderSize = boxCollider.size;
     }
 
     public void Init(Tile tile, int tileID, Board board)
@@ -55,6 +60,8 @@ public class PaintedController : MonoBehaviour
 
     public void Refresh()
     {
+        ApplyColliderSize();
+
         switch (Tile.type)
         {
             case TileType.Empty:
@@ -83,5 +90,14 @@ public class PaintedController : MonoBehaviour
                 sr.enabled = false;
                 return;
         }
+    }
+
+    private void ApplyColliderSize()
+    {
+        if (boxCollider == null) return;
+
+        boxCollider.size = Tile.type == TileType.Wall
+            ? new Vector2(wallColliderSizeX, defaultColliderSize.y)
+            : defaultColliderSize;
     }
 }

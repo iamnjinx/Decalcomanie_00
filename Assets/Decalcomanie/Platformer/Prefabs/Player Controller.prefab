@@ -29796,6 +29796,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5e10849d1eaa00a4f865f3a22ebb34d2, type: 3}
   - {fileID: 21300000, guid: 1134d77c137af5e429fbf75f36b647f7, type: 3}
   - {fileID: 21300000, guid: a7a5e0fa05654444a9ada6a00bba7844, type: 3}
+  dinoSkinSO: {fileID: 11400000, guid: be5e85f9bdb6c4a4793fe48d4cc6db78, type: 2}
+  dinoSkinRenderer: {fileID: 3514328899725436696}
   findKey: {fileID: 8767453905686082656}
   playerAnimator: {fileID: 252469835701095768}
   fallDuration: 1
@@ -29860,7 +29862,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 2, y: 2}
+  m_Size: {x: 1.25, y: 1.75}
   m_Direction: 0
 --- !u!61 &4468275870563005285
 BoxCollider2D:

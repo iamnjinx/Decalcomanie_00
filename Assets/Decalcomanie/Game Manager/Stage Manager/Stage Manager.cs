@@ -71,6 +71,9 @@ public class StageManager : MonoBehaviour
 
         paintManager.OnPaintCountChanged += stageUI.UpdateUsedTileText;
         platformerManager.OnStarObtained += () => stageUI.SetObjectiveStarObtained(true);
+
+        // 도장이 찍히는 순간에 맞춰 보유 도장 수를 갱신.
+        stageUI.OnStampStamped += () => { if (hintManager != null) hintManager.RefreshStampText(); };
     }
 
     void Start()
@@ -345,8 +348,6 @@ public class StageManager : MonoBehaviour
             achievements.ObtainedStar,
             achievements.MinMoves);
         SaveManager.Instance.Save(GameProgressData.SaveKey, progress);
-
-        if (hintManager != null) hintManager.RefreshStampText();
     }
 
     private static BoardData ConvertEditorBoardToBoardData(TileType[] board)

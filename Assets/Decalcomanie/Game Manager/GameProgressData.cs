@@ -14,6 +14,8 @@ public class GameProgressData
     }
     public int highestUnlockedStage = 0;
     public int remainingStampCount = 0;
+    public int blueStarCount = 0;
+    public int skinID = -1;
     public List<StageAchievementData> stageAchievements = new List<StageAchievementData>();
     public List<bool> secondHintUnlockedStages = new List<bool>();
     public List<bool> chapterStampGroupAwarded = new List<bool>();
@@ -47,6 +49,10 @@ public class GameProgressData
 
         var data = stageAchievements[stageIndex];
         data.isCleared = true;
+
+        bool isFirstStarObtained = !data.obtainedStar && obtainedStar;
+        if (isFirstStarObtained) blueStarCount++;
+
         data.obtainedStar = data.obtainedStar || obtainedStar;
         data.achievedMinMoves = data.achievedMinMoves || achievedMinMoves;
 

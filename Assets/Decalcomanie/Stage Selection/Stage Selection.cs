@@ -18,6 +18,7 @@ public class StageSelection : MonoBehaviour
         stageSelectionUI.Navigation.LeftButton.OnSingleClick += () => MoveToPreviousChapter();
         stageSelectionUI.Navigation.RightButton.OnSingleClick += () => MoveToNextChapter();
         stageSelectionUI.Navigation.BackButton.OnSingleClick += () => GameManager.Instance.LoadTitleScene();
+
         stageSelectionUI.OnChapterChanged += () => RefreshStagePanels();
         stageSelectionUI.OnBookmarkSelected += chapterIndex => MoveToChapter(chapterIndex);
     }

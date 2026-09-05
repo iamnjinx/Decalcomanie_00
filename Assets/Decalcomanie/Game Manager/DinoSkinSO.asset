@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e15179fa7a163744eae7c06552338db9, type: 3}
+  m_Name: DinoSkinSO
+  m_EditorClassIdentifier: 
+  dinoSkins:
+  - {fileID: 21300000, guid: 79f1748851adff8489f7874074d287cb, type: 3}
+  - {fileID: 21300000, guid: 3ef03589a167efa42802175994cd76e8, type: 3}
+  - {fileID: 21300000, guid: b86e9c99a6d6f1d4da03ba11752222ff, type: 3}
+  - {fileID: 21300000, guid: 3c46cc6ed156aa842a5939473b7d8718, type: 3}
+  - {fileID: 21300000, guid: 1c3de3de0644abf46816976d6d354928, type: 3}
+  - {fileID: 21300000, guid: 55326292803456943951e98be8b33702, type: 3}
+  - {fileID: 21300000, guid: db1595c8c68f406428a262bb69f3e4ca, type: 3}
+  - {fileID: 21300000, guid: ea576e8152026e945807f3eb46db2c08, type: 3}
+  - {fileID: 21300000, guid: 09be2d844713b334bb24cf8932cd59f3, type: 3}
+  - {fileID: 21300000, guid: 76e694499dee19d42a9bb3055100234c, type: 3}
+  unlockThresholds: 02000000020000000200000002000000020000000200000002000000020000000200000002000000

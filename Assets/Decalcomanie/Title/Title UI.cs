@@ -18,6 +18,7 @@ public class TitleUI : MonoBehaviour
     public TitleSelectionButtons[] selectionButtons = new TitleSelectionButtons[3];
     public ButtonUI creditButton;
     public ButtonUI creditCloseButton;
+    public ButtonUI skinShopButton;
 
     public BaseUI creditUI;
 
