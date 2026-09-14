@@ -32,14 +32,14 @@ public class CreditManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(0))
+        if (GameInput.BackPressed || GameInput.ConfirmPressed)
         {
             GameManager.Instance.LoadTitleScene();
         }
 
         if (isMoving)
         {
-            float speed = Input.GetKey(KeyCode.Space) ? fastMoveSpeed : moveSpeed;
+            float speed = GameInput.ProceedHeld ? fastMoveSpeed : moveSpeed;
             Vector2 pos = creditRect.anchoredPosition;
             pos.y = Mathf.MoveTowards(pos.y, targetYPos, speed * Time.deltaTime);
             creditRect.anchoredPosition = pos;

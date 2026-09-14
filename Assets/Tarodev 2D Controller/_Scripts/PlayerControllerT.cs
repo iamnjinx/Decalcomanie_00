@@ -90,7 +90,9 @@ namespace TarodevController
 
         private void GatherInput()
         {
-            if (!InputEnabled)
+            // InputEnabled는 PlayerControllerD의 활성/비활성 흐름이 관리하고,
+            // GameInput.IsLocked는 씬 전환 같은 전역 잠금입니다. 둘 다 통과해야 조작이 먹습니다.
+            if (!InputEnabled || GameInput.IsLocked)
             {
                 _frameInput = new FrameInput();
                 return;

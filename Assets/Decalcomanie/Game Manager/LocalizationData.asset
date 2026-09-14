@@ -52,6 +52,17 @@ MonoBehaviour:
 
       Are
       you sure you want to reset?'
+    skinNames:
+    - 'AWESOME DINO '
+    - 'GAMER DINO  '
+    - 'SPACE DINO  '
+    - 'HIP DINO  '
+    - 'KNIGHT DINO  '
+    - 'SNOW DINO  '
+    - 'CHEF DINO  '
+    - 'NINJA DINO  '
+    - 'PIRATE DINO  '
+    - 'KING DINO '
   - language: 1
     fontAsset: {fileID: 11400000, guid: 01713e72c49e7464a802fc206f448af6, type: 2}
     fullScreenText: "\uC804\uCCB4\uD654\uBA74"
@@ -87,6 +98,17 @@ MonoBehaviour:
       \uAE30\uB85D, \uBCC4, \uB3C4\uC804\uACFC\uC81C\uAC00 \uC804\uBD80 \uC0AD\uC81C\uB418\uBA70,\r\n<color=red>\uC0AD\uC81C\uB41C
       \uB370\uC774\uD130\uB294 \uB418\uB3CC\uB9B4 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.</color>\n\uC815\uB9D0
       \uCD08\uAE30\uD654\uD560\uAE4C\uC694?"
+    skinNames:
+    - "\uBA4B\uC7C1\uC774 \uB514\uB178"
+    - "\uD504\uB85C\uAC8C\uC774\uBA38 \uB514\uB178"
+    - "\uC6B0\uC8FC\uBE44\uD589\uC0AC \uB514\uB178"
+    - "\uD799\uC2A4\uD130 \uB514\uB178"
+    - "\uAE30\uC0AC \uB514\uB178"
+    - "\uB208\uAF43 \uB514\uB178"
+    - "\uC694\uB9AC\uC0AC \uB514\uB178"
+    - "\uB2CC\uC790 \uB514\uB178"
+    - "\uD574\uC801 \uB514\uB178"
+    - "\uB300\uC655 \uB514\uB178"
   - language: 2
     fontAsset: {fileID: 11400000, guid: 548e0d7c81302d846901c3ce9909d926, type: 2}
     fullScreenText: "\u30D5\u30EB\u30B9\u30AF\u30EA\u30FC\u30F3"
@@ -117,3 +139,14 @@ MonoBehaviour:
     hint1Text: "{0}\u500B \u4EE5\u4E0B"
     demoSprite: {fileID: 21300000, guid: fbdebcbfba96a9344a5d6319a0f57a30, type: 3}
     resetWarningText: "\u3059\u3079\u3066\u306E\u9032\u884C\u30C7\u30FC\u30BF\u3092\u521D\u671F\u5316\u3057\u307E\u3059\u3002\r\n\u30AF\u30EA\u30A2\u8A18\u9332\u30FB\u661F\u30FB\u30C1\u30E3\u30EC\u30F3\u30B8\u306E\u9054\u6210\u72B6\u6CC1\u304C\u3059\u3079\u3066\u524A\u9664\u3055\u308C\u3001\r\n<color=red>\u524A\u9664\u3055\u308C\u305F\u30C7\u30FC\u30BF\u306F\u5143\u306B\u623B\u305B\u307E\u305B\u3093\u3002</color>\r\n\u672C\u5F53\u306B\u521D\u671F\u5316\u3057\u307E\u3059\u304B\uFF1F"
+    skinNames:
+    - "\u30A2\u30B9\u30C8\u30ED\u30C7\u30A3\u30CE"
+    - "\u30CA\u30A4\u30C8\u30C7\u30A3\u30CE"
+    - "\u30B9\u30CE\u30FC\u30C7\u30A3\u30CE"
+    - "\u30CB\u30F3\u30B8\u30E3\u30C7\u30A3\u30CE"
+    - "\u9A0E\u58EB\u30C7\u30A3\u30CE"
+    - "\u96EA\u82B1\u30C7\u30A3\u30CE"
+    - "\u30B7\u30A7\u30D5\u30C7\u30A3\u30CE"
+    - "\u5FCD\u8005\u30C7\u30A3\u30CE"
+    - "\u6D77\u8CCA\u30C7\u30A3\u30CE"
+    - "\u5927\u738B\u30C7\u30A3\u30CE"

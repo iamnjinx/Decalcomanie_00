@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using Njinx.UI;
 using UnityEngine;
@@ -9,7 +9,6 @@ using UnityEngine.UI;
 
 public class StageUI : MonoBehaviour
 {
-
     [SerializeField] BaseUI mainUI;
     [SerializeField] BaseUI paintUI;
     [SerializeField] BaseUI[] curtainUI;
@@ -50,7 +49,6 @@ public class StageUI : MonoBehaviour
     public float objectiveStrikeFillDuration = 0.3f;
 
     [SerializeField] private RectTransform objectiveRectTransform;
-    private RectTransform objectiveObjRectTransform;
     private float objectiveShowPosX;
     private bool isObjectiveShown = true;
 
@@ -84,8 +82,8 @@ public class StageUI : MonoBehaviour
     public BaseUI Stamp;
 
     // 별 3개 달성으로 도장이 찍히는 순간 호출.
-    public event System.Action OnStampStamped;
-    
+    public event Action OnStampStamped;
+
     public ButtonUI nextStageButton;
     public TextMeshProUGUI minMovesText;
 
@@ -101,100 +99,99 @@ public class StageUI : MonoBehaviour
 
     public GameObject mobileControlButtonContainer;
 
+    // BindHover로 걸어 둔 구독을 OnDestroy에서 한꺼번에 되돌리기 위한 목록.
+    private readonly List<Action> unbindActions = new List<Action>();
+
+    #region Lifecycle
+
     void Awake()
     {
         usedTileDefaultColor = usedTileText.color;
 
         objectiveShowPosX = objectiveRectTransform.anchoredPosition.x;
-        objectiveObjRectTransform = objectiveObj.GetComponent<RectTransform>();
 
         if (float.IsNaN(objectiveHoverPosX))
-        {
             objectiveHoverPosX = Mathf.Lerp(objectiveHidePosX, objectiveShowPosX, 0.1f);
-        }
     }
 
     void Start()
     {
-        menuButton.OnSingleClick += () => SettingManager.Instance.OpenSetting();
+        menuButton.OnSingleClick += HandleMenuClicked;
 
+        BindHover(objectiveObj, HandleObjectiveHoverEnter, HandleObjectiveHoverExit);
         objectiveObj.OnSingleClick += ToggleObjectivePosition;
-        objectiveObj.OnHoverEnter += HandleObjectiveHoverEnter;
-        objectiveObj.OnHoverExit += HandleObjectiveHoverExit;
+        unbindActions.Add(() => objectiveObj.OnSingleClick -= ToggleObjectivePosition);
 
-        undoButton.OnHoverEnter += HandleUndoHoverEnter;
-        undoButton.OnHoverExit += HandleUndoHoverExit;
+        BindInstruction(undoButton, undoInstruction);
+        BindInstruction(flipHorizontalButton, flipHorizontalInstruction);
+        BindInstruction(flipVerticalButton, flipVerticalInstruction);
 
-        flipHorizontalButton.OnHoverEnter += HandleFlipHorizontalHoverEnter;
-        flipHorizontalButton.OnHoverExit += HandleFlipHorizontalHoverExit;
-        flipVerticalButton.OnHoverEnter += HandleFlipVerticalHoverEnter;
-        flipVerticalButton.OnHoverExit += HandleFlipVerticalHoverExit;
-
-        LocalizedData undoData = GameManager.Instance.CurrentLocalizedData;
-        undoInstructionText.text = undoData.undoText;
-        undoInstructionText.font = undoData.fontAsset;
-        flipHorizontalInstructionText.text = undoData.flipHorizontalText;
-        flipHorizontalInstructionText.font = undoData.fontAsset;
-        flipVerticalInstructionText.text = undoData.flipVerticalText;
-        flipVerticalInstructionText.font = undoData.fontAsset;
+        ApplyInstructionTexts(GameManager.Instance.CurrentLocalizedData);
     }
 
     private void OnDestroy()
     {
-        if (undoButton != null)
+        foreach (Action unbind in unbindActions) unbind();
+        unbindActions.Clear();
+
+        if (menuButton != null) menuButton.OnSingleClick -= HandleMenuClicked;
+    }
+
+    private void HandleMenuClicked() => SettingManager.Instance.OpenSetting();
+
+    // 버튼에 마우스를 올리면 설명 UI를 보여주고, 벗어나면 숨깁니다.
+    private void BindInstruction(ButtonUI button, BaseUI instruction)
+    {
+        if (button == null || instruction == null) return;
+        BindHover(button, instruction.ShowUI, instruction.HideUI);
+    }
+
+    private void BindHover(ButtonUI button, Action onEnter, Action onExit)
+    {
+        if (button == null) return;
+
+        if (onEnter != null)
         {
-            undoButton.OnHoverEnter -= HandleUndoHoverEnter;
-            undoButton.OnHoverExit -= HandleUndoHoverExit;
+            button.OnHoverEnter += onEnter;
+            unbindActions.Add(() => button.OnHoverEnter -= onEnter);
         }
 
-        if (flipHorizontalButton != null)
+        if (onExit != null)
         {
-            flipHorizontalButton.OnHoverEnter -= HandleFlipHorizontalHoverEnter;
-            flipHorizontalButton.OnHoverExit -= HandleFlipHorizontalHoverExit;
+            button.OnHoverExit += onExit;
+            unbindActions.Add(() => button.OnHoverExit -= onExit);
         }
-
-        if (flipVerticalButton != null)
-        {
-            flipVerticalButton.OnHoverEnter -= HandleFlipVerticalHoverEnter;
-            flipVerticalButton.OnHoverExit -= HandleFlipVerticalHoverExit;
-        }
-
-        if (objectiveObj == null) return;
-
-        objectiveObj.OnSingleClick -= ToggleObjectivePosition;
-        objectiveObj.OnHoverEnter -= HandleObjectiveHoverEnter;
-        objectiveObj.OnHoverExit -= HandleObjectiveHoverExit;
     }
 
-    private void HandleUndoHoverEnter()
+    #endregion
+
+    #region Localized text
+
+    private void ApplyInstructionTexts(LocalizedData data)
     {
-        undoInstruction.ShowUI();
+        ApplyText(undoInstructionText, data.undoText, data.fontAsset);
+        ApplyText(flipHorizontalInstructionText, data.flipHorizontalText, data.fontAsset);
+        ApplyText(flipVerticalInstructionText, data.flipVerticalText, data.fontAsset);
     }
 
-    private void HandleUndoHoverExit()
+    // 목표 3종(클리어 / 별 획득 / 최소 이동)은 목표 패널과 클리어 화면에서 같은 문구를 씁니다.
+    private static void ApplyAchievementTexts(TextMeshProUGUI[] texts, LocalizedData data, int minMoves)
     {
-        undoInstruction.HideUI();
+        ApplyText(texts[0], data.stageClearText, data.fontAsset);
+        ApplyText(texts[1], data.starEarnedText, data.fontAsset);
+        ApplyText(texts[2], string.Format(data.starMovesFormat, minMoves), data.fontAsset);
     }
 
-    private void HandleFlipHorizontalHoverEnter()
+    private static void ApplyText(TextMeshProUGUI text, string value, TMP_FontAsset font)
     {
-        flipHorizontalInstruction.ShowUI();
+        if (text == null) return;
+        text.text = value;
+        text.font = font;
     }
 
-    private void HandleFlipHorizontalHoverExit()
-    {
-        flipHorizontalInstruction.HideUI();
-    }
+    #endregion
 
-    private void HandleFlipVerticalHoverEnter()
-    {
-        flipVerticalInstruction.ShowUI();
-    }
-
-    private void HandleFlipVerticalHoverExit()
-    {
-        flipVerticalInstruction.HideUI();
-    }
+    #region Objective panel
 
     private void HandleObjectiveHoverEnter()
     {
@@ -216,10 +213,8 @@ public class StageUI : MonoBehaviour
     private void ToggleObjectivePosition(float duration)
     {
         isObjectiveShown = !isObjectiveShown;
-        float targetX = isObjectiveShown ? objectiveShowPosX : objectiveHidePosX;
-        
-        MoveObjectiveTo(targetX, duration);
-        //objectiveObjRectTransform.DOLocalRotate(new Vector3(0f, 0f, 180f), objectiveMoveDuration, RotateMode.LocalAxisAdd).SetEase(Ease.OutQuad);
+        MoveObjectiveTo(isObjectiveShown ? objectiveShowPosX : objectiveHidePosX, duration);
+        //objectiveObj.transform.DOLocalRotate(new Vector3(0f, 0f, 180f), objectiveMoveDuration, RotateMode.LocalAxisAdd).SetEase(Ease.OutQuad);
     }
 
     private void MoveObjectiveTo(float targetX, float duration)
@@ -242,6 +237,58 @@ public class StageUI : MonoBehaviour
         if (!isObjectiveShown) return;
         ToggleObjectivePosition(-1f);
     }
+
+    public void SetObjectiveTexts(GameLanguage language, bool isEarlyStage, int minMoves)
+    {
+        objectiveObjParent.SetActive(!isEarlyStage);
+
+        ApplyAchievementTexts(objectiveTexts, GameManager.Instance.LocalizationData.GetData(language), minMoves);
+
+        currentMinMoves = minMoves;
+        objectiveStarAchieved = false;
+        lastUsedTileCount = 0;
+
+        for (int i = 0; i < objectiveStrikeThroughImages.Length; i++)
+            ApplyObjectiveStrike(i, false, true);
+    }
+
+    // 스테이지 클리어(문 통과) 시 0번 목표를 채워줍니다.
+    public void SetObjectiveCleared(bool cleared)
+    {
+        ApplyObjectiveStrike(0, cleared);
+    }
+
+    // 별 획득 시 1번 목표를 채워주고, 2번 목표(별 + 최소 이동) 달성 여부를 다시 계산합니다.
+    public void SetObjectiveStarObtained(bool obtained)
+    {
+        objectiveStarAchieved = obtained;
+        ApplyObjectiveStrike(1, obtained);
+        UpdateMinMovesObjectiveStrike();
+    }
+
+    private void UpdateMinMovesObjectiveStrike()
+    {
+        bool achieved = objectiveStarAchieved && currentMinMoves > 0 && lastUsedTileCount <= currentMinMoves;
+        ApplyObjectiveStrike(2, achieved);
+    }
+
+    private void ApplyObjectiveStrike(int index, bool achieved, bool instant = false)
+    {
+        if (index < 0 || index >= objectiveStrikeThroughImages.Length) return;
+
+        Image image = objectiveStrikeThroughImages[index];
+        if (image == null) return;
+
+        image.DOKill();
+        float target = achieved ? 1f : 0f;
+
+        if (instant) image.fillAmount = target;
+        else image.DOFillAmount(target, objectiveStrikeFillDuration);
+    }
+
+    #endregion
+
+    #region Stage header / counters
 
     public async void ShowMainUI(bool isPlatformerOnly = false)
     {
@@ -273,82 +320,28 @@ public class StageUI : MonoBehaviour
         //stageMainBackgroundImage.sprite = stageBackgroundSprites[stageID / 10];
     }
 
-    public void SetObjectiveTexts(GameLanguage language, bool isEarlyStage, int minMoves)
-    {
-        objectiveObjParent.SetActive(!isEarlyStage);
-
-        LocalizedData data = GameManager.Instance.LocalizationData.GetData(language);
-        objectiveTexts[0].text = data.stageClearText;
-        objectiveTexts[1].text = data.starEarnedText;
-        objectiveTexts[2].text = string.Format(data.starMovesFormat, minMoves);
-        foreach (var text in objectiveTexts) text.font = data.fontAsset;
-
-        currentMinMoves = minMoves;
-
-        objectiveStarAchieved = false;
-        lastUsedTileCount = 0;
-        ApplyObjectiveStrike(0, false, true);
-        ApplyObjectiveStrike(1, false, true);
-        ApplyObjectiveStrike(2, false, true);
-    }
-
-    // 스테이지 클리어(문 통과) 시 0번 목표를 채워줍니다.
-    public void SetObjectiveCleared(bool cleared)
-    {
-        ApplyObjectiveStrike(0, cleared);
-    }
-
-    // 별 획득 시 1번 목표를 채워주고, 2번 목표(별 + 최소 이동) 달성 여부를 다시 계산합니다.
-    public void SetObjectiveStarObtained(bool obtained)
-    {
-        objectiveStarAchieved = obtained;
-        ApplyObjectiveStrike(1, obtained);
-        UpdateMinMovesObjectiveStrike();
-    }
-
-    private void UpdateMinMovesObjectiveStrike()
-    {
-        bool achieved = objectiveStarAchieved && currentMinMoves > 0 && lastUsedTileCount <= currentMinMoves;
-        ApplyObjectiveStrike(2, achieved);
-    }
-
-    private void ApplyObjectiveStrike(int index, bool achieved, bool instant = false)
-    {
-        Image image = objectiveStrikeThroughImages[index];
-        if (image == null) return;
-
-        image.DOKill();
-        float target = achieved ? 1f : 0f;
-        if (instant)
-        {
-            image.fillAmount = target;
-        }
-        else
-        {
-            image.DOFillAmount(target, objectiveStrikeFillDuration);
-        }
-    }
-
     public void SetAfterButtonTexts(GameLanguage language)
     {
         LocalizedData data = GameManager.Instance.LocalizationData.GetData(language);
-        stageClearedAfterButtonTexts[0].text = data.nextStageText;
-        stageClearedAfterButtonTexts[1].text = data.stageSelectionText;
-        stageClearedAfterButtonTexts[2].text = data.restartStageText;
-        foreach (var text in stageClearedAfterButtonTexts) text.font = data.fontAsset;
+        ApplyText(stageClearedAfterButtonTexts[0], data.nextStageText, data.fontAsset);
+        ApplyText(stageClearedAfterButtonTexts[1], data.stageSelectionText, data.fontAsset);
+        ApplyText(stageClearedAfterButtonTexts[2], data.restartStageText, data.fontAsset);
     }
 
     public void UpdateUsedTileText(int usedTileCount)
     {
         lastUsedTileCount = usedTileCount;
 
-        usedTileText.text = usedTileCount.ToString() + "/" + currentMinMoves.ToString();
-        //Debug.Log(currentMinMoves);
-        if(currentMinMoves > 0)
+        usedTileText.text = $"{usedTileCount}/{currentMinMoves}";
+        if (currentMinMoves > 0)
             usedTileText.color = usedTileCount > currentMinMoves ? usedTileOverMinColor : usedTileDefaultColor;
 
         UpdateMinMovesObjectiveStrike();
     }
+
+    #endregion
+
+    #region Button visibility
 
     public void SetPlatformerOnlyMode()
     {
@@ -358,20 +351,13 @@ public class StageUI : MonoBehaviour
         usedTileObj.SetActive(false);
     }
 
+    // 초반 스테이지에서는 아직 배우지 않은 버튼을 숨깁니다. 규칙은 StageRules가 갖고 있습니다.
     public void SetEarlyStageUIVisibility(int stageID)
     {
-        // STAGE 1-1 ~ 1-3(stageID 0~2)까지 Switch 버튼 숨김
-        switchButton.gameObject.SetActive(stageID > 2);
-
-        // STAGE 1-1 ~ 1-4(stageID 0~3)까지 Reset, 접기 버튼 숨김
-        resetButton.gameObject.SetActive(stageID > 3);
-
-        bool showFoldButtons = stageID > 3;
-        flipHorizontalButton.gameObject.SetActive(showFoldButtons);
-        flipVerticalButton.gameObject.SetActive(showFoldButtons);
-
-        // STAGE 1-1 ~ 1-4(stageID 0~3)까지 현재 색칠 수 UI 숨김
-        usedTileObj.SetActive(stageID > 3);
+        switchButton.gameObject.SetActive(StageRules.IsSwitchUnlocked(stageID));
+        resetButton.gameObject.SetActive(StageRules.IsResetUnlocked(stageID));
+        SetFoldButtonsActive(StageRules.IsFoldUnlocked(stageID));
+        usedTileObj.SetActive(StageRules.IsUsedTileCountShown(stageID));
     }
 
     // 튜토리얼(타일 클릭/접기)로 조기 활성화될 때 호출됩니다.
@@ -401,13 +387,13 @@ public class StageUI : MonoBehaviour
         flipVerticalButton.OnUnhighlighted();
     }
 
-    public async UniTask ShowStageCleared(bool isCleared, bool obtainedStar, bool minMoves, int minMoveNum, bool isEarlyStage)
-    {
-        stageClearedStageSelectionButton.gameObject.SetActive(!isEarlyStage);
-        stageClearedStageSelectionKeyUI.gameObject.SetActive(!isEarlyStage);
-        stageClearedRestartStageButton.gameObject.SetActive(!isEarlyStage);
-        stageClearedRestartStageKeyUI.gameObject.SetActive(!isEarlyStage);
+    #endregion
 
+    #region Stage cleared
+
+    public async UniTask ShowStageCleared(Achievements achievements, int minMoveNum, bool isEarlyStage)
+    {
+        SetAfterButtonsActive(!isEarlyStage);
 
         await stageClearedUI.ShowUI(1f);
         AudioManager.Instance.PlaySFX("Confetti");
@@ -417,16 +403,8 @@ public class StageUI : MonoBehaviour
 
         if (!isEarlyStage)
         {
-            LocalizedData data = GameManager.Instance.CurrentLocalizedData;
-            stageClearedTexts[0].text = data.stageClearText;
-            stageClearedTexts[1].text = data.starEarnedText;
-            stageClearedTexts[2].text = string.Format(data.starMovesFormat, minMoveNum);
-            foreach (var text in stageClearedTexts) text.font = data.fontAsset;
-            achivementImage.sprite = data.achievementSprite;
-            stageClearTextUI.HideUI(1f).Forget();
-            await stageClearedAchievementUI.ShowUI(1f);
-
-            await ShowAchivementStars(isCleared, obtainedStar, minMoves);   
+            await ShowAchievementPanel(minMoveNum);
+            await ShowAchievementStars(achievements);
         }
 
         // 화면 터치 시, 다음 스테이지로 넘어가게.
@@ -436,37 +414,47 @@ public class StageUI : MonoBehaviour
         stageClearedNextStageKeyUI.ShowUI();
     }
 
-    public async UniTask ShowAchivementStars(bool isCleared, bool obtainedStar, bool minMoves)
+    // 초반 스테이지에서는 다음 스테이지 버튼만 남기고 나머지 선택지를 감춥니다.
+    private void SetAfterButtonsActive(bool active)
     {
-        // Show stars based on achievements
+        stageClearedStageSelectionButton.gameObject.SetActive(active);
+        stageClearedStageSelectionKeyUI.gameObject.SetActive(active);
+        stageClearedRestartStageButton.gameObject.SetActive(active);
+        stageClearedRestartStageKeyUI.gameObject.SetActive(active);
+    }
 
-        if (isCleared)
+    private async UniTask ShowAchievementPanel(int minMoveNum)
+    {
+        LocalizedData data = GameManager.Instance.CurrentLocalizedData;
+        ApplyAchievementTexts(stageClearedTexts, data, minMoveNum);
+        achivementImage.sprite = data.achievementSprite;
+
+        stageClearTextUI.HideUI(1f).Forget();
+        await stageClearedAchievementUI.ShowUI(1f);
+    }
+
+    private async UniTask ShowAchievementStars(Achievements achievements)
+    {
+        if (achievements.IsCleared)
         {
             if (AudioManager.Instance != null)
                 AudioManager.Instance.PlaySFX("stage_clear_star");
             stars[0].ShowUI(.1f).Forget();
         }
-        if (obtainedStar)
-        {
-            stars[1].ShowUI(.1f).Forget();
-        }
-        if (minMoves)
-        {
-            stars[2].ShowUI(.1f).Forget();
-        }
+        if (achievements.ObtainedStar) stars[1].ShowUI(.1f).Forget();
+        if (achievements.MinMoves) stars[2].ShowUI(.1f).Forget();
 
-        if(isCleared || obtainedStar || minMoves)
-        {
-            await UniTask.Delay(1500); // Simulate delay for showing stars
-        }
+        if (achievements.IsCleared || achievements.ObtainedStar || achievements.MinMoves)
+            await UniTask.Delay(1500);
+
+        if (!achievements.IsAllAchieved) return;
 
         // 스탬프 찍고 1.5초 대기.
-        if (isCleared && obtainedStar && minMoves)
-        {
-            Stamp.ShowUI(.1f).Forget();
-            Stamp.transform.DOPunchScale(Vector3.one * 0.3f, 0.3f, 6, 0.5f);
-            OnStampStamped?.Invoke();
-            await UniTask.Delay(1500);
-        }
+        Stamp.ShowUI(.1f).Forget();
+        Stamp.transform.DOPunchScale(Vector3.one * 0.3f, 0.3f, 6, 0.5f);
+        OnStampStamped?.Invoke();
+        await UniTask.Delay(1500);
     }
+
+    #endregion
 }

@@ -42,15 +42,15 @@ public class StageSelection : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
+        if (GameInput.NavigateLeftPressed)
         {
             MoveToPreviousChapter();
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+        else if (GameInput.NavigateRightPressed)
         {
             MoveToNextChapter();
         }
-        else if (Input.GetKeyDown(KeyCode.Escape))
+        else if (GameInput.BackPressed)
         {
             GameManager.Instance.LoadTitleScene();
         }

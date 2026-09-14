@@ -35,7 +35,7 @@ public class TitleManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (GameInput.PausePressed)
         {
             if (SettingManager.Instance.IsSettingOpen)
                 SettingManager.Instance.CloseSetting();

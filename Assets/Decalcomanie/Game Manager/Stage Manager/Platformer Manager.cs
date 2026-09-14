@@ -16,18 +16,19 @@ public class PlatformerManager : MonoBehaviour
     [SerializeField] private DoorController doorPrefab;
     [SerializeField] private PlayerControllerD playerPrefab;
 
-
     private Obtainables star;
     private Obtainables key;
     private DoorController door;
     private PlayerControllerD player;
-    private List<HoleController> holes = new List<HoleController>();
+    private readonly List<HoleController> holes = new List<HoleController>();
 
-    public bool obtainedStar = false;
+    public bool ObtainedStar { get; private set; }
 
-    public Action OnCleared;
-    public Action OnFellIntoHole;
-    public Action OnStarObtained;
+    public event Action OnCleared;
+    public event Action OnFellIntoHole;
+    public event Action OnStarObtained;
+
+    #region Board objects
 
     // 스테이지 로드 시 1회만 호출. Door/Key/Star/Player는 Platformer 모드에서만 보여야 하므로
     // 모드 전환마다 새로 만들지 않고 여기서 한 번만 만들어 유지하되, 생성 직후에는 숨겨 둔다.
@@ -40,27 +41,39 @@ public class PlatformerManager : MonoBehaviour
         door = Instantiate(doorPrefab, PlatformerObjectParent);
         player = Instantiate(playerPrefab, PlatformerObjectParent);
 
-        player.OnKeyObtained += () => OnKeyObtained();
+        player.OnKeyObtained += HandleKeyObtained;
         player.OnStarObtained += HandleStarObtained;
-        player.OnCleared += () => OnCleared?.Invoke();
-        player.OnFellIntoHole += () => OnFellIntoHole?.Invoke();
+        player.OnCleared += HandleCleared;
+        player.OnFellIntoHole += HandleFellIntoHole;
 
-        for(int i = 0; i < board.allTiles.Length; i++)
-        {
-            Tile tile = board.allTiles[i];
-            Vector3 pos = board.GetWorldPosition(i);
-
-            if(tile.type == TileType.Star)       star.transform.position = pos;
-            else if(tile.type == TileType.Key)   key.transform.position = pos;
-            else if(tile.type == TileType.End)   door.transform.position = pos;
-            else if(tile.type == TileType.Start) player.transform.position = pos;
-        }
+        PlaceBoardObjects(board);
 
         player.Init(); // 위치가 확정된 뒤에 호출해야 리스폰 위치가 올바르게 잡힌다.
 
-        star.gameObject.SetActive(false);
-        key.gameObject.SetActive(false);
-        door.gameObject.SetActive(false);
+        SetInteractablesActive(false);
+    }
+
+    private void PlaceBoardObjects(Board board)
+    {
+        for (int i = 0; i < board.allTiles.Length; i++)
+        {
+            Vector3 pos = board.GetWorldPosition(i);
+
+            switch (board.allTiles[i].type)
+            {
+                case TileType.Star: star.transform.position = pos; break;
+                case TileType.Key: key.transform.position = pos; break;
+                case TileType.End: door.transform.position = pos; break;
+                case TileType.Start: player.transform.position = pos; break;
+            }
+        }
+    }
+
+    private void SetInteractablesActive(bool active)
+    {
+        star.gameObject.SetActive(active);
+        key.gameObject.SetActive(active);
+        door.gameObject.SetActive(active);
     }
 
     // Platformer 모드에 진입할 때마다 호출. Paint 모드용 Hole 타일을 지우고 실제 HoleController로 교체한 뒤,
@@ -70,90 +83,8 @@ public class PlatformerManager : MonoBehaviour
         paintManager.DestroyHoleTiles();
         SpawnHoles(boardManager.CurrentBoard);
 
-        star.gameObject.SetActive(true);
-        key.gameObject.SetActive(true);
-        door.gameObject.SetActive(true);
+        SetInteractablesActive(true);
         player.Activate();
-    }
-
-    private void SpawnHoles(Board board)
-    {
-        int size = board.size;
-        var consumed = new HashSet<int>();
-
-        for (int i = 0; i < board.allTiles.Length; i++)
-        {
-            if (consumed.Contains(i) || board.allTiles[i].type != TileType.Hole) continue;
-
-            int x = i % size, y = i / size;
-            int right = i + 1, up = i + size, diagUR = i + size + 1;
-
-            bool is2x2 = x < size - 1 && y < size - 1
-                && board.allTiles[right].type == TileType.Hole
-                && board.allTiles[up].type == TileType.Hole
-                && board.allTiles[diagUR].type == TileType.Hole
-                && !consumed.Contains(right) && !consumed.Contains(up) && !consumed.Contains(diagUR);
-
-            if (is2x2)
-            {
-                consumed.Add(i); consumed.Add(right); consumed.Add(up); consumed.Add(diagUR);
-                HoleController hole = Instantiate(holePrefab, PlatformerObjectParent);
-                hole.transform.position = board.GetWorldPosition(i) + new Vector3(1.25f, 1.25f, 0f);
-                hole.transform.localScale *= 2f;
-                holes.Add(hole);
-            }
-        }
-
-        // 1x2 (가로로 두 칸)
-        for (int i = 0; i < board.allTiles.Length; i++)
-        {
-            if (consumed.Contains(i) || board.allTiles[i].type != TileType.Hole) continue;
-
-            int x = i % size;
-            int right = i + 1;
-
-            bool is1x2 = x < size - 1
-                && board.allTiles[right].type == TileType.Hole
-                && !consumed.Contains(right);
-
-            if (is1x2)
-            {
-                consumed.Add(i); consumed.Add(right);
-                HoleController hole = Instantiate(longHolePrefab, PlatformerObjectParent);
-                hole.transform.position = board.GetWorldPosition(i) + new Vector3(1.25f, 0f, 0f);
-                holes.Add(hole);
-            }
-        }
-
-        // 2x1 (세로로 두 칸)
-        for (int i = 0; i < board.allTiles.Length; i++)
-        {
-            if (consumed.Contains(i) || board.allTiles[i].type != TileType.Hole) continue;
-
-            int y = i / size;
-            int up = i + size;
-
-            bool is2x1 = y < size - 1
-                && board.allTiles[up].type == TileType.Hole
-                && !consumed.Contains(up);
-
-            if (is2x1)
-            {
-                consumed.Add(i); consumed.Add(up);
-                HoleController hole = Instantiate(longHolePrefab, PlatformerObjectParent);
-                hole.transform.position = board.GetWorldPosition(i) + new Vector3(0f, 1.25f, 0f);
-                hole.transform.Rotate(0f, 0f, 90f);
-                holes.Add(hole);
-            }
-        }
-
-        for (int i = 0; i < board.allTiles.Length; i++)
-        {
-            if (consumed.Contains(i) || board.allTiles[i].type != TileType.Hole) continue;
-            HoleController hole = Instantiate(holePrefab, PlatformerObjectParent);
-            hole.transform.position = board.GetWorldPosition(i);
-            holes.Add(hole);
-        }
     }
 
     // Paint 모드로 돌아올 때 호출. Door/Star/Key/Player는 문이 열렸든 뭔가 획득했든
@@ -166,27 +97,129 @@ public class PlatformerManager : MonoBehaviour
         key.ResetObtainable();
         player.Freeze();
 
-        star.gameObject.SetActive(false);
-        key.gameObject.SetActive(false);
-        door.gameObject.SetActive(false);
+        SetInteractablesActive(false);
 
         foreach (HoleController hole in holes) Destroy(hole.gameObject);
         holes.Clear();
         paintManager.RecreateHoleTiles();
 
-        obtainedStar = false;
-        OnCleared = null;
-        OnFellIntoHole = null;
+        ObtainedStar = false;
     }
 
-    private void OnKeyObtained()
+    #endregion
+
+    #region Holes
+
+    // 큰 덩어리부터 차례로 먹여 나가서, 붙어 있는 구멍을 하나의 큰 프리팹으로 합쳐 보여 준다.
+    private static readonly HolePattern[] HolePatterns =
     {
-        door.OpenDoor();
+        HolePattern.Square2x2,
+        HolePattern.Horizontal1x2,
+        HolePattern.Vertical2x1,
+        HolePattern.Single,
+    };
+
+    private void SpawnHoles(Board board)
+    {
+        var consumed = new HashSet<int>();
+        foreach (HolePattern pattern in HolePatterns)
+            SpawnHolesOfPattern(board, pattern, consumed);
     }
+
+    private void SpawnHolesOfPattern(Board board, HolePattern pattern, HashSet<int> consumed)
+    {
+        for (int origin = 0; origin < board.allTiles.Length; origin++)
+        {
+            if (!Matches(board, origin, pattern, consumed)) continue;
+
+            foreach (Vector2Int cell in pattern.Cells)
+                consumed.Add(ToIndex(board, origin, cell));
+
+            HoleController prefab = pattern.UseLongPrefab ? longHolePrefab : holePrefab;
+            HoleController hole = Instantiate(prefab, PlatformerObjectParent);
+            hole.transform.position = board.GetWorldPosition(origin) + (Vector3)pattern.CenterOffset * board.tileSpacing;
+            if (!Mathf.Approximately(pattern.ScaleMultiplier, 1f)) hole.transform.localScale *= pattern.ScaleMultiplier;
+            if (!Mathf.Approximately(pattern.ZRotation, 0f)) hole.transform.Rotate(0f, 0f, pattern.ZRotation);
+            holes.Add(hole);
+        }
+    }
+
+    // 기준 칸이 패턴 모양대로 전부 Hole이고, 아직 다른 패턴에 먹히지 않았는지 확인한다.
+    private static bool Matches(Board board, int origin, HolePattern pattern, HashSet<int> consumed)
+    {
+        int size = board.size;
+        int originX = origin % size;
+        int originY = origin / size;
+
+        foreach (Vector2Int cell in pattern.Cells)
+        {
+            int x = originX + cell.x;
+            int y = originY + cell.y;
+            if (x < 0 || x >= size || y < 0 || y >= size) return false;
+
+            int index = x + y * size;
+            if (consumed.Contains(index)) return false;
+            if (board.allTiles[index].type != TileType.Hole) return false;
+        }
+
+        return true;
+    }
+
+    private static int ToIndex(Board board, int origin, Vector2Int cell)
+    {
+        return origin + cell.x + cell.y * board.size;
+    }
+
+    /// 붙어 있는 Hole 타일 묶음을 하나의 프리팹으로 표현하기 위한 배치 규칙.
+    private readonly struct HolePattern
+    {
+        public readonly Vector2Int[] Cells;   // 기준 칸으로부터의 상대 좌표
+        public readonly Vector2 CenterOffset; // 묶음의 중심으로 옮기기 위한 보정 (칸 단위)
+        public readonly float ZRotation;
+        public readonly float ScaleMultiplier;
+        public readonly bool UseLongPrefab;
+
+        private HolePattern(Vector2Int[] cells, Vector2 centerOffset, float zRotation, float scaleMultiplier, bool useLongPrefab)
+        {
+            Cells = cells;
+            CenterOffset = centerOffset;
+            ZRotation = zRotation;
+            ScaleMultiplier = scaleMultiplier;
+            UseLongPrefab = useLongPrefab;
+        }
+
+        public static HolePattern Square2x2 => new HolePattern(
+            new[] { new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(0, 1), new Vector2Int(1, 1) },
+            new Vector2(0.5f, 0.5f), 0f, 2f, false);
+
+        public static HolePattern Horizontal1x2 => new HolePattern(
+            new[] { new Vector2Int(0, 0), new Vector2Int(1, 0) },
+            new Vector2(0.5f, 0f), 0f, 1f, true);
+
+        public static HolePattern Vertical2x1 => new HolePattern(
+            new[] { new Vector2Int(0, 0), new Vector2Int(0, 1) },
+            new Vector2(0f, 0.5f), 90f, 1f, true);
+
+        public static HolePattern Single => new HolePattern(
+            new[] { new Vector2Int(0, 0) },
+            Vector2.zero, 0f, 1f, false);
+    }
+
+    #endregion
+
+    #region Player event handlers
+
+    private void HandleKeyObtained() => door.OpenDoor();
 
     private void HandleStarObtained()
     {
-        obtainedStar = true;
+        ObtainedStar = true;
         OnStarObtained?.Invoke();
     }
+
+    private void HandleCleared() => OnCleared?.Invoke();
+
+    private void HandleFellIntoHole() => OnFellIntoHole?.Invoke();
+
+    #endregion
 }

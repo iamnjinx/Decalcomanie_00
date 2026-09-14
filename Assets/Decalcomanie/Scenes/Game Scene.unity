@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.42648268, g: 0.45922875, b: 0.48606223, a: 1}
+  m_IndirectSpecularColor: {r: 0.4264837, g: 0.4592294, b: 0.48606312, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -877,7 +877,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 118, y: 96}
+  m_AnchoredPosition: {x: 6.700012, y: 113.8}
   m_SizeDelta: {x: 600, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &100788426
@@ -3206,7 +3206,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 15, y: -75}
-  m_SizeDelta: {x: 943, y: 396}
+  m_SizeDelta: {x: 756, y: 396}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &508567831
 MonoBehaviour:
@@ -3228,7 +3228,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4158d2ca274b47c4399046be311f29d7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f0f1041de27f6314c8ef7c1cfe983d1c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9029,7 +9029,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 768
+    m_Bits: 1280
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 837d9884dbeb30949a4ce98251d7c398, type: 2}
   m_TargetDisplay: 0
@@ -11140,7 +11140,7 @@ PrefabInstance:
     - target: {fileID: 8889839480670587568, guid: adf8464502288534aa59e8ea17203309,
         type: 3}
       propertyPath: isDemo
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -15213,7 +15213,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 118.00006, y: -112.10007}
+  m_AnchoredPosition: {x: 6.7001038, y: -94.30011}
   m_SizeDelta: {x: 600, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1644782571
@@ -15596,13 +15596,13 @@ GameObject:
   m_Component:
   - component: {fileID: 1700724619}
   - component: {fileID: 1700724618}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: Guide Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1700724618
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -15643,7 +15643,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: ab031478e9a4e1b4fa4aeaecf5e6345d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -16336,23 +16336,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boardManager: {fileID: 1780840584}
   TileParent: {fileID: 1712745155}
-  allTileControllers: []
   tileControllerPrefab: {fileID: 3690275249829584664, guid: b7c6a62f14afa9e4394e58b087f4c3f7,
     type: 3}
   curtainBlockPrefab: {fileID: 394298742028205359, guid: 882307a4617776e46b0035e16f8e3c61,
     type: 3}
-  paperBoard: {fileID: 919132148734644212}
   objectMarkersPrefab: {fileID: 2838644887989542121, guid: bfc7ad5ad4b2f004b9a055f30df3e042,
     type: 3}
-  HorizontalFoldAxis: {fileID: 547304805}
-  VerticalFoldAxis: {fileID: 2133032300}
-  flipEase: 1
-  foldTime: 0.4
+  paperBoard: {fileID: 919132148734644212}
   paintUI: {fileID: 504853298}
   tutorialManager: {fileID: 0}
-  paintCount: 0
+  flipEase: 1
+  foldTime: 0.4
   verticalAxisCreaseAngle: -170
   horizontalAxisCreaseAngle: -170
+  HorizontalFoldAxis: {fileID: 547304805}
+  VerticalFoldAxis: {fileID: 2133032300}
 --- !u!114 &1780840587
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16368,11 +16366,11 @@ MonoBehaviour:
   boardManager: {fileID: 1780840584}
   paintManager: {fileID: 1780840586}
   platformerManager: {fileID: 1780840588}
-  testBoardDataTextAsset: {fileID: 4900000, guid: 70d8a90abdfebe8469c73c73cc03ad20,
-    type: 3}
   stageUI: {fileID: 733602833}
   tutorialManager: {fileID: 0}
   hintManager: {fileID: 1780840590}
+  testBoardDataTextAsset: {fileID: 4900000, guid: 70d8a90abdfebe8469c73c73cc03ad20,
+    type: 3}
   foldButtonFadeTime: 0.2
 --- !u!114 &1780840588
 MonoBehaviour:
@@ -16401,7 +16399,6 @@ MonoBehaviour:
     type: 3}
   playerPrefab: {fileID: 5735363120750688076, guid: 6661274a04a894345bebbd9bed3cf6e9,
     type: 3}
-  obtainedStar: 0
 --- !u!114 &1780840590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23186,7 +23183,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 118.00006, y: -13.600037}
+  m_AnchoredPosition: {x: 6.7001038, y: 4.199936}
   m_SizeDelta: {x: 600, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1991828766
@@ -23399,7 +23396,7 @@ RectTransform:
   m_GameObject: {fileID: 2041536653}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 0.45, y: 0.45, z: 0.45}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2143926492}
@@ -23407,7 +23404,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 70.70001}
+  m_AnchoredPosition: {x: 0, y: 65}
   m_SizeDelta: {x: 381, y: 131}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2041536655

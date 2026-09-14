@@ -51,6 +51,11 @@ public class Board
     public List<int> Quadrant3;
     public List<int> Quadrant4;
 
+    // 스테이지 JSON의 BlockedPoints로 지정된, 칠할 수 없는 타일 인덱스.
+    // 비어 있으면 기본 규칙(Quadrant1/Quadrant3만 칠할 수 있음)을 사용한다.
+    public List<int> BlockedTiles { get; private set; }
+    private bool useCustomBlockedTiles;
+
     public Tile[] allTiles;
 
     public BoardData BoardData {get ; private set;}
@@ -72,6 +77,8 @@ public class Board
         SetInitialPoints(boardData);
 
         SetQuadrants();
+
+        SetBlockedTiles(boardData);
     }
 
     private void SetArrays(int size)
@@ -137,6 +144,34 @@ public class Board
                 Quadrant3.Add(x2 + size * y2);
             }
         }
+    }
+
+    private void SetBlockedTiles(BoardData boardData)
+    {
+        BlockedTiles = new List<int>();
+
+        useCustomBlockedTiles = boardData.BlockedPoints != null && boardData.BlockedPoints.Count > 0;
+        if (!useCustomBlockedTiles) return;
+
+        foreach (int index in boardData.BlockedPoints)
+        {
+            if (index < 0 || index >= allTiles.Length)
+            {
+                Debug.LogWarning($"[Board] BlockedPoint index out of range: {index}");
+                continue;
+            }
+
+            if (!BlockedTiles.Contains(index)) BlockedTiles.Add(index);
+        }
+    }
+
+    // 플레이어가 해당 타일을 칠할 수 있는지 판단하는 단일 출처.
+    // 스테이지 JSON에 BlockedPoints가 있으면 그 목록을 쓰고, 없으면 기존 기본 규칙을 따른다.
+    // (기본 규칙: 화면 좌우가 Quadrant 좌표계와 반전되어 있어, 화면상 Upper Left/Lower Right = Quadrant1/Quadrant3)
+    public bool IsPaintable(int index)
+    {
+        if (useCustomBlockedTiles) return !BlockedTiles.Contains(index);
+        return Quadrant1.Contains(index) || Quadrant3.Contains(index);
     }
 
     public List<int> FoldVertical()
@@ -226,11 +261,12 @@ public class BoardData
     public List<int> FixedPoints = new List<int>();
     public List<int> HolePoints = new List<int>();
     public List<int> WallPoints = new List<int>(); // 테두리 벽 전용 (TileType.Wall)
+    public List<int> BlockedPoints = new List<int>(); // 칠할 수 없는 영역. 비어 있으면 Board가 기본 규칙(Quadrant2/Quadrant4 차단)을 적용한다.
 
     [Header("Achivements")]
     public int minMoves = 99;
 
-    public BoardData(int size, Vector2 startPointV, Vector2 endPointV, Vector2 starPointV, Vector2 keyPointV, List<Vector2> fixedPointVs, List<Vector2> holePointVs, List<Vector2> wallPointVs = null)
+    public BoardData(int size, Vector2 startPointV, Vector2 endPointV, Vector2 starPointV, Vector2 keyPointV, List<Vector2> fixedPointVs, List<Vector2> holePointVs, List<Vector2> wallPointVs = null, List<Vector2> blockedPointVs = null)
     {
         Size = size;
         PlayableSize = size;
@@ -241,6 +277,7 @@ public class BoardData
         FixedPoints = fixedPointVs.Select(v => GetIndex(v, size)).ToList();
         HolePoints = holePointVs.Select(v => GetIndex(v, size)).ToList();
         WallPoints = (wallPointVs ?? new List<Vector2>()).Select(v => GetIndex(v, size)).ToList();
+        BlockedPoints = (blockedPointVs ?? new List<Vector2>()).Select(v => GetIndex(v, size)).Where(i => i >= 0).ToList();
     }
 
     // Deserializes a stage JSON TextAsset (e.g. stage_01.json) into a BoardData.
@@ -259,6 +296,8 @@ public class BoardData
 
         List<Vector2> fixedPoints = stageJson.FixedPoints.Select(Shift).ToList();
         List<Vector2> holePoints = stageJson.HolePoints.Select(Shift).ToList();
+        // BlockedPoints는 선택 항목. JSON에 없으면 null이므로 빈 목록으로 취급하고, Board가 기본 규칙으로 폴백한다.
+        List<Vector2> blockedPoints = (stageJson.BlockedPoints ?? new List<Vector2>()).Select(Shift).ToList();
         List<Vector2> wallPoints = new List<Vector2>();
 
         for (int i = 1; i <= paddedSize; i++)
@@ -277,7 +316,8 @@ public class BoardData
             Shift(stageJson.KeyPoint),
             fixedPoints,
             holePoints,
-            wallPoints
+            wallPoints,
+            blockedPoints
         );
         boardData.minMoves = stageJson.MinMoves;
         boardData.PlayableSize = playableSize;
@@ -300,6 +340,7 @@ public class BoardData
         public Vector2 KeyPoint;
         public List<Vector2> FixedPoints;
         public List<Vector2> HolePoints;
+        public List<Vector2> BlockedPoints; // 선택 항목. 생략하면 기본 규칙(Quadrant2/Quadrant4 차단)이 적용된다.
         public int MinMoves;
     }
 }

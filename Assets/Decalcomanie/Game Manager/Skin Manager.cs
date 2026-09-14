@@ -25,7 +25,19 @@ public class SkinManager : MonoBehaviour
 
         RefreshSkinButtons();
         var progress = GameProgressData.Load();
-        curStarCountText.text = progress.blueStarCount.ToString();
+        curStarCountText.text = 'x' + progress.blueStarCount.ToString();
+    }
+
+    void Update()
+    {
+        if (GameInput.BackPressed) ExitSkinScene();
+    }
+
+    // 언어가 바뀌었을 때 모든 스킨 버튼의 이름 / 폰트를 다시 적용합니다.
+    public void UpdateSkinLocalization()
+    {
+        for (int i = 0; i < SkinButtons.Length; i++)
+            SkinButtons[i].UpdateSkinLocalization();
     }
 
     public bool IsSkinUnlocked(int skinID, int blueStarCount)
@@ -69,7 +81,7 @@ public class SkinManager : MonoBehaviour
 
     public void ExitSkinScene()
     {
-        // 스테이지 선택 씬으로 이동.
+        // 타이틀 씬으로 이동.
         GameManager.Instance.LoadTitleScene();
     }
 }

@@ -10,8 +10,71 @@ public class GameProgressData
         var data = SaveManager.Instance.Load<GameProgressData>(SaveKey, new());
         if (GameManager.Instance != null)
             data.highestUnlockedStage = System.Math.Min(data.highestUnlockedStage, GameManager.Instance.TotalStages);
+
+        bool changed = data.MigrateEarlyStageAchievements();
+        changed |= data.SyncBlueStarCount();
+        if (changed)
+            SaveManager.Instance.Save(SaveKey, data);
+
         return data;
     }
+
+    // 초반 스테이지는 클리어만 하면 별/최소이동이 자동 달성되도록 규칙이 바뀌었습니다(StageManager.GameCleared 참고).
+    // 그 이전에 만들어진 세이브에도 같은 보상을 소급 적용합니다.
+    // 이미 달성 처리된 항목은 건드리지 않으므로 여러 번 호출해도 중복 지급되지 않습니다.
+    // 실제로 바꾼 값이 있으면 true.
+    private bool MigrateEarlyStageAchievements()
+    {
+        bool changed = false;
+
+        for (int i = 0; i < stageAchievements.Count; i++)
+        {
+            if (!StageRules.IsEarlyStage(i)) continue;
+
+            var data = stageAchievements[i];
+            if (!data.isCleared) continue;
+
+            if (!data.obtainedStar)
+            {
+                data.obtainedStar = true;
+                changed = true;
+            }
+
+            if (!data.achievedMinMoves)
+            {
+                data.achievedMinMoves = true;
+                changed = true;
+            }
+
+            if (!data.stampObtained)
+            {
+                data.stampObtained = true;
+                remainingStampCount++;
+                changed = true;
+            }
+        }
+
+        return changed;
+    }
+
+    // 블루스타는 소모되지 않으므로 "별을 얻은 스테이지 수"와 항상 같아야 하는 파생값입니다.
+    // blueStarCount 필드가 없던 시절의 세이브(0으로 로드됨)를 소급 복구하고,
+    // 이후에도 카운터가 어긋나면 로드할 때마다 자동으로 맞춰집니다.
+    // 실제로 바꾼 값이 있으면 true.
+    private bool SyncBlueStarCount()
+    {
+        int actual = 0;
+        for (int i = 0; i < stageAchievements.Count; i++)
+        {
+            if (stageAchievements[i].obtainedStar) actual++;
+        }
+
+        if (blueStarCount == actual) return false;
+
+        blueStarCount = actual;
+        return true;
+    }
+
     public int highestUnlockedStage = 0;
     public int remainingStampCount = 0;
     public int blueStarCount = 0;

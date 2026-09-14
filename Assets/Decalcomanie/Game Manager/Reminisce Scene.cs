@@ -29,7 +29,7 @@ public class ReminisceScene : MonoBehaviour
     {
         if (skipped) return;
 
-        if (Input.GetKey(KeyCode.Space))
+        if (GameInput.ProceedHeld)
         {
             spaceHoldTime += Time.deltaTime;
             holdImage.fillAmount = spaceHoldTime / skipHoldDuration;

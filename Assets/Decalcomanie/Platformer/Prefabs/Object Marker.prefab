@@ -509,7 +509,7 @@ GameObject:
   - component: {fileID: 6526139539579681911}
   - component: {fileID: 3086190630463581014}
   m_Layer: 8
-  m_Name: Capsule
+  m_Name: Skin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

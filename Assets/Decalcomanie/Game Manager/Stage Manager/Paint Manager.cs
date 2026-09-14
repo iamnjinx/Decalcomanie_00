@@ -6,39 +6,34 @@ using Cysharp.Threading.Tasks;
 public class PaintManager : MonoBehaviour
 {
     [SerializeField] BoardManager boardManager;
-
     [SerializeField] Transform TileParent;
 
-    public List<PaintedController> allTileControllers;
-
     [SerializeField] private PaintedController tileControllerPrefab;
-
     [SerializeField] private Transform curtainBlockPrefab;
-    private List<Transform> curtainBlocks = new List<Transform>();
-
-    public Stack<TilePaintAction> paintActions = new Stack<TilePaintAction>();
-
-    [SerializeField] private PaperBoard paperBoard;
-    public void SetPaperBoardSurfaceTransparent(bool transparent) => paperBoard.SetSurfaceTransparent(transparent);
-
     [SerializeField] private PaintObjectMarkers objectMarkersPrefab;
-    private PaintObjectMarkers objectMarkers;
+    [SerializeField] private PaperBoard paperBoard;
+
+    [SerializeField] private PaintUI paintUI;
+
+    [Header("Fold")]
+    [SerializeField] Ease flipEase = Ease.InCirc;
+    [SerializeField] float foldTime = 0.5f;
+    [SerializeField] private float verticalAxisCreaseAngle = -170f;
+    [SerializeField] private float horizontalAxisCreaseAngle = -170f;
 
     public Transform HorizontalFoldAxis;
     public Transform VerticalFoldAxis;
 
-    //[SerializeField] GameObject PaintPaperObj;
+    private readonly List<Transform> curtainBlocks = new List<Transform>();
+    private readonly Stack<TilePaintAction> paintActions = new Stack<TilePaintAction>();
 
-    [SerializeField] Ease flipEase = Ease.InCirc;
-    [SerializeField] float foldTime = 0.5f;
-
-    [SerializeField] private PaintUI paintUI;
-    [SerializeField] private TutorialManager tutorialManager;
+    private List<PaintedController> tileControllers = new List<PaintedController>();
+    private PaintObjectMarkers objectMarkers;
 
     private bool _isFolding;
     public bool IsFolding => _isFolding;
 
-    public int paintCount = 0;
+    public int PaintCount { get; private set; }
 
     public event System.Action<int> OnPaintCountChanged;
     public event System.Action<int> OnTilePainted;
@@ -46,16 +41,20 @@ public class PaintManager : MonoBehaviour
     public event System.Action OnFoldStarted;
     public event System.Action OnFoldReturning;
 
+    private Board CurrentBoard => boardManager.CurrentBoard;
+
+    #region Setup
+
     // 스테이지 로드 시 1회만 호출. Fixed/Wall처럼 처음부터 고정된 타일만 미리 만들어 두고,
     // 나머지(Empty) 타일은 실제로 칠해지는 순간 GetOrCreateTile을 통해 그때그때 생성한다.
     public void CreateTileControllers()
     {
-        Board board = boardManager.CurrentBoard;
-        allTileControllers = new List<PaintedController>();
+        Board board = CurrentBoard;
+        tileControllers = new List<PaintedController>(board.allTiles.Length);
 
         for (int i = 0; i < board.allTiles.Length; i++)
         {
-            allTileControllers.Add(null);
+            tileControllers.Add(null);
 
             TileType type = board.allTiles[i].type;
             if (type == TileType.Fixed || type == TileType.Wall || type == TileType.Hole)
@@ -69,13 +68,12 @@ public class PaintManager : MonoBehaviour
         objectMarkers.Init(board);
     }
 
-    // 칠할 수 없는(Quadrant1/Quadrant3에 속하지 않는) 타일 위치에 curtainBlock을 배치한다.
+    // 칠할 수 없는 타일 위치에 curtainBlock을 배치한다. 판정은 Board.IsPaintable이 담당한다.
     private void PlaceCurtainBlocks(Board board)
     {
         foreach (int tileIndex in board.GetPlayableTileIndices())
         {
-            bool isPaintable = board.Quadrant1.Contains(tileIndex) || board.Quadrant3.Contains(tileIndex);
-            if (isPaintable) continue;
+            if (board.IsPaintable(tileIndex)) continue;
 
             Transform curtainBlock = Instantiate(curtainBlockPrefab, TileParent);
             curtainBlock.position = board.GetWorldPosition(tileIndex);
@@ -89,51 +87,78 @@ public class PaintManager : MonoBehaviour
             curtainBlock.gameObject.SetActive(is_active);
     }
 
+    #endregion
+
+    #region Tiles
+
+    private PaintedController GetOrCreateTile(int id)
+    {
+        if (tileControllers[id] != null) return tileControllers[id];
+
+        Board board = CurrentBoard;
+        PaintedController tc = Instantiate(tileControllerPrefab, TileParent);
+        tc.transform.position = board.GetWorldPosition(id);
+        tc.Init(board.allTiles[id], id, board);
+        tc.OnTilePainted += AddPaintAction;
+        tileControllers[id] = tc;
+        return tc;
+    }
+
+    // 칠해진 타일을 지워 Empty로 되돌린다. 칠해지지 않은(Fixed/Wall 등) 타일은 표시만 갱신한다.
+    private void ClearPaintedTile(int index)
+    {
+        PaintedController tc = tileControllers[index];
+        if (tc == null) return;
+
+        if (!tc.Tile.IsPainted)
+        {
+            tc.Refresh();
+            return;
+        }
+
+        tc.ChangeTileType(0);
+        Destroy(tc.gameObject);
+        tileControllers[index] = null;
+    }
+
     // Platformer 모드로 넘어갈 때 호출. Hole은 실제 HoleController가 대신 보여줘야 하므로
     // Paint 모드용 타일 오브젝트는 지운다.
     public void DestroyHoleTiles()
     {
-        Board board = boardManager.CurrentBoard;
-        for (int i = 0; i < allTileControllers.Count; i++)
+        Board board = CurrentBoard;
+        for (int i = 0; i < tileControllers.Count; i++)
         {
-            if (allTileControllers[i] == null || board.allTiles[i].type != TileType.Hole) continue;
-            Destroy(allTileControllers[i].gameObject);
-            allTileControllers[i] = null;
+            if (tileControllers[i] == null || board.allTiles[i].type != TileType.Hole) continue;
+            Destroy(tileControllers[i].gameObject);
+            tileControllers[i] = null;
         }
     }
 
     // Paint 모드로 돌아올 때 호출. 지워졌던 Hole 타일 오브젝트를 다시 만든다.
     public void RecreateHoleTiles()
     {
-        Board board = boardManager.CurrentBoard;
+        Board board = CurrentBoard;
         for (int i = 0; i < board.allTiles.Length; i++)
             if (board.allTiles[i].type == TileType.Hole)
                 GetOrCreateTile(i);
     }
 
-    private PaintedController GetOrCreateTile(int id)
-    {
-        if (allTileControllers[id] != null) return allTileControllers[id];
+    #endregion
 
-        Board board = boardManager.CurrentBoard;
-        PaintedController tc = Instantiate(tileControllerPrefab, TileParent);
-        tc.transform.position = board.GetWorldPosition(id);
-        tc.Init(board.allTiles[id], id, board);
-        tc.OnTilePainted += AddPaintAction;
-        allTileControllers[id] = tc;
-        return tc;
-    }
+    #region Painting
 
     public void Paint(int id)
     {
-        if (boardManager.CurrentBoard.allTiles[id].type != TileType.Empty) return;
+        if (CurrentBoard.allTiles[id].type != TileType.Empty) return;
 
         PaintedController tc = GetOrCreateTile(id);
         tc.PaintTile();
-        paintCount++;
-        OnPaintCountChanged?.Invoke(paintCount);
+
+        PaintCount++;
+        OnPaintCountChanged?.Invoke(PaintCount);
         OnTilePainted?.Invoke(id);
-        if(AudioManager.Instance != null)
+
+        if (AudioManager.Instance != null)
             AudioManager.Instance.PlayRandomSFX(new[] { "paint_1", "paint_2" });
     }
 
@@ -149,30 +174,48 @@ public class PaintManager : MonoBehaviour
             return;
         }
 
-        var lastAction = paintActions.Pop();
+        TilePaintAction lastAction = paintActions.Pop();
 
         foreach (int tile in lastAction.PaintedTiles)
-        {
-            PaintedController tc = allTileControllers[tile];
-            if (tc.Tile.IsPainted)
-            {
-                tc.ChangeTileType(0);
-                Destroy(tc.gameObject);
-                allTileControllers[tile] = null;
-            }
-            else
-                tc.Refresh();
-        }
+            ClearPaintedTile(tile);
 
-        if (lastAction.is_paint)
-        {
-            paintCount--;
-            OnPaintCountChanged?.Invoke(paintCount);
-        }
+        if (!lastAction.is_paint) return;
+
+        PaintCount--;
+        OnPaintCountChanged?.Invoke(PaintCount);
     }
 
-    [SerializeField] private float verticalAxisCreaseAngle = -170f;
-    [SerializeField] private float horizontalAxisCreaseAngle = -170f;
+    public void ResetPaint()
+    {
+        PaintCount = 0;
+        OnPaintCountChanged?.Invoke(PaintCount);
+
+        for (int i = 0; i < tileControllers.Count; i++)
+            ClearPaintedTile(i);
+
+        ResumePaint();
+        paintActions.Clear();
+    }
+
+    public void ResumePaint()
+    {
+        paintUI.SetBasePaintUI(true).Forget();
+        SetCurtainBlocksActive(true);
+        if (objectMarkers != null) objectMarkers.SetVisible(true);
+    }
+
+    public void PausePaint()
+    {
+        paintUI.SetBasePaintUI(false).Forget();
+        SetCurtainBlocksActive(false);
+        if (objectMarkers != null) objectMarkers.SetVisible(false);
+    }
+
+    public void SetPaperBoardSurfaceTransparent(bool transparent) => paperBoard.SetSurfaceTransparent(transparent);
+
+    #endregion
+
+    #region Folding
 
     private static Vector3 GetVerticalAxisFoldRotation(Vector3 start) => new Vector3(170f, start.y, start.z);
     private static Vector3 GetHorizontalAxisFoldRotation(Vector3 start) => new Vector3(start.x, -170f, start.z);
@@ -188,7 +231,7 @@ public class PaintManager : MonoBehaviour
             GetVerticalAxisFoldRotation,
             VerticalFoldAxis,
             GetVerticalAxisCreaseRotation,
-            () => boardManager.CurrentBoard.FoldVertical());
+            () => CurrentBoard.FoldVertical());
     }
 
     public async void FoldHorizontal()
@@ -199,7 +242,7 @@ public class PaintManager : MonoBehaviour
             GetHorizontalAxisFoldRotation,
             HorizontalFoldAxis,
             GetHorizontalAxisCreaseRotation,
-            () => boardManager.CurrentBoard.FoldHorizontal());
+            () => CurrentBoard.FoldHorizontal());
     }
 
     private async UniTask ExecuteFold(
@@ -252,42 +295,7 @@ public class PaintManager : MonoBehaviour
         axis.DORotate(rotation, foldTime).SetEase(flipEase);
     }
 
-    public void ResetPaint()
-    {
-        paintCount = 0;
-        OnPaintCountChanged?.Invoke(paintCount);
-        for (int i = 0; i < allTileControllers.Count; i++)
-        {
-            PaintedController tc = allTileControllers[i];
-            if (tc == null) continue;
-
-            if (tc.Tile.IsPainted)
-            {
-                tc.ChangeTileType(0);
-                Destroy(tc.gameObject);
-                allTileControllers[i] = null;
-            }
-            else
-                tc.ChangeTileType((int)tc.Tile.type);
-        }
-
-        ResumePaint();
-        paintActions.Clear();
-    }
-
-    public void ResumePaint()
-    {
-        paintUI.SetBasePaintUI(true).Forget();
-        SetCurtainBlocksActive(true);
-        objectMarkers.gameObject.SetActive(true);
-    }
-
-    public void PausePaint()
-    {
-        paintUI.SetBasePaintUI(false).Forget();
-        SetCurtainBlocksActive(false);
-        objectMarkers.gameObject.SetActive(false);
-    }
+    #endregion
 }
 
 public class TilePaintAction

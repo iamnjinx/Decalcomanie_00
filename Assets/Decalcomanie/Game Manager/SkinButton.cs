@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class SkinButton : ButtonUI
 {
+    public TextMeshProUGUI skinNameText;
     public Image SkinImage;
     public Image DinoImage;
     public TextMeshProUGUI starCostText;
@@ -16,10 +17,33 @@ public class SkinButton : ButtonUI
 
     public DinoSkinSO dinoSkinSO;
 
+    private int currentSkinID = -1;
+
     public void SetDinoSkin(int skinID)
     {
+        currentSkinID = skinID;
+
         SkinImage.sprite = dinoSkinSO.dinoSkins[skinID];
         starCostText.text = dinoSkinSO.unlockThresholds[skinID].ToString();
+
+        UpdateSkinLocalization();
+    }
+
+    // 현재 언어의 스킨 이름 / 폰트를 적용합니다.
+    public void UpdateSkinLocalization()
+    {
+        if (currentSkinID < 0) return;
+
+        LocalizedData data = GameManager.Instance.CurrentLocalizedData;
+        if (data == null) return;
+
+        if (skinNameText != null)
+        {
+            skinNameText.text = data.GetSkinName(currentSkinID);
+            skinNameText.font = data.fontAsset;
+        }
+
+        if (starCostText != null) starCostText.font = data.fontAsset;
     }
 
     public void SetSelectedFlagActive(bool isSelected)

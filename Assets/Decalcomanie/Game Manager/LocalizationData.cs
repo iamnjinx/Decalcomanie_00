@@ -59,6 +59,16 @@ public class LocalizedData
     [Header("Title - Reset Warning")]
     [TextArea]
     public string resetWarningText;
+
+    [Header("Skin Shop")]
+    // DinoSkinSO.dinoSkins와 같은 순서로 스킨 이름을 채워줍니다.
+    public string[] skinNames;
+
+    public string GetSkinName(int skinID)
+    {
+        if (skinNames == null || skinID < 0 || skinID >= skinNames.Length) return string.Empty;
+        return skinNames[skinID];
+    }
 }
 
 [CreateAssetMenu(fileName = "LocalizationData", menuName = "ScriptableObjects/LocalizationData", order = 2)]

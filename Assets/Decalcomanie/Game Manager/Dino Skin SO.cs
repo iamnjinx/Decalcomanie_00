@@ -8,3 +8,9 @@ public class DinoSkinSO : ScriptableObject
     public Sprite[] dinoSkins;
     public int[] unlockThresholds;
 }
+
+// public class DinoSkinDB
+// {
+//     public Sprite dinoSkin;
+//     public int unlockThreshold;
+// }

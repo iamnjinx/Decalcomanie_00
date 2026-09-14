@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class HintManager : MonoBehaviour
@@ -8,22 +6,26 @@ public class HintManager : MonoBehaviour
     [SerializeField] private StageManager stageManager;
     [SerializeField] private int hintCost = 1;
 
-    private HintElement CurrentHintElement => GameManager.Instance.ActiveHintData.hintElements[GameManager.Instance.CurrentStageIndex];
+    private static int StageIndex => GameManager.Instance.CurrentStageIndex;
+
+    private HintElement CurrentHintElement => GameManager.Instance.ActiveHintData.hintElements[StageIndex];
+
+    private static bool IsSecondHintUnlocked => GameProgressData.Load().IsSecondHintUnlocked(StageIndex);
 
     private void Awake()
     {
-        //Debug.Log($"Current Stage Index: {GameManager.Instance.CurrentStageIndex}, {GameManager.Instance.CurrentStageIndex < 5}");
-        if (GameManager.Instance.CurrentStageIndex < 5)
+        // 힌트가 아직 등장하지 않는 초반 스테이지에서는 UI 자체를 숨긴다.
+        if (!StageRules.IsHintAvailable(StageIndex))
             hintUI.gameObject.SetActive(false);
 
         if (stageManager != null)
-            stageManager.OnGameStateChanged += OnGameStateChanged;
+            stageManager.OnGameStateChanged += HandleGameStateChanged;
 
-        if (GameProgressData.Load().IsSecondHintUnlocked(GameManager.Instance.CurrentStageIndex))
+        if (IsSecondHintUnlocked)
             hintUI.hintButton.UnlockHintButton();
 
-        hintUI.hintButton.OnPressed += OnHintPressed;
-        hintUI.hintButton.OnReleased += OnHintReleased;
+        hintUI.hintButton.OnPressed += HandleHintPressed;
+        hintUI.hintButton.OnReleased += HandleHintReleased;
     }
 
     void Start()
@@ -31,28 +33,41 @@ public class HintManager : MonoBehaviour
         RefreshStampText();
     }
 
+    private void OnDestroy()
+    {
+        if (stageManager != null)
+            stageManager.OnGameStateChanged -= HandleGameStateChanged;
+
+        if (hintUI != null && hintUI.hintButton != null)
+        {
+            hintUI.hintButton.OnPressed -= HandleHintPressed;
+            hintUI.hintButton.OnReleased -= HandleHintReleased;
+        }
+    }
+
     public void RefreshStampText()
     {
         hintUI.SetRemainingStampText(GameProgressData.Load().remainingStampCount);
     }
 
-    private void OnHintPressed()
+    private void HandleHintPressed()
     {
-        if (GameProgressData.Load().IsSecondHintUnlocked(GameManager.Instance.CurrentStageIndex))
+        if (IsSecondHintUnlocked)
             hintUI.ShowSecondHint(CurrentHintElement.Hint2Pos, CurrentHintElement.Hint2Sprite);
         else
             ShowHintUnlockWarning();
     }
 
-    private void OnHintReleased()
+    private void HandleHintReleased()
     {
-        if (GameProgressData.Load().IsSecondHintUnlocked(GameManager.Instance.CurrentStageIndex))
+        if (IsSecondHintUnlocked)
             hintUI.HideSecondHint(CurrentHintElement.Hint2Pos);
     }
 
-    private void OnGameStateChanged(GameState newState)
+    // 힌트 UI는 색칠 모드에서만 보여준다.
+    private void HandleGameStateChanged(GameState newState)
     {
-        if (GameManager.Instance.CurrentStageIndex < 5) return;
+        if (!StageRules.IsHintAvailable(StageIndex)) return;
         hintUI.gameObject.SetActive(newState == GameState.Paint);
     }
 
@@ -64,11 +79,11 @@ public class HintManager : MonoBehaviour
 
     public void UnlockHint()
     {
-        var progress = GameProgressData.Load();
+        GameProgressData progress = GameProgressData.Load();
         if (progress.remainingStampCount < hintCost) return;
 
         progress.remainingStampCount -= hintCost;
-        progress.SetSecondHintUnlocked(GameManager.Instance.CurrentStageIndex);
+        progress.SetSecondHintUnlocked(StageIndex);
         SaveManager.Instance.Save(GameProgressData.SaveKey, progress);
 
         hintUI.hintButton.UnlockHintButton();

@@ -52,10 +52,7 @@ public class PaintUI : MonoBehaviour
             newButton.SetPaintButtonID(tileIndex);
             newButton.onPaintButtonClicked = onPaintButtonClicked;
 
-            // 화면 좌우가 board의 Quadrant 좌표계와 반전되어 있어(상하는 동일),
-            // 화면상 Upper Left/Lower Right에 해당하는 실제 좌표는 Quadrant1/Quadrant3.
-            bool isUpperLeftOrLowerRight = board.Quadrant1.Contains(tileIndex) || board.Quadrant3.Contains(tileIndex);
-            newButton.SetBlocked(!isUpperLeftOrLowerRight);
+            newButton.SetBlocked(!board.IsPaintable(tileIndex));
         }
     }
 
