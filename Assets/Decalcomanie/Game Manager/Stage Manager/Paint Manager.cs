@@ -27,6 +27,13 @@ public class PaintManager : MonoBehaviour
     private readonly List<Transform> curtainBlocks = new List<Transform>();
     private readonly Stack<TilePaintAction> paintActions = new Stack<TilePaintAction>();
 
+    // 연필로 만든 Fixed 타일의 인덱스만 추적한다. 레벨(JSON) Fixed는 여기 포함되지 않는다.
+    // (지우개는 둘 다 지울 수 있지만, Reset 때 "원래 있던 것"과 "플레이어가 추가한 것"을 구분하는 데 쓰인다.)
+    private readonly HashSet<int> userFixedTiles = new HashSet<int>();
+
+    // 스테이지 로드 시점의 타일 타입 스냅샷. Reset은 지금 상태가 아니라 항상 이 원본으로 되돌아간다.
+    private TileType[] originalTileTypes;
+
     private List<PaintedController> tileControllers = new List<PaintedController>();
     private PaintObjectMarkers objectMarkers;
 
@@ -35,8 +42,14 @@ public class PaintManager : MonoBehaviour
 
     public int PaintCount { get; private set; }
 
+    public enum PaintMode { Paint, Pencil, Eraser }
+
+    private PaintMode _currentMode = PaintMode.Paint;
+    public PaintMode CurrentMode => _currentMode;
+
     public event System.Action<int> OnPaintCountChanged;
     public event System.Action<int> OnTilePainted;
+    public event System.Action<PaintMode> OnPaintModeChanged;
     public event System.Action OnFolded;
     public event System.Action OnFoldStarted;
     public event System.Action OnFoldReturning;
@@ -51,17 +64,20 @@ public class PaintManager : MonoBehaviour
     {
         Board board = CurrentBoard;
         tileControllers = new List<PaintedController>(board.allTiles.Length);
+        originalTileTypes = new TileType[board.allTiles.Length];
 
         for (int i = 0; i < board.allTiles.Length; i++)
         {
             tileControllers.Add(null);
 
             TileType type = board.allTiles[i].type;
+            originalTileTypes[i] = type;
+
             if (type == TileType.Fixed || type == TileType.Wall || type == TileType.Hole)
                 GetOrCreateTile(i);
         }
 
-        paintUI.SetPaintButtons(board, Paint);
+        paintUI.SetPaintButtons(board, HandleTileClicked);
         PlaceCurtainBlocks(board);
 
         objectMarkers = Instantiate(objectMarkersPrefab, TileParent);
@@ -104,13 +120,14 @@ public class PaintManager : MonoBehaviour
         return tc;
     }
 
-    // 칠해진 타일을 지워 Empty로 되돌린다. 칠해지지 않은(Fixed/Wall 등) 타일은 표시만 갱신한다.
+    // 칠해진 타일이나 Fixed 타일(연필로 만들었든 레벨(JSON)에서 왔든)을 지워 Empty로 되돌린다.
+    // Wall/Hole/Start/End/Star/Key 등은 지우지 않고 표시만 갱신한다.
     private void ClearPaintedTile(int index)
     {
         PaintedController tc = tileControllers[index];
         if (tc == null) return;
 
-        if (!tc.Tile.IsPainted)
+        if (!tc.Tile.IsPainted && tc.Tile.type != TileType.Fixed)
         {
             tc.Refresh();
             return;
@@ -119,6 +136,7 @@ public class PaintManager : MonoBehaviour
         tc.ChangeTileType(0);
         Destroy(tc.gameObject);
         tileControllers[index] = null;
+        userFixedTiles.Remove(index);
     }
 
     // Platformer 모드로 넘어갈 때 호출. Hole은 실제 HoleController가 대신 보여줘야 하므로
@@ -147,12 +165,30 @@ public class PaintManager : MonoBehaviour
 
     #region Painting
 
+    // Paint 버튼(그리드) 클릭은 전부 여기로 들어온다. 실제 동작은 현재 모드에 따라 갈린다.
+    public void HandleTileClicked(int id)
+    {
+        switch (_currentMode)
+        {
+            case PaintMode.Paint: Paint(id); break;
+            case PaintMode.Pencil: Pencil(id); break;
+            case PaintMode.Eraser: Erase(id); break;
+        }
+    }
+
+    public void SetMode(PaintMode mode)
+    {
+        if (_currentMode == mode) return;
+        _currentMode = mode;
+        OnPaintModeChanged?.Invoke(mode);
+    }
+
     public void Paint(int id)
     {
         if (CurrentBoard.allTiles[id].type != TileType.Empty) return;
 
         PaintedController tc = GetOrCreateTile(id);
-        tc.PaintTile();
+        tc.PaintTile(); // 내부에서 OnTilePainted -> AddPaintAction(id)로 이어져 undo 스택에 쌓인다.
 
         PaintCount++;
         OnPaintCountChanged?.Invoke(PaintCount);
@@ -162,7 +198,63 @@ public class PaintManager : MonoBehaviour
             AudioManager.Instance.PlayRandomSFX(new[] { "paint_1", "paint_2" });
     }
 
-    public void AddPaintAction(List<int> paintedTiles, bool is_paint = true) => paintActions.Push(new TilePaintAction(paintedTiles, is_paint));
+    // 연필: 빈 타일을 고정(Fixed) 타일로 만든다. Paint와 마찬가지로 PaintCount에 포함되고 undo 가능하다.
+    public void Pencil(int id)
+    {
+        if (CurrentBoard.allTiles[id].type != TileType.Empty) return;
+
+        PaintedController tc = GetOrCreateTile(id);
+        tc.ChangeTileType((int)TileType.Fixed);
+        userFixedTiles.Add(id);
+
+        AddPaintAction(id);
+
+        PaintCount++;
+        OnPaintCountChanged?.Invoke(PaintCount);
+        OnTilePainted?.Invoke(id);
+
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlayRandomSFX(new[] { "paint_1", "paint_2" });
+    }
+
+    // 지우개: Paint/Paint_Dec은 물론 Fixed 타일도 지울 수 있다 (연필로 만든 것이든 레벨(JSON)에 원래 있던 것이든 동일하게).
+    // Wall/Hole/Start/End/Star/Key는 대상이 아니다. PaintCount는 건드리지 않는다
+    // (지우고 다시 칠해서 이동 수를 줄이는 걸 막기 위함) — Undo로 복원해도 마찬가지.
+    // 레벨 Fixed를 지워도 Reset을 누르면 originalTileTypes 기준으로 다시 복원된다.
+    public void Erase(int id)
+    {
+        Tile tile = CurrentBoard.allTiles[id];
+        bool erasable = tile.IsPainted || tile.type == TileType.Fixed;
+        if (!erasable) return;
+
+        TileSnapshot snapshot = new TileSnapshot
+        {
+            index = id,
+            prevType = tile.type,
+            prevColorId = tile.paint_color_id,
+            wasUserFixed = userFixedTiles.Contains(id)
+        };
+
+        ClearPaintedTile(id);
+
+        paintActions.Push(new TilePaintAction(new List<TileSnapshot> { snapshot }, countsTowardPaintCount: false));
+
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlayRandomSFX(new[] { "paint_1", "paint_2" });
+    }
+
+    // paintedTiles는 전부 Empty에서 새로 생긴 타일(Paint/Pencil/접기 결과)이므로, undo 시 전부 Empty로 되돌아간다.
+    public void AddPaintAction(List<int> paintedTiles, bool countsTowardPaintCount = true)
+    {
+        List<TileSnapshot> snapshots = paintedTiles.ConvertAll(i => new TileSnapshot
+        {
+            index = i,
+            prevType = TileType.Empty,
+            prevColorId = -1,
+            wasUserFixed = false
+        });
+        paintActions.Push(new TilePaintAction(snapshots, countsTowardPaintCount));
+    }
 
     public void AddPaintAction(int paintedTileID) => AddPaintAction(new List<int> { paintedTileID });
 
@@ -176,25 +268,67 @@ public class PaintManager : MonoBehaviour
 
         TilePaintAction lastAction = paintActions.Pop();
 
-        foreach (int tile in lastAction.PaintedTiles)
-            ClearPaintedTile(tile);
+        foreach (TileSnapshot snapshot in lastAction.Snapshots)
+            RestoreSnapshot(snapshot);
 
-        if (!lastAction.is_paint) return;
+        if (!lastAction.CountsTowardPaintCount) return;
 
         PaintCount--;
         OnPaintCountChanged?.Invoke(PaintCount);
     }
 
+    // Undo 대상 스냅샷 하나를 복원한다. prevType이 Empty면 지우기(Paint/Pencil/접기 undo),
+    // 그 외에는 지우개로 지우기 전 상태(타입/색상/연필여부)를 그대로 되살린다(Erase undo).
+    private void RestoreSnapshot(TileSnapshot snapshot)
+    {
+        if (snapshot.prevType == TileType.Empty)
+        {
+            ClearPaintedTile(snapshot.index);
+            return;
+        }
+
+        CurrentBoard.allTiles[snapshot.index].ChangeTileType(snapshot.prevType, snapshot.prevColorId);
+        GetOrCreateTile(snapshot.index);
+
+        if (snapshot.wasUserFixed) userFixedTiles.Add(snapshot.index);
+    }
+
     public void ResetPaint()
     {
+        SetMode(PaintMode.Paint);
+
         PaintCount = 0;
         OnPaintCountChanged?.Invoke(PaintCount);
 
         for (int i = 0; i < tileControllers.Count; i++)
-            ClearPaintedTile(i);
+            RestoreOriginalTile(i);
 
         ResumePaint();
         paintActions.Clear();
+        userFixedTiles.Clear();
+    }
+
+    // 지금 상태가 뭐든(칠해졌든, 연필로 그렸든, 레벨 Fixed가 지워졌든) 스테이지 로드 시점의 원래 타입으로 되돌린다.
+    private void RestoreOriginalTile(int index)
+    {
+        TileType originalType = originalTileTypes[index];
+        Tile tile = CurrentBoard.allTiles[index];
+
+        if (tile.type == originalType)
+        {
+            if (tileControllers[index] != null) tileControllers[index].Refresh();
+            return;
+        }
+
+        if (originalType == TileType.Empty)
+        {
+            ClearPaintedTile(index); // Paint/Paint_Dec/연필 Fixed였던 경우 -> Empty로
+            return;
+        }
+
+        // 레벨 Fixed 등이 지워져서 Empty가 된 경우 -> 원래 타입으로 복원
+        tile.ChangeTileType(originalType);
+        GetOrCreateTile(index);
     }
 
     public void ResumePaint()
@@ -298,14 +432,24 @@ public class PaintManager : MonoBehaviour
     #endregion
 }
 
+// Undo 한 번(액션 하나)에 필요한 정보. 스냅샷마다 "되돌릴 때 복원할 상태"를 담고 있어서,
+// Paint/Pencil/접기(Empty로 복원)와 지우개(지우기 전 상태로 복원) 모두 같은 구조로 undo할 수 있다.
 public class TilePaintAction
 {
-    public List<int> PaintedTiles;
-    public bool is_paint;
+    public List<TileSnapshot> Snapshots;
+    public bool CountsTowardPaintCount; // undo할 때 PaintCount를 증감시킬지 (Erase 액션은 항상 false)
 
-    public TilePaintAction(List<int> paintedTiles, bool is_paint = true)
+    public TilePaintAction(List<TileSnapshot> snapshots, bool countsTowardPaintCount = true)
     {
-        PaintedTiles = paintedTiles;
-        this.is_paint = is_paint;
+        Snapshots = snapshots;
+        CountsTowardPaintCount = countsTowardPaintCount;
     }
+}
+
+public struct TileSnapshot
+{
+    public int index;
+    public TileType prevType;   // undo 시 복원할 타입 (Paint/Pencil/접기는 항상 Empty)
+    public int prevColorId;     // Paint/Paint_Dec였다면 색상 id, 아니면 -1
+    public bool wasUserFixed;   // 연필로 만든 Fixed였는지 (복원 시 userFixedTiles에 다시 등록하기 위함)
 }

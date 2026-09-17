@@ -99,6 +99,10 @@ public class StageUI : MonoBehaviour
 
     public GameObject mobileControlButtonContainer;
 
+    [Header("Item Buttons")]
+    public ButtonUI pencilButton;
+    public ButtonUI eraserButton;
+
     // BindHover로 걸어 둔 구독을 OnDestroy에서 한꺼번에 되돌리기 위한 목록.
     private readonly List<Action> unbindActions = new List<Action>();
 
@@ -385,6 +389,33 @@ public class StageUI : MonoBehaviour
     {
         flipHorizontalButton.OnUnhighlighted();
         flipVerticalButton.OnUnhighlighted();
+    }
+
+    #endregion
+
+    #region Paint mode buttons
+
+    // 연필/지우개 버튼 중 현재 모드에 해당하는 것만 살짝 확대해 선택 상태를 표시한다.
+    private readonly Dictionary<ButtonUI, Vector3> paintModeButtonBaseScale = new Dictionary<ButtonUI, Vector3>();
+
+    public void SetPaintModeButtonsSelected(PaintManager.PaintMode mode)
+    {
+        SetPaintModeButtonSelected(pencilButton, mode == PaintManager.PaintMode.Pencil);
+        SetPaintModeButtonSelected(eraserButton, mode == PaintManager.PaintMode.Eraser);
+    }
+
+    private void SetPaintModeButtonSelected(ButtonUI button, bool selected)
+    {
+        if (button == null) return;
+
+        if (!paintModeButtonBaseScale.TryGetValue(button, out Vector3 baseScale))
+        {
+            baseScale = button.transform.localScale;
+            paintModeButtonBaseScale[button] = baseScale;
+        }
+
+        button.transform.DOKill();
+        button.transform.DOScale(selected ? baseScale * 1.15f : baseScale, 0.15f).SetEase(Ease.OutQuad);
     }
 
     #endregion
