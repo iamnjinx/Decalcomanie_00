@@ -266,6 +266,10 @@ public class BoardData
     [Header("Achivements")]
     public int minMoves = 99;
 
+    // 스테이지에서 사용 가능한 아이템 목록. 순서대로 아이템 버튼이 생성되고, 항목 하나당 1회용 버튼 하나가 대응한다.
+    // 예: ["pencil", "pencil", "eraser"] -> 연필 버튼 2개 + 지우개 버튼 1개.
+    public List<string> AvailableItems = new List<string>();
+
     public BoardData(int size, Vector2 startPointV, Vector2 endPointV, Vector2 starPointV, Vector2 keyPointV, List<Vector2> fixedPointVs, List<Vector2> holePointVs, List<Vector2> wallPointVs = null, List<Vector2> blockedPointVs = null)
     {
         Size = size;
@@ -321,6 +325,7 @@ public class BoardData
         );
         boardData.minMoves = stageJson.MinMoves;
         boardData.PlayableSize = playableSize;
+        boardData.AvailableItems = stageJson.AvailableItems ?? new List<string>();
         return boardData;
     }
 
@@ -342,6 +347,8 @@ public class BoardData
         public List<Vector2> HolePoints;
         public List<Vector2> BlockedPoints; // 선택 항목. 생략하면 기본 규칙(Quadrant2/Quadrant4 차단)이 적용된다.
         public int MinMoves;
+        // 선택 항목. 생략하면 사용 가능한 아이템이 없는 것으로 취급한다. 예: ["pencil", "eraser"]
+        public List<string> AvailableItems;
     }
 }
 

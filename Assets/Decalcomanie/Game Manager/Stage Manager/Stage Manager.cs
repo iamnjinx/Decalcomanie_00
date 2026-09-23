@@ -80,15 +80,11 @@ public class StageManager : MonoBehaviour
         stageUI.flipHorizontalButton.OnSingleClick += HandleFlipHorizontalTriggered;
         stageUI.flipVerticalButton.OnSingleClick += HandleFlipVerticalTriggered;
 
-        stageUI.pencilButton.OnSingleClick += HandlePencilButtonTriggered;
-        stageUI.eraserButton.OnSingleClick += HandleEraserButtonTriggered;
-
         stageUI.OnStampStamped += HandleStampStamped;
 
         paintManager.OnFoldStarted += HandleFoldStarted;
         paintManager.OnFoldReturning += HandleFoldReturning;
         paintManager.OnPaintCountChanged += stageUI.UpdateUsedTileText;
-        paintManager.OnPaintModeChanged += stageUI.SetPaintModeButtonsSelected;
 
         // 플랫포머 이벤트는 모드가 바뀔 때마다 붙였다 떼지 않고 여기서 한 번만 연결하고,
         // 핸들러 안에서 현재 상태로 걸러냅니다.
@@ -112,9 +108,6 @@ public class StageManager : MonoBehaviour
             stageUI.flipHorizontalButton.OnSingleClick -= HandleFlipHorizontalTriggered;
             stageUI.flipVerticalButton.OnSingleClick -= HandleFlipVerticalTriggered;
 
-            stageUI.pencilButton.OnSingleClick -= HandlePencilButtonTriggered;
-            stageUI.eraserButton.OnSingleClick -= HandleEraserButtonTriggered;
-
             stageUI.OnStampStamped -= HandleStampStamped;
         }
 
@@ -123,7 +116,6 @@ public class StageManager : MonoBehaviour
             paintManager.OnFoldStarted -= HandleFoldStarted;
             paintManager.OnFoldReturning -= HandleFoldReturning;
             paintManager.OnPaintCountChanged -= stageUI.UpdateUsedTileText;
-            paintManager.OnPaintModeChanged -= stageUI.SetPaintModeButtonsSelected;
             paintManager.OnTilePainted -= HandleSwitchTutorialTilePainted;
             paintManager.OnTilePainted -= HandleFoldTutorialTilePainted;
             paintManager.OnFolded -= HandleFoldTutorialFolded;
@@ -449,21 +441,6 @@ public class StageManager : MonoBehaviour
     }
 
     private void HandleUndoButtonTriggered() => paintManager.UndoPaintAction();
-
-    // 연필/지우개 버튼은 토글이다: 이미 그 모드면 눌렀을 때 기본(Paint) 모드로 돌아간다.
-    private void HandlePencilButtonTriggered()
-    {
-        paintManager.SetMode(paintManager.CurrentMode == PaintManager.PaintMode.Pencil
-            ? PaintManager.PaintMode.Paint
-            : PaintManager.PaintMode.Pencil);
-    }
-
-    private void HandleEraserButtonTriggered()
-    {
-        paintManager.SetMode(paintManager.CurrentMode == PaintManager.PaintMode.Eraser
-            ? PaintManager.PaintMode.Paint
-            : PaintManager.PaintMode.Eraser);
-    }
 
     private void HandleFlipHorizontalTriggered()
     {

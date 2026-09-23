@@ -52,5 +52,6 @@
             "y": 6.0
         }
     ],
-    "MinMoves": 6
+    "MinMoves": 6,
+    "AvailableItems": ["eraser", "pencil", "pencil"]
 }
