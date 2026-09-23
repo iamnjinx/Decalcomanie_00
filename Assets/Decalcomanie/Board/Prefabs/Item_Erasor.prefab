@@ -276,3 +276,5 @@ MonoBehaviour:
   selectedScaleDuration: 0.15
   normalSprite: {fileID: 21300000, guid: fc117b38a20664e5cbe9826c64a77323, type: 3}
   selectedSprite: {fileID: 21300000, guid: deb0880bb1a5a4e1db8e7c28f9276259, type: 3}
+  countText: {fileID: 4246792221948656831}
+  disabledAlpha: 0.4

@@ -15,9 +15,9 @@ public class PaintUI : MonoBehaviour
     [SerializeField] private Image linePrefab;
 
     [Header("Item Buttons")]
-    [SerializeField] private Transform itemButtonContainer;
-    [SerializeField] private ItemButton pencilItemButtonPrefab;
-    [SerializeField] private ItemButton eraserItemButtonPrefab;
+    // 프리팹이 아니라 씬에 미리 배치해 둔 버튼을 그대로 쓴다. 인스펙터에서 직접 연결할 것.
+    [SerializeField] private ItemButton pencilItemButton;
+    [SerializeField] private ItemButton eraserItemButton;
 
     [SerializeField] private float gridPixelSize = 116.5f * 8f; // 8x8 기준 grid 전체 크기(px). 보드 크기가 달라져도 이 크기를 유지하도록 셀 크기를 매번 재계산한다.
 
@@ -62,40 +62,60 @@ public class PaintUI : MonoBehaviour
         }
     }
 
-    // 스테이지 JSON의 AvailableItems 순서대로 아이템 버튼을 itemButtonContainer 아래에 생성한다.
-    // 생성된 버튼들의 소모/복구/Undo/Reset 처리는 PaintManager가 맡는다.
-    public List<ItemButton> SetItemButtons(List<string> availableItems, System.Action<ItemButton> onItemButtonClicked)
+    // 스테이지 JSON의 AvailableItems에서 종류별 개수를 세어, 씬에 미리 배치된 아이템 버튼에 반영한다.
+    // 버튼은 Instantiate/Destroy하지 않는다. 소모/복구/Undo/Reset 처리는 PaintManager가 맡는다.
+    public Dictionary<PaintManager.PaintMode, ItemButton> SetItemButtons(
+        List<string> availableItems, System.Action<ItemButton> onItemButtonClicked)
     {
-        foreach (Transform child in itemButtonContainer)
-            Destroy(child.gameObject);
+        Dictionary<PaintManager.PaintMode, ItemButton> buttons = new Dictionary<PaintManager.PaintMode, ItemButton>();
 
-        List<ItemButton> buttons = new List<ItemButton>();
-        if (availableItems == null) return buttons;
-
-        foreach (string itemName in availableItems)
+        foreach (KeyValuePair<PaintManager.PaintMode, int> kvp in CountItems(availableItems))
         {
-            PaintManager.PaintMode mode = ParseItemMode(itemName);
-            ItemButton prefab = GetItemButtonPrefab(mode);
-            if (prefab == null)
-            {
-                Debug.LogWarning($"[PaintUI] Unknown item type in stage JSON: {itemName}");
-                continue;
-            }
+            ItemButton button = GetItemButton(kvp.Key);
+            if (button == null) continue;
 
-            ItemButton newButton = Instantiate(prefab, itemButtonContainer);
-            newButton.SetItemMode(mode);
-            newButton.onItemButtonClicked = onItemButtonClicked;
-            buttons.Add(newButton);
+            button.SetItemMode(kvp.Key);
+            button.onItemButtonClicked = onItemButtonClicked;
+
+            // 스테이지가 아예 주지 않는 아이템은 자리도 차지하지 않도록 끈다(파괴하지는 않는다).
+            button.gameObject.SetActive(kvp.Value > 0);
+            button.SetCount(kvp.Value);
+
+            buttons[kvp.Key] = button;
         }
         return buttons;
     }
 
-    private ItemButton GetItemButtonPrefab(PaintManager.PaintMode mode)
+    // AvailableItems는 개수만큼 같은 이름이 반복된 목록이다. 예: ["pencil", "pencil", "eraser"] -> 연필 2, 지우개 1.
+    private static Dictionary<PaintManager.PaintMode, int> CountItems(List<string> availableItems)
+    {
+        Dictionary<PaintManager.PaintMode, int> counts = new Dictionary<PaintManager.PaintMode, int>
+        {
+            { PaintManager.PaintMode.Pencil, 0 },
+            { PaintManager.PaintMode.Eraser, 0 },
+        };
+
+        if (availableItems == null) return counts;
+
+        foreach (string itemName in availableItems)
+        {
+            PaintManager.PaintMode mode = ParseItemMode(itemName);
+            if (!counts.ContainsKey(mode))
+            {
+                Debug.LogWarning($"[PaintUI] Unknown item type in stage JSON: {itemName}");
+                continue;
+            }
+            counts[mode]++;
+        }
+        return counts;
+    }
+
+    private ItemButton GetItemButton(PaintManager.PaintMode mode)
     {
         switch (mode)
         {
-            case PaintManager.PaintMode.Pencil: return pencilItemButtonPrefab;
-            case PaintManager.PaintMode.Eraser: return eraserItemButtonPrefab;
+            case PaintManager.PaintMode.Pencil: return pencilItemButton;
+            case PaintManager.PaintMode.Eraser: return eraserItemButton;
             default: return null;
         }
     }

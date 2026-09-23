@@ -141,6 +141,8 @@ MonoBehaviour:
   selectedScaleDuration: 0.15
   normalSprite: {fileID: 21300000, guid: d80f4d685117b478bbce757073a1a5e0, type: 3}
   selectedSprite: {fileID: 21300000, guid: 9e2a4946dccba40538ea9630331789a5, type: 3}
+  countText: {fileID: 4133507989791610662}
+  disabledAlpha: 0.4
 --- !u!1 &3473938526944643417
 GameObject:
   m_ObjectHideFlags: 0

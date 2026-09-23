@@ -27,11 +27,13 @@ public class PaintManager : MonoBehaviour
     private readonly List<Transform> curtainBlocks = new List<Transform>();
     private readonly Stack<TilePaintAction> paintActions = new Stack<TilePaintAction>();
 
-    // 스테이지에서 생성된 아이템 버튼 전체(Reset 시 복구용)와, 아직 소모되지 않아 사용 가능한 버튼(순서 보장, 앞에서부터 소모).
-    private readonly Dictionary<PaintMode, List<ItemButton>> allItemButtons = new Dictionary<PaintMode, List<ItemButton>>();
-    private readonly Dictionary<PaintMode, List<ItemButton>> availableItemButtons = new Dictionary<PaintMode, List<ItemButton>>();
+    // 종류당 씬에 미리 배치된 버튼 하나씩. 개수는 버튼 개수가 아니라 카운터로 관리한다.
+    // initialItemCounts는 스테이지 로드 시점의 개수(Reset 복구용), remainingItemCounts는 현재 남은 개수.
+    private readonly Dictionary<PaintMode, ItemButton> itemButtons = new Dictionary<PaintMode, ItemButton>();
+    private readonly Dictionary<PaintMode, int> initialItemCounts = new Dictionary<PaintMode, int>();
+    private readonly Dictionary<PaintMode, int> remainingItemCounts = new Dictionary<PaintMode, int>();
 
-    // 유저가 직접 클릭해서 고른 아이템 버튼 하나. 같은 종류(연필) 버튼이 여러 개여도 이 버튼만 selected로 표시되고, 실제로 소모되는 것도 이 버튼이다.
+    // 유저가 직접 클릭해서 고른 아이템 버튼. 남은 개수가 0이 되면 자동으로 해제된다.
     private ItemButton _selectedItemButton;
 
     // 연필로 만든 Fixed 타일의 인덱스만 추적한다. 레벨(JSON) Fixed는 여기 포함되지 않는다.
@@ -117,22 +119,24 @@ public class PaintManager : MonoBehaviour
 
     private void SetupItemButtons(Board board)
     {
-        List<ItemButton> buttons = paintUI.SetItemButtons(board.BoardData.AvailableItems, HandleItemButtonClicked);
+        itemButtons.Clear();
+        initialItemCounts.Clear();
+        remainingItemCounts.Clear();
 
-        allItemButtons[PaintMode.Pencil] = new List<ItemButton>();
-        allItemButtons[PaintMode.Eraser] = new List<ItemButton>();
-
-        foreach (ItemButton button in buttons)
-            allItemButtons[button.ItemMode].Add(button);
-
-        availableItemButtons[PaintMode.Pencil] = new List<ItemButton>(allItemButtons[PaintMode.Pencil]);
-        availableItemButtons[PaintMode.Eraser] = new List<ItemButton>(allItemButtons[PaintMode.Eraser]);
+        foreach (KeyValuePair<PaintMode, ItemButton> kvp in
+                 paintUI.SetItemButtons(board.BoardData.AvailableItems, HandleItemButtonClicked))
+        {
+            itemButtons[kvp.Key] = kvp.Value;
+            initialItemCounts[kvp.Key] = kvp.Value.Count;
+            remainingItemCounts[kvp.Key] = kvp.Value.Count;
+        }
     }
 
-    // 아이템 버튼 클릭은 토글이다: 이미 선택된 그 버튼을 다시 누르면 기본(Paint) 모드로 돌아간다.
-    // 같은 종류의 버튼이 여러 개 있어도, 다른 버튼을 누르면 선택이 그 버튼으로 옮겨간다.
+    // 아이템 버튼 클릭은 토글이다: 이미 선택된 버튼을 다시 누르면 기본(Paint) 모드로 돌아간다.
     private void HandleItemButtonClicked(ItemButton button)
     {
+        if (GetRemainingItemCount(button.ItemMode) <= 0) return;
+
         if (_selectedItemButton == button)
         {
             SelectItemButton(null);
@@ -151,45 +155,55 @@ public class PaintManager : MonoBehaviour
         if (_selectedItemButton != null) _selectedItemButton.SetSelected(true);
     }
 
-    // 유저가 선택해 둔 그 버튼을 소모한다(다른 버튼이 아니라 정확히 클릭했던 버튼). 선택된 버튼이 없거나 모드가 다르면 false.
-    private bool ConsumeItem(PaintMode mode, out ItemButton consumedButton)
+    private int GetRemainingItemCount(PaintMode mode)
+        => remainingItemCounts.TryGetValue(mode, out int remaining) ? remaining : 0;
+
+    // 남은 개수를 바꾸고 버튼 표시(개수 텍스트 / 0이면 반투명+클릭불가)를 함께 갱신한다.
+    private void SetRemainingItemCount(PaintMode mode, int count)
     {
-        consumedButton = null;
+        if (!itemButtons.TryGetValue(mode, out ItemButton button)) return;
+
+        remainingItemCounts[mode] = count;
+        button.SetCount(count);
+    }
+
+    // 선택해 둔 아이템을 1개 소모한다. 선택된 게 없거나 모드가 다르거나 남은 개수가 없으면 false.
+    // 남은 개수가 있으면 선택 상태를 유지해 연속으로 쓸 수 있고, 0이 되면 선택을 풀고 Paint 모드로 돌아간다.
+    private bool ConsumeItem(PaintMode mode)
+    {
         if (_selectedItemButton == null || _selectedItemButton.ItemMode != mode) return false;
-        if (!availableItemButtons.TryGetValue(mode, out List<ItemButton> pool) || !pool.Remove(_selectedItemButton)) return false;
 
-        consumedButton = _selectedItemButton;
-        consumedButton.SetSelected(false, instant: true);
-        consumedButton.gameObject.SetActive(false);
+        int remaining = GetRemainingItemCount(mode);
+        if (remaining <= 0) return false;
 
-        SelectItemButton(null);
-        SetMode(PaintMode.Paint);
+        SetRemainingItemCount(mode, remaining - 1);
+
+        if (remaining - 1 <= 0)
+        {
+            SelectItemButton(null);
+            SetMode(PaintMode.Paint);
+        }
         return true;
     }
 
     // Undo로 아이템 소모를 되돌린다. 선택 상태로는 되돌리지 않고, 다시 고를 수 있는 상태로만 되돌린다.
-    private void RestoreItem(ItemButton button)
+    private void RestoreItem(PaintMode? mode)
     {
-        if (button == null) return;
+        if (mode == null) return;
 
-        availableItemButtons[button.ItemMode].Add(button);
-        button.gameObject.SetActive(true);
-        button.SetSelected(false, instant: true);
+        SetRemainingItemCount(mode.Value, GetRemainingItemCount(mode.Value) + 1);
     }
 
-    // Reset 시 스테이지 로드 시점에 생성됐던 아이템 버튼 전체를 되살린다.
+    // Reset 시 스테이지 로드 시점의 개수로 되돌린다.
     private void ResetItemButtons()
     {
         SelectItemButton(null);
 
-        foreach (KeyValuePair<PaintMode, List<ItemButton>> kvp in allItemButtons)
+        foreach (KeyValuePair<PaintMode, int> kvp in initialItemCounts)
         {
-            availableItemButtons[kvp.Key] = new List<ItemButton>(kvp.Value);
-            foreach (ItemButton button in kvp.Value)
-            {
-                button.gameObject.SetActive(true);
+            SetRemainingItemCount(kvp.Key, kvp.Value);
+            if (itemButtons.TryGetValue(kvp.Key, out ItemButton button))
                 button.SetSelected(false, instant: true);
-            }
         }
     }
 
@@ -293,13 +307,13 @@ public class PaintManager : MonoBehaviour
     public void Pencil(int id)
     {
         if (CurrentBoard.allTiles[id].type != TileType.Empty) return;
-        if (!ConsumeItem(PaintMode.Pencil, out ItemButton consumedButton)) return;
+        if (!ConsumeItem(PaintMode.Pencil)) return;
 
         PaintedController tc = GetOrCreateTile(id);
         tc.ChangeTileType((int)TileType.Fixed);
         userFixedTiles.Add(id);
 
-        AddPaintAction(id, consumedButton);
+        AddPaintAction(id, PaintMode.Pencil);
 
         PaintCount++;
         OnPaintCountChanged?.Invoke(PaintCount);
@@ -319,7 +333,7 @@ public class PaintManager : MonoBehaviour
         Tile tile = CurrentBoard.allTiles[id];
         bool erasable = tile.IsPainted || tile.type == TileType.Fixed;
         if (!erasable) return;
-        if (!ConsumeItem(PaintMode.Eraser, out ItemButton consumedButton)) return;
+        if (!ConsumeItem(PaintMode.Eraser)) return;
 
         TileSnapshot snapshot = new TileSnapshot
         {
@@ -331,7 +345,7 @@ public class PaintManager : MonoBehaviour
 
         ClearPaintedTile(id);
 
-        paintActions.Push(new TilePaintAction(new List<TileSnapshot> { snapshot }, countsTowardPaintCount: false, consumedItemButton: consumedButton));
+        paintActions.Push(new TilePaintAction(new List<TileSnapshot> { snapshot }, countsTowardPaintCount: false, consumedItemMode: PaintMode.Eraser));
 
         if (AudioManager.Instance != null)
             AudioManager.Instance.PlayRandomSFX(new[] { "paint_1", "paint_2" });
@@ -341,7 +355,7 @@ public class PaintManager : MonoBehaviour
     public void AddPaintAction(List<int> paintedTiles, bool countsTowardPaintCount = true)
         => AddPaintAction(paintedTiles, countsTowardPaintCount, null);
 
-    private void AddPaintAction(List<int> paintedTiles, bool countsTowardPaintCount, ItemButton consumedItemButton)
+    private void AddPaintAction(List<int> paintedTiles, bool countsTowardPaintCount, PaintMode? consumedItemMode)
     {
         List<TileSnapshot> snapshots = paintedTiles.ConvertAll(i => new TileSnapshot
         {
@@ -350,13 +364,13 @@ public class PaintManager : MonoBehaviour
             prevColorId = -1,
             wasUserFixed = false
         });
-        paintActions.Push(new TilePaintAction(snapshots, countsTowardPaintCount, consumedItemButton));
+        paintActions.Push(new TilePaintAction(snapshots, countsTowardPaintCount, consumedItemMode));
     }
 
     public void AddPaintAction(int paintedTileID) => AddPaintAction(new List<int> { paintedTileID });
 
-    private void AddPaintAction(int paintedTileID, ItemButton consumedItemButton)
-        => AddPaintAction(new List<int> { paintedTileID }, true, consumedItemButton);
+    private void AddPaintAction(int paintedTileID, PaintMode? consumedItemMode)
+        => AddPaintAction(new List<int> { paintedTileID }, true, consumedItemMode);
 
     public void UndoPaintAction()
     {
@@ -371,7 +385,7 @@ public class PaintManager : MonoBehaviour
         foreach (TileSnapshot snapshot in lastAction.Snapshots)
             RestoreSnapshot(snapshot);
 
-        RestoreItem(lastAction.ConsumedItemButton);
+        RestoreItem(lastAction.ConsumedItemMode);
 
         if (!lastAction.CountsTowardPaintCount) return;
 
@@ -541,13 +555,13 @@ public class TilePaintAction
 {
     public List<TileSnapshot> Snapshots;
     public bool CountsTowardPaintCount; // undo할 때 PaintCount를 증감시킬지 (Erase 액션은 항상 false)
-    public ItemButton ConsumedItemButton; // 이 액션으로 소모된 아이템 버튼(연필/지우개). 없으면 null
+    public PaintManager.PaintMode? ConsumedItemMode; // 이 액션으로 소모된 아이템 종류(연필/지우개). 없으면 null
 
-    public TilePaintAction(List<TileSnapshot> snapshots, bool countsTowardPaintCount = true, ItemButton consumedItemButton = null)
+    public TilePaintAction(List<TileSnapshot> snapshots, bool countsTowardPaintCount = true, PaintManager.PaintMode? consumedItemMode = null)
     {
         Snapshots = snapshots;
         CountsTowardPaintCount = countsTowardPaintCount;
-        ConsumedItemButton = consumedItemButton;
+        ConsumedItemMode = consumedItemMode;
     }
 }
 

@@ -603,6 +603,8 @@ public class StageManager : MonoBehaviour
             wallPoints,
             blockedPoints);
         boardData.PlayableSize = playableSize;
+        // 편집기에서 정한 연필/지우개 개수만큼 아이템 버튼이 생깁니다.
+        boardData.AvailableItems = EditorManager.BuildSavedAvailableItems();
         return boardData;
     }
 }

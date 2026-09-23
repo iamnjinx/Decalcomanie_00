@@ -1,18 +1,16 @@
 using System.Collections.Generic;
 using System.IO;
-using Njinx.UI;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class EditorManager : MonoBehaviour
 {
-    [SerializeField] private ButtonUI quitButton;
     static EditorManager _instance;
 
+    // UI 참조와 뷰 로직은 전부 EditorUI가 갖는다.
+    [SerializeField] private EditorUI editorUI;
+
     [SerializeField] private EditorTileDroppable droppablePrefab;
-    [SerializeField] private Transform droppableParent;
 
     private List<EditorTileDroppable> droppableTiles = new List<EditorTileDroppable>();
 
@@ -24,24 +22,19 @@ public class EditorManager : MonoBehaviour
     // EditorPlayScene에서 배경 material에 물릴 인덱스. GameData.chapterBackgroundSprites의 인덱스다.
     public static int SavedBackgroundId;
 
-    public ButtonUI ResetButton;
-    public ButtonUI SwitchButton;
-    public ButtonUI SaveButton;
+    // EditorPlayScene에서 쓸 아이템 개수. Paint UI가 항목 하나당 버튼 하나를 만든다.
+    public static int SavedPencilCount;
+    public static int SavedEraserCount;
 
-    public ButtonUI presetButton1;
+    // 스테이지 JSON의 AvailableItems에 들어가는 이름. Paint UI의 ParseItemMode와 같은 문자열이어야 한다.
+    public const string PencilItemName = "pencil";
+    public const string EraserItemName = "eraser";
 
-    [Header("Adjust Board Size")]
-    public VerticalLayoutGroup horizontalLineParent;
-    public VerticalLayoutGroup verticalLineParent;
-    public GameObject linePrefab;
-    public ButtonUI increaseSizeButton;
-    public ButtonUI decreaseSizeButton;
-    public TextMeshProUGUI curSizeText;
+    // 버튼은 종류당 하나뿐이고 개수만 텍스트로 표시되지만, 난이도 상 상한을 둔다.
+    [SerializeField] private int maxItemCount = 9;
 
-    // 보드(Tile Grid)의 가로/세로 픽셀 크기와 line prefab의 두께.
-    // 라인 간격 = boardPixelSize / boardSize - lineThickness (6:127, 8:94, 10:74)
-    [SerializeField] private float boardPixelSize = 800f;
-    [SerializeField] private float lineThickness = 6f;
+    private int pencilCount;
+    private int eraserCount;
 
     // 커튼 프리셋이 반대쪽 대각선에 깔리면 이 값을 켜서 뒤집는다.
     [SerializeField] private bool flipCurtainPreset;
@@ -51,12 +44,6 @@ public class EditorManager : MonoBehaviour
 
     private int boardSize = 8;
 
-    [Header("Background")]
-    // 배경 목록은 GameData.chapterBackgroundSprites를 그대로 쓴다. 개수는 하드코딩하지 않는다.
-    public ButtonUI backgroundButton;
-    // 선택한 배경을 에디터에서 확인하기 위한 미리보기(선택 사항).
-    [SerializeField] private Image backgroundPreviewImage;
-
     private int backgroundImageId = 0;
 
     void Start()
@@ -64,6 +51,10 @@ public class EditorManager : MonoBehaviour
         // SavedBoard는 크기를 따로 들고 있지 않으므로 길이에서 boardSize를 역산한다.
         if (SavedBoard != null)
             boardSize = Mathf.RoundToInt(Mathf.Sqrt(SavedBoard.Length));
+
+        // EditorPlayScene에 갔다가 돌아와도 고르던 아이템 개수를 유지한다.
+        pencilCount = Mathf.Clamp(SavedPencilCount, 0, maxItemCount);
+        eraserCount = Mathf.Clamp(SavedEraserCount, 0, maxItemCount);
 
         ChangeBoardSize(boardSize);
 
@@ -80,26 +71,24 @@ public class EditorManager : MonoBehaviour
                 droppableTiles[i].SetCurtain(SavedCurtains[i]);
         }
 
-        ResetButton.OnSingleClick += ResetBoard;
-        SwitchButton.OnSingleClick += Switch;
-        SaveButton.OnSingleClick += Save;
-        increaseSizeButton.OnSingleClick += IncreaseBoardSize;
-        decreaseSizeButton.OnSingleClick += DecreaseBoardSize;
-        presetButton1.OnSingleClick += SetCurtainAsPreset;
+        if (editorUI != null)
+        {
+            editorUI.OnResetClicked += ResetBoard;
+            editorUI.OnSwitchClicked += Switch;
+            editorUI.OnSaveClicked += Save;
+            editorUI.OnIncreaseSizeClicked += IncreaseBoardSize;
+            editorUI.OnDecreaseSizeClicked += DecreaseBoardSize;
+            editorUI.OnPresetClicked += SetCurtainAsPreset;
+            editorUI.OnBackgroundClicked += ChangeBackgroundImage;
+            editorUI.OnQuitClicked += Quit;
+            editorUI.OnPencilCountDelta += ChangePencilCount;
+            editorUI.OnEraserCountDelta += ChangeEraserCount;
 
-        // 배경 버튼은 씬에 아직 없을 수 있으므로 null을 허용한다.
-        if (backgroundButton != null)
-            backgroundButton.OnSingleClick += ChangeBackgroundImage;
+            editorUI.SetItemCountTexts(pencilCount, eraserCount);
+        }
 
         // EditorPlayScene에 갔다가 돌아와도 고르던 배경을 유지한다.
         SetBackgroundImage(SavedBackgroundId);
-
-        quitButton.OnSingleClick += () =>
-        {
-            SavedBoard = null;
-            SavedCurtains = null;
-            Application.Quit();
-        };
     }
 
     public static EditorManager Instance
@@ -124,9 +113,64 @@ public class EditorManager : MonoBehaviour
 
     void OnDestroy()
     {
+        if (editorUI != null)
+        {
+            editorUI.OnResetClicked -= ResetBoard;
+            editorUI.OnSwitchClicked -= Switch;
+            editorUI.OnSaveClicked -= Save;
+            editorUI.OnIncreaseSizeClicked -= IncreaseBoardSize;
+            editorUI.OnDecreaseSizeClicked -= DecreaseBoardSize;
+            editorUI.OnPresetClicked -= SetCurtainAsPreset;
+            editorUI.OnBackgroundClicked -= ChangeBackgroundImage;
+            editorUI.OnQuitClicked -= Quit;
+            editorUI.OnPencilCountDelta -= ChangePencilCount;
+            editorUI.OnEraserCountDelta -= ChangeEraserCount;
+        }
+
         if (_instance == this)
             _instance = null;
     }
+
+    private void Quit()
+    {
+        SavedBoard = null;
+        SavedCurtains = null;
+        SavedPencilCount = 0;
+        SavedEraserCount = 0;
+        Application.Quit();
+    }
+
+    #region Items
+
+    public int PencilCount => pencilCount;
+    public int EraserCount => eraserCount;
+
+    private void ChangePencilCount(int delta) => SetItemCounts(pencilCount + delta, eraserCount);
+    private void ChangeEraserCount(int delta) => SetItemCounts(pencilCount, eraserCount + delta);
+
+    public void SetItemCounts(int pencil, int eraser)
+    {
+        pencilCount = Mathf.Clamp(pencil, 0, maxItemCount);
+        eraserCount = Mathf.Clamp(eraser, 0, maxItemCount);
+
+        if (editorUI != null)
+            editorUI.SetItemCountTexts(pencilCount, eraserCount);
+    }
+
+    // Paint UI는 항목 하나당 버튼 하나를 만들기 때문에 개수만큼 같은 이름을 반복해 넣는다.
+    private static List<string> BuildAvailableItems(int pencil, int eraser)
+    {
+        var items = new List<string>();
+        for (int i = 0; i < pencil; i++) items.Add(PencilItemName);
+        for (int i = 0; i < eraser; i++) items.Add(EraserItemName);
+        return items;
+    }
+
+    // EditorPlayScene의 StageManager가 보드를 만들 때 쓴다.
+    public static List<string> BuildSavedAvailableItems()
+        => BuildAvailableItems(SavedPencilCount, SavedEraserCount);
+
+    #endregion
 
     public void SetBoardTile(int id, TileType tileType)
     {
@@ -150,19 +194,14 @@ public class EditorManager : MonoBehaviour
     {
         ClearDroppableTiles();
 
-        // 보드 전체 크기는 고정이므로 타일 한 칸의 크기를 boardSize에 맞춰 줄인다.
-        var grid = droppableParent.GetComponent<GridLayoutGroup>();
-        if (grid != null)
-        {
-            float cellSize = boardPixelSize / boardSize;
-            grid.cellSize = new Vector2(cellSize, cellSize);
-        }
-
         editorBoard = new TileType[boardSize * boardSize];
+
+        Transform parent = editorUI != null ? editorUI.DroppableParent : null;
+        if (parent == null) return;
 
         for (int i = 0; i < boardSize * boardSize; i++)
         {
-            var droppable = Instantiate(droppablePrefab, droppableParent);
+            var droppable = Instantiate(droppablePrefab, parent);
             droppable.Init(i);
             droppableTiles.Add(droppable);
         }
@@ -176,29 +215,6 @@ public class EditorManager : MonoBehaviour
                 Destroy(droppableTiles[i].gameObject);
         }
         droppableTiles.Clear();
-    }
-
-    private void CreateBoardLines()
-    {
-        // 칸 하나의 간격에서 라인 두께를 뺀 값이 라인 사이 간격이 된다.
-        float spacing = boardPixelSize / boardSize - lineThickness;
-        CreateLines(horizontalLineParent, spacing);
-        CreateLines(verticalLineParent, spacing);
-    }
-
-    private void CreateLines(VerticalLayoutGroup lineParent, float spacing)
-    {
-        if (lineParent == null || linePrefab == null) return;
-
-        Transform parent = lineParent.transform;
-        for (int i = parent.childCount - 1; i >= 0; i--)
-            Destroy(parent.GetChild(i).gameObject);
-
-        lineParent.spacing = spacing;
-
-        // 칸이 boardSize개면 라인은 양쪽 끝을 포함해 boardSize + 1개다.
-        for (int i = 0; i <= boardSize; i++)
-            Instantiate(linePrefab, parent);
     }
 
     public void ResetBoard()
@@ -237,6 +253,7 @@ public class EditorManager : MonoBehaviour
         save.HolePoints  = holePoints;
         // 커튼이 하나도 없으면 빈 목록으로 저장되고, Board가 기본 규칙(Quadrant2/Quadrant4 차단)으로 폴백한다.
         save.BlockedPoints = blockedPoints;
+        save.AvailableItems = BuildAvailableItems(pencilCount, eraserCount);
 
         string json = JsonUtility.ToJson(save, true);
         string timestamp = System.DateTime.Now.ToString("yyyyMMdd_HHmmss");
@@ -264,6 +281,9 @@ public class EditorManager : MonoBehaviour
 
         SavedBackgroundId = backgroundImageId;
 
+        SavedPencilCount = pencilCount;
+        SavedEraserCount = eraserCount;
+
         SceneManager.LoadScene("EditorPlayScene");
     }
 
@@ -284,11 +304,11 @@ public class EditorManager : MonoBehaviour
         size = Mathf.Clamp(size, MinBoardSize, MaxBoardSize);
         boardSize = size % 2 == 0 ? size : size + 1;
 
-        CreateDroppableTiles();
-        CreateBoardLines();
+        // 그리드 셀 크기가 먼저 정해져야 타일이 올바른 크기로 생성된다.
+        if (editorUI != null)
+            editorUI.ApplyBoardLayout(boardSize);
 
-        if (curSizeText != null)
-            curSizeText.text = boardSize.ToString();
+        CreateDroppableTiles();
     }
 
     // 버튼(presetButton1)에 바로 물리기 위한 무인자 버전.
@@ -366,8 +386,8 @@ public class EditorManager : MonoBehaviour
         // 음수로 들어와도 안전하게 [0, count) 안으로 접는다.
         backgroundImageId = ((id % count) + count) % count;
 
-        if (backgroundPreviewImage != null)
-            backgroundPreviewImage.sprite = BackgroundSprites[backgroundImageId];
+        if (editorUI != null)
+            editorUI.SetBackgroundPreview(BackgroundSprites[backgroundImageId]);
     }
 }
 
@@ -383,4 +403,6 @@ public class StageJsonSave
     public List<Vector2> HolePoints  = new List<Vector2>();
     public List<Vector2> BlockedPoints = new List<Vector2>(); // 비워 두면 기본 규칙(Quadrant2/Quadrant4 차단)이 적용된다.
     public int MinMoves = 0;
+    // 개수만큼 이름을 반복해 넣는다. 예: 연필 2 + 지우개 1 -> ["pencil", "pencil", "eraser"]
+    public List<string> AvailableItems = new List<string>();
 }
