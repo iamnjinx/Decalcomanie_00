@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key: Game Theme 2
   clip: {fileID: 8300000, guid: 1f56942d6d383f24b94096b2490f5e5f, type: 3}
-  volume: 1
+  volume: 0.25
   pitch: 1
   priority: 128
   useCustom3DRange: 0

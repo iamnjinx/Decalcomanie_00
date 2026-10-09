@@ -23,12 +23,11 @@ namespace TarodevController
         [SerializeField] private ParticleSystem _moveParticles;
         [SerializeField] private ParticleSystem _landParticles;
 
-        [Header("Audio Clips")] [SerializeField]
-        private AudioClip[] _footsteps;
+        [Header("Audio")] [Tooltip("착지 시 AudioManager로 재생할 SFX 키")] [SerializeField]
+        private string _landSFX = "jump";
 
         [SerializeField] private float _landSoundMinImpact = 3f;
 
-        private AudioSource _source;
         private IPlayerController _player;
         private bool _grounded;
         private ParticleSystem.MinMaxGradient _currentGradient;
@@ -36,7 +35,6 @@ namespace TarodevController
 
         private void Awake()
         {
-            _source = GetComponent<AudioSource>();
             _player = GetComponentInParent<IPlayerController>();
         }
 
@@ -123,8 +121,8 @@ namespace TarodevController
                 SetColor(_landParticles);
 
                 _anim.SetTrigger(GroundedKey);
-                if (impact >= _landSoundMinImpact)
-                    _source.PlayOneShot(_footsteps[Random.Range(0, _footsteps.Length)]);
+                if (impact >= _landSoundMinImpact && AudioManager.Instance != null)
+                    AudioManager.Instance.PlaySFX(_landSFX);
                 _moveParticles.Play();
 
                 _landParticles.transform.localScale = Vector3.one * Mathf.InverseLerp(0, 40, impact);

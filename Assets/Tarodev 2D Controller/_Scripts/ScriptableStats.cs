@@ -32,6 +32,9 @@ namespace TarodevController
         [Tooltip("A constant downward force applied while grounded. Helps on slopes"), Range(0f, -10f)]
         public float GroundingForce = -1.5f;
 
+        [Tooltip("지면 노멀의 y값이 이 값 이상일 때만 평평한 바닥으로 보고 GroundingForce를 적용합니다. 그보다 낮으면(박스 모서리에 걸친 상태) 아래로 누르지 않아 캡슐이 미끄러지지 않습니다"), Range(0f, 1f)]
+        public float FlatGroundNormalThreshold = 0.99f;
+
         [Tooltip("The detection distance for grounding and roof detection"), Range(0f, 0.5f)]
         public float GrounderDistance = 0.05f;
 

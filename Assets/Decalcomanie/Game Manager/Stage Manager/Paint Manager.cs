@@ -348,7 +348,7 @@ public class PaintManager : MonoBehaviour
         paintActions.Push(new TilePaintAction(new List<TileSnapshot> { snapshot }, countsTowardPaintCount: false, consumedItemMode: PaintMode.Eraser));
 
         if (AudioManager.Instance != null)
-            AudioManager.Instance.PlayRandomSFX(new[] { "paint_1", "paint_2" });
+            AudioManager.Instance.PlaySFX("erase");
     }
 
     // paintedTiles는 전부 Empty에서 새로 생긴 타일(Paint/Pencil/접기 결과)이므로, undo 시 전부 Empty로 되돌아간다.
@@ -451,6 +451,7 @@ public class PaintManager : MonoBehaviour
     public void ResumePaint()
     {
         paintUI.SetBasePaintUI(true).Forget();
+        paintUI.SetItemButtonsVisible(true);
         SetCurtainBlocksActive(true);
         if (objectMarkers != null) objectMarkers.SetVisible(true);
     }
@@ -458,6 +459,7 @@ public class PaintManager : MonoBehaviour
     public void PausePaint()
     {
         paintUI.SetBasePaintUI(false).Forget();
+        paintUI.SetItemButtonsVisible(false);
         SetCurtainBlocksActive(false);
         if (objectMarkers != null) objectMarkers.SetVisible(false);
     }

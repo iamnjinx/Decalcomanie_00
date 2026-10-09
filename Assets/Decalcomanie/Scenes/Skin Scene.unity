@@ -2587,9 +2587,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'STORE
-
-'
+  m_text: DINO SKIN
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 01713e72c49e7464a802fc206f448af6, type: 2}
   m_sharedMaterial: {fileID: 4418445267327313437, guid: 01713e72c49e7464a802fc206f448af6,

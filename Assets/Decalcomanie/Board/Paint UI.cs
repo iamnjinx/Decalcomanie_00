@@ -24,6 +24,7 @@ public class PaintUI : MonoBehaviour
     private GridLayoutGroup paintButtonGrid;
     private VerticalLayoutGroup lineHorizontalLayout;
     private VerticalLayoutGroup lineVerticalLayout;
+    private readonly List<ItemButton> providedItemButtons = new List<ItemButton>();
 
     public void SetPaintButtons(Board board, System.Action<int> onPaintButtonClicked)
     {
@@ -68,6 +69,7 @@ public class PaintUI : MonoBehaviour
         List<string> availableItems, System.Action<ItemButton> onItemButtonClicked)
     {
         Dictionary<PaintManager.PaintMode, ItemButton> buttons = new Dictionary<PaintManager.PaintMode, ItemButton>();
+        providedItemButtons.Clear();
 
         foreach (KeyValuePair<PaintManager.PaintMode, int> kvp in CountItems(availableItems))
         {
@@ -82,8 +84,16 @@ public class PaintUI : MonoBehaviour
             button.SetCount(kvp.Value);
 
             buttons[kvp.Key] = button;
+            if (kvp.Value > 0) providedItemButtons.Add(button);
         }
         return buttons;
+    }
+
+    // 플랫포머 모드에서는 아이템 버튼을 숨긴다. 스테이지가 주지 않는 아이템은 다시 켜지 않는다.
+    public void SetItemButtonsVisible(bool is_visible)
+    {
+        foreach (ItemButton button in providedItemButtons)
+            button.gameObject.SetActive(is_visible);
     }
 
     // AvailableItems는 개수만큼 같은 이름이 반복된 목록이다. 예: ["pencil", "pencil", "eraser"] -> 연필 2, 지우개 1.

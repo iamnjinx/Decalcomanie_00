@@ -74,6 +74,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6e067964b5cbbb343838597fab753712, type: 2}
   - {fileID: 11400000, guid: d311cd6578dfea649b6b360f8494f93c, type: 2}
   - {fileID: 11400000, guid: c20f48c99c6a42e4fbdc0df22fd937fb, type: 2}
+  - {fileID: 11400000, guid: 5cc637f7350e45d439e2a2eb40ba3817, type: 2}
   crossfadeDuration: 1.5
   initialPoolSize: 16
   maxPoolSize: 32

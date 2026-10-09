@@ -136,6 +136,7 @@ namespace TarodevController
 
         private float _frameLeftGrounded = float.MinValue;
         private bool _grounded;
+        private bool _onFlatGround;
 
         /// <summary>
         /// 콜라이더 타입에 맞는 Cast를 수행합니다.
@@ -217,8 +218,12 @@ namespace TarodevController
             Physics2D.queriesHitTriggers = false;
 
             int mask = ~_stats.PlayerLayer;
-            bool groundHit  = ColliderCast(Vector2.down, _stats.GrounderDistance, mask);
+            RaycastHit2D groundCast = ColliderCast(Vector2.down, _stats.GrounderDistance, mask);
+            bool groundHit  = groundCast;
             bool ceilingHit = ColliderCast(Vector2.up,   _stats.GrounderDistance, mask);
+
+            // 캡슐 바닥이 박스 모서리에 걸치면 노멀이 대각선이 됩니다. 이때 아래로 누르면 솔버가 옆으로 밀어내 미끄러지므로 구분해 둡니다.
+            _onFlatGround = groundHit && groundCast.normal.y >= _stats.FlatGroundNormalThreshold;
 
             if (ceilingHit)
             {
@@ -313,7 +318,7 @@ namespace TarodevController
         {
             if (_grounded && _frameVelocity.y <= 0f)
             {
-                _frameVelocity.y = _stats.GroundingForce;
+                _frameVelocity.y = _onFlatGround ? _stats.GroundingForce : 0f;
             }
             else
             {

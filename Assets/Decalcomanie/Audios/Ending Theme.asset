@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key: Ending Theme
   clip: {fileID: 8300000, guid: 3b8b079ae1a0a4e5bb5069741d06decf, type: 3}
-  volume: 1
+  volume: 0.5
   pitch: 1
   priority: 128
   useCustom3DRange: 0
