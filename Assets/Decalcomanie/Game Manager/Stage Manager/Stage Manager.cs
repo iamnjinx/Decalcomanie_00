@@ -11,6 +11,7 @@ public class StageManager : MonoBehaviour
     [SerializeField] PlatformerManager platformerManager;
     [SerializeField] private StageUI stageUI;
     [SerializeField] private HintManager hintManager;
+    [SerializeField] private PracticeManager practiceManager;
 
     [Header("Fallback")]
     [SerializeField] private TextAsset testBoardDataTextAsset; // GameManager 없이 씬을 단독 실행할 때 쓰는 보드
@@ -36,6 +37,8 @@ public class StageManager : MonoBehaviour
     private bool isResetTutorialPending = false;
 
     private int MinMoves => boardManager.CurrentBoard.BoardData.minMoves;
+
+    private bool IsPracticing => practiceManager != null && practiceManager.IsPracticeMode;
 
     public event System.Action<GameState> OnGameStateChanged;
 
@@ -389,6 +392,13 @@ public class StageManager : MonoBehaviour
 
     private void HandlePlayInput()
     {
+        // 연습 모드 중에는 게임 단축키를 막고, ESC는 설정창 대신 연습 모드를 닫습니다.
+        if (IsPracticing)
+        {
+            if (GameInput.BackPressed) practiceManager.ExitPractice();
+            return;
+        }
+
         if (GameInput.SwitchPressed && !isPlatformerOnly) HandleSwitchButtonTriggered();
 
         if (currentGameState == GameState.Paint) HandlePaintInput();

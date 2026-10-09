@@ -92,6 +92,10 @@ public class StageUI : MonoBehaviour
     [Header("Guide UI")]
     public SpriteRenderer guideImage;
 
+    [Header("Practice")]
+    public FunctionButton practiceButton;
+    public FunctionButton practiceEraserButton; // 연습 그림 전체 지우기 (타일 지우개와 별개)
+
     [Header("Tutorial")]
     public BaseUI clickTutorialUI;
     public BaseUI resetTutorialUI;
